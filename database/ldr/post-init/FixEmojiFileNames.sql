@@ -1,0 +1,1 @@
+UPDATE [usr].[Image] SET [FileName] = REPLACE([FileName], N'?', N'🎉') WHERE [FileName] LIKE N'%?%'

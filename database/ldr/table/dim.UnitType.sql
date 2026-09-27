@@ -1,0 +1,6 @@
+CREATE TABLE [dim].[UnitType] (
+    [UnitType] VARCHAR(100) NOT NULL PRIMARY KEY,
+    [isPrimitive] BIT NULL DEFAULT 0,
+    [Created] DATETIME2(0) NOT NULL DEFAULT GETDATE(),
+    [Updated] DATETIME2(0) NOT NULL DEFAULT GETDATE(),
+);

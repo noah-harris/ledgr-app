@@ -1,0 +1,8 @@
+CREATE TABLE [dim].[Currency] (
+    [idCurrency] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
+    [Symbol] NVARCHAR(15) NOT NULL,
+    [CurrencyName] VARCHAR(50) NOT NULL,
+    [CurrencyNamePlural] VARCHAR(50) NOT NULL,
+    [Created] DATETIME2(0) NOT NULL DEFAULT GETDATE(),
+    [Updated] DATETIME2(0) NOT NULL DEFAULT GETDATE()
+);

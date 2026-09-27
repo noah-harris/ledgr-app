@@ -1,0 +1,137 @@
+services:
+
+  # op-connect-api:
+  #   image: 1password/connect-api:${CONNECT_VERSION:-1}
+  #   container_name: op-connect-api
+  #   restart: unless-stopped
+  #   ports:
+  #     - "${OP_API_PORT:-8080}:8080"
+  #   volumes:
+  #     - ./1password-credentials.json:/home/opuser/.op/1password-credentials.json:ro
+  #     - op-data:/home/opuser/.op/data
+ 
+
+  # op-connect-sync:
+  #   image: 1password/connect-sync:${CONNECT_VERSION:-1}
+  #   container_name: op-connect-sync
+  #   restart: unless-stopped
+  #   ports:
+  #     - "${OP_SYNC_PORT:-8081}:8080"
+  #   volumes:
+  #     - ./1password-credentials.json:/home/opuser/.op/1password-credentials.json:ro
+  #     - op-data:/home/opuser/.op/data
+
+        
+  db:
+    image: mcr.microsoft.com/mssql/server:2025-latest
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "${DB_PASSWORD}"
+      TZ: "America/New_York"
+    ports:
+      - "${DB_EXTERNAL_PORT}:${DB_INTERNAL_PORT}"
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$SA_PASSWORD\" -Q \"SELECT 1\" -b -No"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+
+  init-db:
+    image: noahharriscontact/db-deployer-initializer:latest
+    healthcheck:
+      test: ["CMD-SHELL", "grep -q '\"status\": \"ready\"' /app/sql-scripts/status.json"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      HOST: ${DB_DOCKER_HOST}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      EXTERNAL_PORT: ${DB_EXTERNAL_PORT}
+      INTERNAL_PORT: ${DB_INTERNAL_PORT}
+      DIALECT: ${DB_DIALECT}
+      RESTORE_POINT_INTERVAL_MINUTES: 5
+      RESTORE_POINT_RETENTION: 500
+      TZ: "America/New_York"
+    volumes:
+      - restore:/app/restore
+      - sql-scripts:/app/sql-scripts
+
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${API_EXTERNAL_PORT}:${API_INTERNAL_PORT}"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      HOST: ${DB_DOCKER_HOST}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      EXTERNAL_HOST: ${LEDGR_HOST}
+      EXTERNAL_PORT: ${DB_EXTERNAL_PORT}
+      INTERNAL_PORT: ${DB_INTERNAL_PORT}
+      DIALECT: ${DB_DIALECT}
+      API_SECRET_KEY: ${API_SECRET_KEY}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_EMAIL: ${GOOGLE_EMAIL}
+      TZ: "America/New_York"
+    volumes:
+      - appdata:/app/data
+      # - ./api:/app
+      # - ./models:/app/models
+
+  # web:
+  #   build:
+  #     context: .
+  #     dockerfile: clients/web/Dockerfile
+  #   restart: unless-stopped
+  #   ports:
+  #     - "${WEB_EXTERNAL_PORT}:${WEB_INTERNAL_PORT}"
+  #   depends_on:
+  #     - api
+  #   environment:
+  #     API_URL: http://${API_DOCKER_HOST}:${API_INTERNAL_PORT}
+  #     WEB_SECRET_KEY: ${WEB_SECRET_KEY}
+  #     TZ: "America/New_York"
+
+
+
+ 
+
+      
+volumes:
+  op-data:
+  restore:
+    driver: local
+    driver_opts:
+      type: none
+      device: "D:/Repositories/!BACKUPS/ledgr-app"
+      o: bind
+
+
+  sql-scripts:
+    driver: local
+    driver_opts:
+      type: none
+      device: "D:/Repositories/ledgr-app/database"
+      o: bind
+
+
+  appdata:
+    driver: local
+    driver_opts:
+      type: none
+      device: "D:/Repositories/!APPDATA/ledgr-app"
+      o: bind

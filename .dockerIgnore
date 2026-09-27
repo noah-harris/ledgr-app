@@ -1,0 +1,8 @@
+.git
+.gitignore
+clients/
+database/
+**/__pycache__
+**/*.pyc
+**/.venv
+*.md

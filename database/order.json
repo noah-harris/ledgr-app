@@ -1,0 +1,7 @@
+{
+    "post-init": [
+        {"database":"ldr", "file":"FixEmojiFileNames.sql"},
+        {"database":"ldr", "file":"CreateUpdateTriggers.sql"},
+        {"file":"create_legacy_db_login.py"}
+    ]
+}
