@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="urn:ledgr"
+           targetNamespace="urn:ledgr"
+           elementFormDefault="qualified">
+
+  <xs:include schemaLocation="common.xsd"/>
+
+  <xs:complexType name="TransactionItem">
+    <xs:annotation><xs:documentation>usr.TransactionItem. Primary key: (idUsers, idAccount, idStatement, idTransaction, idTransactionItem).</xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="idUsers" type="Guid">
+        <xs:annotation><xs:documentation>References dbo.Users.idUsers.</xs:documentation></xs:annotation>
+      </xs:element>
+      <xs:element name="idAccount" type="Guid"/>
+      <xs:element name="idStatement" type="Guid"/>
+      <xs:element name="idTransaction" type="Guid">
+        <xs:annotation><xs:documentation>References usr.Transaction (idUsers, idAccount, idStatement, idTransaction).</xs:documentation></xs:annotation>
+      </xs:element>
+      <xs:element name="idTransactionItem" type="Guid">
+        <xs:annotation><xs:documentation>Primary key (with the transaction's key).</xs:documentation></xs:annotation>
+      </xs:element>
+      <xs:element name="idTransactionItemType" type="Guid">
+        <xs:annotation><xs:documentation>References enum.TransactionItemType.idTransactionItemType.</xs:documentation></xs:annotation>
+      </xs:element>
+      <xs:element name="idCurrency" type="Guid">
+        <xs:annotation><xs:documentation>References dim.Unit.idUnit.</xs:documentation></xs:annotation>
+      </xs:element>
+      <xs:element name="idQuantityUnit" type="Guid" minOccurs="0">
+        <xs:annotation><xs:documentation>References dim.Unit.idUnit. Required when Quantity is set.</xs:documentation></xs:annotation>
+      </xs:element>
+      <xs:element name="ItemName" type="String255"/>
+      <xs:element name="ItemDescription" type="String200" minOccurs="0"/>
+      <xs:element name="Amount" type="Money"/>
+      <xs:element name="Quantity" type="Quantity" minOccurs="0">
+        <xs:annotation><xs:documentation>Requires idQuantityUnit.</xs:documentation></xs:annotation>
+      </xs:element>
+      <xs:element name="Created" type="xs:dateTime" minOccurs="0">
+        <xs:annotation><xs:documentation>DATETIME2(0), defaults to GETDATE().</xs:documentation></xs:annotation>
+      </xs:element>
+      <xs:element name="Updated" type="xs:dateTime" minOccurs="0">
+        <xs:annotation><xs:documentation>DATETIME2(0), defaults to GETDATE(); kept current by the trg_&lt;Table&gt;_SetUpdated trigger.</xs:documentation></xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="urn:ledgr"
+           targetNamespace="urn:ledgr"
+           elementFormDefault="qualified">
+
+  <xs:include schemaLocation="common.xsd"/>
+
+  <xs:complexType name="AccountType">
+    <xs:annotation><xs:documentation>enum.AccountType. Primary key: idAccountType.</xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="idAccountType" type="Guid">
+        <xs:annotation><xs:documentation>Primary key.</xs:documentation></xs:annotation>
+      </xs:element>
+      <xs:element name="AccountTypeName" type="String255"/>
+      <xs:element name="isCredit" type="xs:boolean"/>
+      <xs:element name="isSpendable" type="xs:boolean"/>
+      <xs:element name="Created" type="xs:dateTime" minOccurs="0">
+        <xs:annotation><xs:documentation>DATETIME2(0), defaults to GETDATE().</xs:documentation></xs:annotation>
+      </xs:element>
+      <xs:element name="Updated" type="xs:dateTime" minOccurs="0">
+        <xs:annotation><xs:documentation>DATETIME2(0), defaults to GETDATE(); kept current by the trg_&lt;Table&gt;_SetUpdated trigger.</xs:documentation></xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

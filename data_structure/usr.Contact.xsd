@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="urn:ledgr"
+           targetNamespace="urn:ledgr"
+           elementFormDefault="qualified">
+
+  <xs:include schemaLocation="common.xsd"/>
+
+  <xs:complexType name="Contact">
+    <xs:annotation><xs:documentation>usr.Contact. Primary key: (idUsers, idContact).</xs:documentation></xs:annotation>
+    <xs:sequence>
+      <xs:element name="idUsers" type="Guid">
+        <xs:annotation><xs:documentation>References dbo.Users.idUsers.</xs:documentation></xs:annotation>
+      </xs:element>
+      <xs:element name="idContact" type="Guid">
+        <xs:annotation><xs:documentation>Primary key (with idUsers).</xs:documentation></xs:annotation>
+      </xs:element>
+      <xs:element name="FirstName" type="String100"/>
+      <xs:element name="LastName" type="String100"/>
+      <xs:element name="Email" type="String320" minOccurs="0"/>
+      <xs:element name="Phone" type="Char11" minOccurs="0"/>
+      <xs:element name="Address" type="String1000" minOccurs="0"/>
+      <xs:element name="Relationship" type="String200" minOccurs="0"/>
+      <xs:element name="Created" type="xs:dateTime" minOccurs="0">
+        <xs:annotation><xs:documentation>DATETIME2(0), defaults to GETDATE().</xs:documentation></xs:annotation>
+      </xs:element>
+      <xs:element name="Updated" type="xs:dateTime" minOccurs="0">
+        <xs:annotation><xs:documentation>DATETIME2(0), defaults to GETDATE(); kept current by the trg_&lt;Table&gt;_SetUpdated trigger.</xs:documentation></xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

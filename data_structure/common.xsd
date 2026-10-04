@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="urn:ledgr"
+           targetNamespace="urn:ledgr"
+           elementFormDefault="qualified">
+
+  <xs:simpleType name="Guid">
+    <xs:annotation><xs:documentation>UNIQUEIDENTIFIER in SQL Server.</xs:documentation></xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:length value="36"/>
+      <xs:pattern value="[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Money">
+    <xs:annotation><xs:documentation>DECIMAL(18, 2).</xs:documentation></xs:annotation>
+    <xs:restriction base="xs:decimal">
+      <xs:totalDigits value="18"/>
+      <xs:fractionDigits value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Quantity">
+    <xs:annotation><xs:documentation>DECIMAL(18, 4).</xs:documentation></xs:annotation>
+    <xs:restriction base="xs:decimal">
+      <xs:totalDigits value="18"/>
+      <xs:fractionDigits value="4"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="String10">
+    <xs:restriction base="xs:string"><xs:maxLength value="10"/></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="String15">
+    <xs:restriction base="xs:string"><xs:maxLength value="15"/></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="String25">
+    <xs:restriction base="xs:string"><xs:maxLength value="25"/></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="String50">
+    <xs:restriction base="xs:string"><xs:maxLength value="50"/></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="String100">
+    <xs:restriction base="xs:string"><xs:maxLength value="100"/></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="String200">
+    <xs:restriction base="xs:string"><xs:maxLength value="200"/></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="String255">
+    <xs:restriction base="xs:string"><xs:maxLength value="255"/></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="String320">
+    <xs:restriction base="xs:string"><xs:maxLength value="320"/></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="String400">
+    <xs:restriction base="xs:string"><xs:maxLength value="400"/></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="String500">
+    <xs:restriction base="xs:string"><xs:maxLength value="500"/></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="String850">
+    <xs:restriction base="xs:string"><xs:maxLength value="850"/></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="String1000">
+    <xs:restriction base="xs:string"><xs:maxLength value="1000"/></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="String4000">
+    <xs:restriction base="xs:string"><xs:maxLength value="4000"/></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Char3">
+    <xs:restriction base="xs:string"><xs:length value="3"/></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Char4">
+    <xs:restriction base="xs:string"><xs:length value="4"/></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Char6">
+    <xs:restriction base="xs:string"><xs:length value="6"/></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Char7">
+    <xs:restriction base="xs:string"><xs:length value="7"/></xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="Char11">
+    <xs:restriction base="xs:string"><xs:length value="11"/></xs:restriction>
+  </xs:simpleType>
+</xs:schema>
