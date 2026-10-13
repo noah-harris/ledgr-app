@@ -13,6 +13,6 @@ CREATE TABLE [dim].[Unit] (
     CONSTRAINT [FK_unit_UnitType] FOREIGN KEY ([UnitType]) REFERENCES [dim].[UnitType]([UnitType]),
     CONSTRAINT [UQ_Unit_Symbol] UNIQUE ([Symbol]),
     CONSTRAINT [UQ_Unit_nameUnit] UNIQUE ([UnitName]),
-    CONSTRAINT [UQ_BaseUnit] UNIQUE ([UnitType], [isBaseUnit])
+    CONSTRAINT [UQ_BaseUnit] UNIQUE ([UnitType], [isBaseUnit], [ConversionFactor])
 )
 

@@ -18,6 +18,4 @@ passlib
 iso18245
 tkcalendar
 pillow
-webbrowser
 onepassword-sdk
-onepasswordconnectsdk

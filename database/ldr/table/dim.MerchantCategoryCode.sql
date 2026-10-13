@@ -1,5 +1,6 @@
 CREATE TABLE [dim].[MerchantCategoryCode] (
     [Mcc] CHAR(4) NOT NULL,
+    [idBudgetCategory] UNIQUEIDENTIFIER NULL,
     [RangeStart] CHAR(4) NOT NULL,
     [RangeEnd] CHAR(4) NOT NULL,
     [RangeDescription] VARCHAR(200) NULL,
@@ -14,5 +15,6 @@ CREATE TABLE [dim].[MerchantCategoryCode] (
     [MastercardDescription] VARCHAR(400) NULL,
     [MastercardAbbrAirlineName] VARCHAR(200) NULL,
     [AmexDescription] VARCHAR(400) NULL,
-    CONSTRAINT [PK_IsoMcc] PRIMARY KEY CLUSTERED ([Mcc])
+    CONSTRAINT [PK_IsoMcc] PRIMARY KEY CLUSTERED ([Mcc]),
+    CONSTRAINT [FK_MerchantCategoryCode_BudgetCategory] FOREIGN KEY ([idBudgetCategory]) REFERENCES [enum].[BudgetCategory]([idBudgetCategory])
 );

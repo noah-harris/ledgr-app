@@ -1,9 +1,10 @@
 CREATE TABLE [usr].[Account] (
     [idUsers] UNIQUEIDENTIFIER NOT NULL,
     [idAccount] UNIQUEIDENTIFIER NOT NULL,
-    [idAccountType] UNIQUEIDENTIFIER NOT NULL,
+    [idAccountSubType] UNIQUEIDENTIFIER NOT NULL,
     [idOrganization] UNIQUEIDENTIFIER NOT NULL,
     [idCurrency] UNIQUEIDENTIFIER NOT NULL,
+    [idImage] UNIQUEIDENTIFIER NULL,
     [AccountName] NVARCHAR(200) NOT NULL,
     [StartDate] DATETIME2(0) NOT NULL,
     [EndDate] DATETIME2(0) NOT NULL,
@@ -12,8 +13,9 @@ CREATE TABLE [usr].[Account] (
     [Updated] DATETIME2(0) NOT NULL DEFAULT GETDATE(),
     CONSTRAINT [PK_Account] PRIMARY KEY ([idUsers], [idAccount]),
     CONSTRAINT [FK_Account_Users] FOREIGN KEY ([idUsers]) REFERENCES [dbo].[Users]([idUsers]),
-    CONSTRAINT [FK_Account_AccountType] FOREIGN KEY ([idAccountType]) REFERENCES [dbo].[AccountType]([idAccountType]),
+    CONSTRAINT [FK_Account_AccountSubType] FOREIGN KEY ([idAccountSubType]) REFERENCES [enum].[AccountSubType]([idAccountSubType]),
     CONSTRAINT [FK_Account_Organization] FOREIGN KEY ([idUsers], [idOrganization]) REFERENCES [usr].[Organization]([idUsers], [idOrganization]),
     CONSTRAINT [FK_Account_Currency] FOREIGN KEY ([idCurrency]) REFERENCES [dim].[Unit]([idUnit]),
+    CONSTRAINT [FK_Account_Image] FOREIGN KEY ([idUsers], [idImage]) REFERENCES [usr].[File]([idUsers], [idFile]),
     CONSTRAINT [CK_Account_StartDate_EndDate] CHECK ([StartDate] < [EndDate])
 );

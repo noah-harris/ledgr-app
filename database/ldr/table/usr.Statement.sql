@@ -8,10 +8,11 @@ CREATE TABLE [usr].[Statement] (
     [EndDate] DATETIME2(0) NOT NULL,
     [StartBalance] DECIMAL(18, 2) NOT NULL,
     [EndBalance] DECIMAL(18, 2) NOT NULL,
+    [hasImage] AS CAST(CASE WHEN [idImage] IS NOT NULL THEN 1 ELSE 0 END AS BIT) PERSISTED,
     [Created] DATETIME2(0) NOT NULL DEFAULT GETDATE(),
     [Updated] DATETIME2(0) NOT NULL DEFAULT GETDATE(),
     CONSTRAINT [PK_Statement] PRIMARY KEY NONCLUSTERED ([idUsers], [idAccount], [idStatement]),
     CONSTRAINT [FK_Statement_Users] FOREIGN KEY ([idUsers]) REFERENCES [dbo].[Users]([idUsers]),
     CONSTRAINT [FK_Statement_Account] FOREIGN KEY ([idUsers], [idAccount]) REFERENCES [usr].[Account]([idUsers], [idAccount]),
-    CONSTRAINT [FK_Statement_Image] FOREIGN KEY ([idUsers], [idImage]) REFERENCES [usr].[FileListAccountImage]([idUsers], [idFile])
+    CONSTRAINT [FK_Statement_Image] FOREIGN KEY ([idUsers], [idImage], [hasImage]) REFERENCES [usr].[File]([idUsers], [idFile], [AllowStatementImage])
 );

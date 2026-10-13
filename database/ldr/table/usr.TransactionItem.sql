@@ -15,7 +15,7 @@ CREATE TABLE [usr].[TransactionItem] (
     [Updated] DATETIME2(0) NOT NULL DEFAULT GETDATE(),
     CONSTRAINT [PK_TransactionItem] PRIMARY KEY ([idUsers], [idAccount], [idStatement], [idTransaction], [idTransactionItem]),
     CONSTRAINT [FK_TransactionItem_Transaction] FOREIGN KEY ([idUsers], [idAccount], [idStatement], [idTransaction]) REFERENCES [usr].[Transaction]([idUsers], [idAccount], [idStatement], [idTransaction]),
-    CONSTRAINT [FK_TransactionItem_TransactionItemType] FOREIGN KEY ([idTransactionItemType]) REFERENCES [dbo].[TransactionItemType]([idTransactionItemType]),
-    CONSTRAINT [FK_TransactionItem_Currency] FOREIGN KEY ([idCurrency]) REFERENCES [dim].[Unit]([idUnit], [isCurrencyType]),
+    CONSTRAINT [FK_TransactionItem_TransactionItemType] FOREIGN KEY ([idTransactionItemType]) REFERENCES [enum].[TransactionItemType]([idTransactionItemType]),
+    CONSTRAINT [FK_TransactionItem_Currency] FOREIGN KEY ([idCurrency]) REFERENCES [dim].[Currency]([idCurrency]),
     CONSTRAINT [FK_TransactionItem_QuantityUnit] FOREIGN KEY ([idQuantityUnit]) REFERENCES [dim].[Unit]([idUnit])
 );
