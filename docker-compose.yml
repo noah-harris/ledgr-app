@@ -1,27 +1,6 @@
 services:
-
-  # op-connect-api:
-  #   image: 1password/connect-api:${CONNECT_VERSION:-1}
-  #   container_name: op-connect-api
-  #   restart: unless-stopped
-  #   ports:
-  #     - "${OP_API_PORT:-8080}:8080"
-  #   volumes:
-  #     - ./1password-credentials.json:/home/opuser/.op/1password-credentials.json:ro
-  #     - op-data:/home/opuser/.op/data
- 
-
-  # op-connect-sync:
-  #   image: 1password/connect-sync:${CONNECT_VERSION:-1}
-  #   container_name: op-connect-sync
-  #   restart: unless-stopped
-  #   ports:
-  #     - "${OP_SYNC_PORT:-8081}:8080"
-  #   volumes:
-  #     - ./1password-credentials.json:/home/opuser/.op/1password-credentials.json:ro
-  #     - op-data:/home/opuser/.op/data
-
         
+
   db:
     image: mcr.microsoft.com/mssql/server:2025-latest
     restart: unless-stopped
@@ -91,27 +70,48 @@ services:
       TZ: "America/New_York"
     volumes:
       - appdata:/app/data
-      # - ./api:/app
-      # - ./models:/app/models
-
-  # web:
-  #   build:
-  #     context: .
-  #     dockerfile: clients/web/Dockerfile
-  #   restart: unless-stopped
-  #   ports:
-  #     - "${WEB_EXTERNAL_PORT}:${WEB_INTERNAL_PORT}"
-  #   depends_on:
-  #     - api
-  #   environment:
-  #     API_URL: http://${API_DOCKER_HOST}:${API_INTERNAL_PORT}
-  #     WEB_SECRET_KEY: ${WEB_SECRET_KEY}
-  #     TZ: "America/New_York"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:${API_INTERNAL_PORT}/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
 
 
 
- 
-
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "${WEB_EXTERNAL_PORT}:${WEB_INTERNAL_PORT}"
+    depends_on:
+      api:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    environment:
+      HOST: ${DB_DOCKER_HOST}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      EXTERNAL_HOST: ${LEDGR_HOST}
+      EXTERNAL_PORT: ${DB_EXTERNAL_PORT}
+      INTERNAL_PORT: ${DB_INTERNAL_PORT}
+      DIALECT: ${DB_DIALECT}
+      WEB_INTERNAL_PORT: ${WEB_INTERNAL_PORT}
+      WEB_EXTERNAL_PORT: ${WEB_EXTERNAL_PORT}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      GOOGLE_EMAIL: ${GOOGLE_EMAIL}
+      TZ: "America/New_York"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:${WEB_INTERNAL_PORT}/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+      
       
 volumes:
   op-data:

@@ -14,7 +14,7 @@ WORKDIR /app
 COPY api/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY models/ ./models/
+COPY _models/ ./models/
 COPY api/ .
 
 CMD ["python", "__main__.py"]
