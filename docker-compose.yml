@@ -89,8 +89,6 @@ services:
     depends_on:
       api:
         condition: service_healthy
-      db:
-        condition: service_healthy
     environment:
       HOST: ${DB_DOCKER_HOST}
       DB_USERNAME: ${DB_USERNAME}
@@ -105,12 +103,6 @@ services:
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
       GOOGLE_EMAIL: ${GOOGLE_EMAIL}
       TZ: "America/New_York"
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:${WEB_INTERNAL_PORT}/health || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 30s
       
       
 volumes:
