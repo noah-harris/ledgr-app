@@ -1,5 +1,4 @@
-from ._imports_ import *
-from fastapi import Depends
+from ._imports import *
 
 @app.get("/file-tag")
 @catch("Failed to get file tags")

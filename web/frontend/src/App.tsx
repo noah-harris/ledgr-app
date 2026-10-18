@@ -1,4 +1,5 @@
 import { Routes, Route, Outlet, Navigate } from "react-router";
+import Dev from "./pages/Dev/Dev";
 import Layout from "./Layout";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
@@ -6,6 +7,7 @@ import Ledgr from "./pages/Ledgr/Ledgr";
 import Documents from "./pages/Document/Document";
 import Settings from "./pages/Settings";
 import User from "./pages/User";
+import File from "./pages/File/File";
 import { useAuth } from "./hooks/useAuth";
 
 function RequireAuth() {
@@ -24,6 +26,8 @@ export default function App() {
           <Route path="/documents" element={<Documents />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/user" element={<User />} />
+          <Route path="/files" element={<File />} />
+          <Route path="/dev" element={<Dev />} />
         </Route>
       </Route>
     </Routes>

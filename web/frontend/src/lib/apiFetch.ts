@@ -1,4 +1,4 @@
-import { API_HOST } from "./config/config";
+import { API_HOST } from "../config/config";
 
 export async function apiFetch(path: string, init: RequestInit = {}) {
   const token = localStorage.getItem("token");

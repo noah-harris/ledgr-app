@@ -8,7 +8,9 @@ import Box from "@mui/material/Box";
 const links = [
   { to: "/ledgr", label: "Ledgr" },
   { to: "/documents", label: "Documents", end: true },
+  
   { to: "/settings", label: "Settings" },
+
 ];
 
 export default function NavBar() {

@@ -4,7 +4,7 @@ import { Button, TextField } from "@mui/material";
 
 import type { FileTag } from "../../types/FileTag";
 import Listbox from "../../components/common/ListBox";
-import { apiFetch } from "../../api";
+import { apiFetch } from "../../lib/apiFetch";
 
 
 
@@ -21,7 +21,7 @@ export default function Document() {
 
 
   return (
-    <Box>3
+    <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <TextField label="Search"/>
         <Box>
