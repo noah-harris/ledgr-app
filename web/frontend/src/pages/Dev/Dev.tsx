@@ -5,29 +5,32 @@ import Box from "@mui/material/Box";
 import Autocomplete from "@mui/material/Autocomplete";
 import { Button } from "@mui/material";
 import { useEffect } from "react";
-import { apiFetch } from "../../lib/apiFetch";
+import { fetchApi } from "../../Api";
 import ParameterBox from "./ParameterBox";
 import type { Param } from "./ParameterBox";
 import type { Route } from "../../types/Route";
-
-
-
 
 export default function Dev() {
   const [route, setRoute] = useState<Route | null>(null);
   const [method, setMethod] = useState("");
   const [content, setContent] = useState<any>(null);
+  const [fileSrc, setFileSrc] = useState<string | null>(null);
   const [routes, setRoutes] = useState<Route[]>([]);
   const [headers, setHeaders] = useState<Param[]>([]);
   const [urlParams, setUrlParams] = useState<Param[]>([]);
   const [body, setBody] = useState<Param[]>([]);
 
   useEffect(() => {
-    apiFetch("/routes")
+    fetchApi("/routes")
       .then((res) => res.json())
       .then(setRoutes)
       .catch(console.error);
   }, []);
+
+  // Free the previous file's memory whenever fileSrc changes or the page unmounts
+  useEffect(() => {
+    return () => { if (fileSrc) URL.revokeObjectURL(fileSrc); };
+  }, [fileSrc]);
 
   function handleRouteChange(newRoute: Route | null) {
     setRoute(newRoute);
@@ -46,8 +49,10 @@ export default function Dev() {
 
     const hasBody = method !== "GET" && method !== "HEAD" && body.some((p) => p.key);
 
+    setFileSrc(null);
+
     try {
-      const res = await apiFetch(url, {
+      const res = await fetchApi(url, {
         method,
         headers: {
           ...(hasBody && { "Content-Type": "application/json" }),
@@ -55,6 +60,15 @@ export default function Dev() {
         },
         body: hasBody ? JSON.stringify(toObject(body)) : undefined,
       });
+
+      const type = res.headers.get("content-type") ?? "";
+
+      // Files (pdf, images, etc.) go to the iframe
+      if (!type.includes("json") && !type.startsWith("text/")) {
+        setFileSrc(URL.createObjectURL(await res.blob()));
+        setContent({ status: res.status, contentType: type });
+        return;
+      }
 
       // Not every response is JSON, so read text first and parse if possible
       const text = await res.text();
@@ -68,7 +82,6 @@ export default function Dev() {
     }
   }
 
-  
   return (
     <Box>
       <Typography variant="h4">Dev Page</Typography>
@@ -89,7 +102,6 @@ export default function Dev() {
         />
       </Box>
 
-
       <Box sx={{ display: "flex", gap: 2 }}>
         <ParameterBox title="Headers" params={headers} setParams={setHeaders} />
         <ParameterBox title="Url Params" params={urlParams} setParams={setUrlParams} />
@@ -100,7 +112,6 @@ export default function Dev() {
         Send Request
       </Button>
 
-
       <TextField
         label="Output"
         multiline
@@ -108,7 +119,10 @@ export default function Dev() {
         value={content ? JSON.stringify(content, null, 2) : ""}
         slotProps={{ input: { readOnly: true, sx: { fontFamily: "monospace" } } }}
       />
-      
+
+      {fileSrc && (
+        <iframe src={fileSrc} style={{ width: "100%", height: "80vh", border: 0 }} />
+      )}
     </Box>
   );
 }

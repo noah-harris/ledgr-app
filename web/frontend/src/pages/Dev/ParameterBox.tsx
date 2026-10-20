@@ -4,6 +4,7 @@ import TextField from "@mui/material/TextField";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { v4 as uuidv4 } from "uuid";
 
 export type Param = {
   id: string; // stable key for React, so rows don't lose focus or swap values
@@ -16,7 +17,7 @@ export default function ParameterBox({ title, params, setParams }: { title: stri
 
   // Append a new empty key/value pair
   const handleAddParam = () => {
-    setParams((prev) => [...prev, { id: crypto.randomUUID(), key: "", value: "" }]);
+    setParams((prev) => [...prev, { id: uuidv4(), key: "", value: "" }]);
   };
 
   // Update one field ("key" or "value") of one row

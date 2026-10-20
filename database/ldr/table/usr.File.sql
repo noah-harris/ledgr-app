@@ -4,6 +4,11 @@ CREATE TABLE [usr].[File] (
     [FileName] NVARCHAR(850) NOT NULL,
     [FileExtension] NVARCHAR(255) NOT NULL,
     [FullFileName] AS ([FileName] + '.' + [FileExtension]) PERSISTED,
+	[ServerFilePath] AS 'D:\Repositories\!APPDATA\ledgr-app\' + CAST([idUsers] AS CHAR(36)) + '\FILES\' + [FileName] + '.' + [FileExtension] PERSISTED,
+	[ContainerFilePath] AS '/app/data/' + CAST([idUsers] AS CHAR(36)) + '/FILES/' + [FileName] + '.' + [FileExtension] PERSISTED,
+
+    [DownloadEndpoint] AS ('/file/download?idFile=' + CAST([idFile] AS CHAR(36))) PERSISTED,
+
     [FileSizeBytes] BIGINT NULL,
     [isSupportedImageExtension] AS ([dbo].[f_Check_isSupportedImageExtension]([FileExtension])),
     [isJunk] BIT NOT NULL DEFAULT 0,
@@ -14,7 +19,17 @@ CREATE TABLE [usr].[File] (
     [AllowTransactionReceiptImage] BIT NOT NULL DEFAULT 0,
     [AllowDocument] BIT NOT NULL DEFAULT 0,
 
-    [hasNoAllowance] AS CAST(CASE WHEN [AllowStatementImage] = 0 AND [AllowAccountImage] = 0 AND [AllowTransactionInvoiceImage] = 0 AND [AllowTransactionReceiptImage] = 0 AND [AllowDocument] = 0 THEN 1 ELSE 0 END AS BIT) PERSISTED,
+    [isAllowedAny] AS CAST(
+        CASE 
+            WHEN 1=1 
+                AND [AllowStatementImage] = 0 
+                AND [AllowAccountImage] = 0 
+                AND [AllowTransactionInvoiceImage] = 0 
+                AND [AllowTransactionReceiptImage] = 0 
+                AND [AllowDocument] = 0 THEN 0
+            ELSE 1 
+        END AS BIT
+    ) PERSISTED,
     
     [Created] DATETIME2(0) NOT NULL DEFAULT GETDATE(),
     [Updated] DATETIME2(0) NOT NULL DEFAULT GETDATE(),
@@ -26,5 +41,4 @@ CREATE TABLE [usr].[File] (
     CONSTRAINT [UQ_File_AllowAccountImage] UNIQUE ([idUsers], [idFile], [AllowAccountImage]),
     CONSTRAINT [UQ_File_AllowTransactionInvoiceImage] UNIQUE ([idUsers], [idFile], [AllowTransactionInvoiceImage]),
     CONSTRAINT [UQ_File_AllowTransactionReceiptImage] UNIQUE ([idUsers], [idFile], [AllowTransactionReceiptImage])
-
 );

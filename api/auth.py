@@ -17,13 +17,13 @@ import shutil
 ALGORITHM = "HS256"
 TOKEN_EXPIRE_MINUTES = 120
 USER_DATA_ROOT = Path("/app/data")
-USER_SUBFOLDERS = ("IMAGES", "EMAIL_ATTACHMENTS")
+USER_SUBFOLDERS = ("FILES", "EMAIL_ATTACHMENTS")
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
-def _unauthorized(detail: str) -> HTTPException:
+def _unauthorized(detail:str) -> HTTPException:
     return HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail=detail,
@@ -46,7 +46,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> dict:
     with get_connection("ldr") as conn:
         row = conn.execute(
             text(
-                "SELECT [idUsers], [Username], [FirstName], [LastName], [Email], [Phone] "
+                "SELECT [idUsers], [Username], [FirstName], [LastName], [Email], [Phone], [ContainerDataPathRoot]"
                 "FROM [dbo].[Users] WHERE [idUsers] = :idUsers"
             ),
             {"idUsers": id_users},

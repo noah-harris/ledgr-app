@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import { Button, TextField } from "@mui/material";
-
 import type { FileTag } from "../../types/FileTag";
 import Listbox from "../../components/common/ListBox";
-import { apiFetch } from "../../lib/apiFetch";
-
+import { fetchApi } from "../../Api";
 
 
 export default function Document() {
@@ -13,11 +11,10 @@ export default function Document() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
-    apiFetch("/file-tag")
+    fetchApi("/file-tag")
       .then((res) => res.json())
       .then(setFileTags);
   }, []);
-
 
 
   return (

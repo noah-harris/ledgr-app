@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import type { GridColDef, GridRowId } from "@mui/x-data-grid";
-
 import mime from "mime";
-
 import MyDataGrid from "../../components/common/MyDataGrid";
 import { formatFileSize } from "../../lib/format";
-import { apiFetch } from "../../lib/apiFetch";
+import { fetchApi } from "../../Api";
+import MyModal from "../../components/common/MyModal";
+import FileViewer from "../../components/common/FileViewer";
 
 type Row = {
   id: string;
@@ -13,6 +13,7 @@ type Row = {
   extension: string;
   size: number; /* format stirng later string */
   mimeType: string;
+  download: string;
 };
 
 const columns: GridColDef<Row>[] = [
@@ -26,7 +27,8 @@ const columns: GridColDef<Row>[] = [
     field: "name",
     headerName: "Name",
     flex: 1,
-    minWidth: 150
+    minWidth: 150,
+    valueGetter: (value: string, row: Row) => row.name,
   },
   { 
     field: "extension", 
@@ -51,9 +53,10 @@ const columns: GridColDef<Row>[] = [
 export default function File() {
   const [rows, setRows] = useState<Row[]>([]);
   const [_selectedIds, setSelectedIds] = useState<GridRowId[]>([]);
+  const [file, setFile] = useState<Row | null>(null);
 
   useEffect(() => {
-    apiFetch("/files")
+    fetchApi("/files")
       .then((res) => res.json())
       .then(setRows)
       .catch(console.error);
@@ -65,10 +68,14 @@ export default function File() {
       <MyDataGrid 
         rows={rows} 
         columns={columns} 
-        onSelect={(id) => console.log("Selected row ID:", id)} 
+        onSelect={(params) => setFile(params.row)} 
         onSelectionChange={(ids) => setSelectedIds(ids)}
         checkboxSelection
       />
+
+      <MyModal open={file !== null} onClose={() => setFile(null)} title={file?.name ?? ""}>
+        {file && <FileViewer path={file.download} />}
+      </MyModal>
     </div>
   );
 }

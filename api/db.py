@@ -86,9 +86,10 @@ def exec(statement:str, database:str='ldr', parameters:dict|None=None, execution
         statement = text(statement)
 
     with get_connection(database) as conn:
-        result:CursorResult[Any] = conn.execute(statement, parameters or {}, execution_options=execution_options or {})
-        rows = result.returns_rows
-        if not rows:
-            return None
-        elif rows:
-            return [dict(r) for r in result.mappings().all()]
+        try:
+            result:CursorResult[Any] = conn.execute(statement, parameters or {}, execution_options=execution_options or {})
+        except Exception as e:
+            raise RuntimeError(f"Error executing statement: {e}") from e
+        else:
+            rows = result.returns_rows
+            return [dict(r) for r in result.mappings().all()] if rows else None

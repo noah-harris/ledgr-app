@@ -6,6 +6,7 @@ CREATE TABLE [dbo].[Users] (
     [LastName] NVARCHAR(200) NOT NULL,
     [Email] VARCHAR(320) NULL,
     [Phone] CHAR(11) NULL,
+    [ContainerDataPathRoot] AS '/app/data/' + CAST([idUsers] AS NVARCHAR(36)) PERSISTED,
     [Created] DATETIME2(0) NOT NULL DEFAULT GETDATE(),
     [Updated] DATETIME2(0) NOT NULL DEFAULT GETDATE(),
     CONSTRAINT [UQ_Users_Username] UNIQUE ([Username]),
