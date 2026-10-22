@@ -1,6 +1,6 @@
 from ._imports import *
 
-@app.get("/file-tag")
+@app.get("/filetag")
 @catch("Failed to get file tags")
 def get_file_tags(current_user:dict=Depends(get_current_user)):
     return exec(
@@ -20,3 +20,5 @@ def get_file_tags(current_user:dict=Depends(get_current_user)):
             "user_id": current_user["idUsers"]
         }
     )
+
+

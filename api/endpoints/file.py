@@ -134,7 +134,7 @@ def get_file_download(current_user:dict=Depends(get_current_user), idFile:str|No
     )
 
 
-@app.post("/image/upload", status_code=200, description="Upload one or more images for the current user", response_description="Success message", response_model=dict)
+@app.post("/file/upload", status_code=200, description="Upload one or more images for the current user", response_description="Success message", response_model=dict)
 async def upload_image(files:list[UploadFile], current_user:dict=Depends(get_current_user)):
 
     def _check_file_exists_database(file:UploadFile) -> bool:
@@ -200,3 +200,30 @@ async def upload_image(files:list[UploadFile], current_user:dict=Depends(get_cur
             raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Database Error: Failed to upload image {file.filename}")
         
     return JSONResponse(status_code=200, content={"message": "Images uploaded successfully"})
+
+
+
+@app.post("/file/edit/allow/all")
+@catch("")
+def get_file_tags(idFile:str, current_user:dict=Depends(get_current_user)):
+
+
+
+    
+    return exec(
+        statement="""
+            SELECT  
+                [idFileTag] AS [id], 
+                [FileTagName] AS [name], 
+                [hasAttributeValue] AS [hasAttributeValue], 
+                [isDefaultFileTag] AS [isDefaultFileTag]
+            FROM [usr].[FileTag] 
+            WHERE 1=2 
+                OR [idUsers] = :user_id 
+                OR [isDefaultFileTag] = 1
+        """, 
+        database="ldr", 
+        parameters={
+            "user_id": current_user["idUsers"]
+        }
+    )

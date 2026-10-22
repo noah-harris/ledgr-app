@@ -19,15 +19,29 @@ CREATE TABLE [usr].[File] (
     [AllowTransactionReceiptImage] BIT NOT NULL DEFAULT 0,
     [AllowDocument] BIT NOT NULL DEFAULT 0,
 
-    [isAllowedAny] AS CAST(
+    [isAllowedAll] AS CAST(
         CASE 
             WHEN 1=1 
                 AND [AllowStatementImage] = 0 
                 AND [AllowAccountImage] = 0 
                 AND [AllowTransactionInvoiceImage] = 0 
                 AND [AllowTransactionReceiptImage] = 0 
-                AND [AllowDocument] = 0 THEN 0
+                AND [AllowDocument] = 0 
+                THEN 0
             ELSE 1 
+        END AS BIT
+    ) PERSISTED,
+
+    [isAllowedAny] AS CAST(
+        CASE 
+            WHEN 1=2
+                OR [AllowStatementImage] = 1
+                OR [AllowAccountImage] = 1
+                OR [AllowTransactionInvoiceImage] = 1
+                OR [AllowTransactionReceiptImage] = 1
+                OR [AllowDocument] = 1 
+                THEN 1 
+            ELSE 0
         END AS BIT
     ) PERSISTED,
     

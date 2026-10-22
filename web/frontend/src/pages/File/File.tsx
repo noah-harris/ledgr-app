@@ -1,20 +1,14 @@
 import { useEffect, useState } from "react";
 import type { GridColDef, GridRowId } from "@mui/x-data-grid";
 import mime from "mime";
-import MyDataGrid from "../../components/common/MyDataGrid";
+
+import DataGrid from "../../components/common/DataGrid";
+import FileViewer from "../../components/common/FileViewer";
 import { formatFileSize } from "../../lib/format";
 import { fetchApi } from "../../Api";
 import MyModal from "../../components/common/MyModal";
-import FileViewer from "../../components/common/FileViewer";
+import type { Row } from "../../types/GridFileRow";
 
-type Row = {
-  id: string;
-  name: string;
-  extension: string;
-  size: number; /* format stirng later string */
-  mimeType: string;
-  download: string;
-};
 
 const columns: GridColDef<Row>[] = [
   { 
@@ -28,7 +22,7 @@ const columns: GridColDef<Row>[] = [
     headerName: "Name",
     flex: 1,
     minWidth: 150,
-    valueGetter: (value: string, row: Row) => row.name,
+    valueGetter: (_value: string, row: Row) => row.name,
   },
   { 
     field: "extension", 
@@ -65,7 +59,7 @@ export default function File() {
   return (
     <div>
       <h1>File Page</h1>
-      <MyDataGrid 
+      <DataGrid 
         rows={rows} 
         columns={columns} 
         onSelect={(params) => setFile(params.row)} 
