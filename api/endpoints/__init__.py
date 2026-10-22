@@ -1,5 +1,5 @@
 from ._system import *
-from .file_tag import *
+from .document_tag import *
 from .file import *
 from .account import *
 from .statement import *

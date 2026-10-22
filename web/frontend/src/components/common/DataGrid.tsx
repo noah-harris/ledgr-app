@@ -18,6 +18,7 @@ export default function DataGrid<T extends { id: GridRowId }>({
   checkboxSelection?: boolean;
   loading?: boolean;
   pageSize?: number;
+  
 }) {
   return (
     // Fills the parent's height (parent must be a flex column or have a height)

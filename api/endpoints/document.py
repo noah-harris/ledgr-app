@@ -3,9 +3,6 @@ from ._imports import *
 @app.get("/documents")
 def get_documents(current_user:dict=Depends(get_current_user)):
 
-
-
-
     docs = exec(
         statement="""
         SELECT 
@@ -33,13 +30,13 @@ def get_documents(current_user:dict=Depends(get_current_user)):
         statement="""
         SELECT 
             [idDocument] AS [id],
-            [idFileTag] AS [idFileTag],
-            [FileTagName] AS [name],
+            [idDocumentTag] AS [idDocumentTag],
+            [DocumentTagName] AS [name],
             [Value] AS [value],
-            [isDefaultFileTag] AS [isDefaultFileTag],
+            [isDefaultDocumentTag] AS [isDefaultDocumentTag],
             [Created] AS [created],
             [Updated] AS [updated]
-        FROM [usr].[v_DocumentTag]
+        FROM [usr].[v_DocumentTagLink]
         WHERE [idUsers] = :user_id
         """, 
         database="ldr", 

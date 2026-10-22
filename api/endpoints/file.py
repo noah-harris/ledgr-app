@@ -213,14 +213,14 @@ def get_file_tags(idFile:str, current_user:dict=Depends(get_current_user)):
     return exec(
         statement="""
             SELECT  
-                [idFileTag] AS [id], 
-                [FileTagName] AS [name], 
+                [idDocumentTag] AS [id], 
+                [DocumentTagName] AS [name], 
                 [hasAttributeValue] AS [hasAttributeValue], 
-                [isDefaultFileTag] AS [isDefaultFileTag]
-            FROM [usr].[FileTag] 
+                [isDefaultDocumentTag] AS [isDefaultDocumentTag]
+            FROM [usr].[DocumentTag] 
             WHERE 1=2 
                 OR [idUsers] = :user_id 
-                OR [isDefaultFileTag] = 1
+                OR [isDefaultDocumentTag] = 1
         """, 
         database="ldr", 
         parameters={
