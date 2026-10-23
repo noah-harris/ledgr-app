@@ -6,7 +6,7 @@ import DataGrid from "../../components/common/DataGrid";
 import FileViewer from "../../components/common/FileViewer";
 import { formatFileSize } from "../../lib/format";
 import { fetchApi } from "../../Api";
-import MyModal from "../../components/common/MyModal";
+import Modal from "../../components/common/Modal";
 import type { Row } from "../../types/GridFileRow";
 
 
@@ -67,9 +67,9 @@ export default function File() {
         checkboxSelection
       />
 
-      <MyModal open={file !== null} onClose={() => setFile(null)} title={file?.name ?? ""}>
+      <Modal open={file !== null} onClose={() => setFile(null)} title={file?.name ?? ""}>
         {file && <FileViewer path={file.download} />}
-      </MyModal>
+      </Modal>
     </div>
   );
 }

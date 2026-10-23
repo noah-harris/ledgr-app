@@ -6,7 +6,7 @@ import type { DocumentTag } from "../../types/DocumentTag";
 import type { Document } from "../../types/Document";
 import DataGrid from "../../components/common/DataGrid";
 import { fetchApi } from "../../Api";
-import MyModal from "../../components/common/MyModal";
+import Modal from "../../components/common/Modal";
 import FileViewer from "../../components/common/FileViewer";
 import TagBreadcrumb from "./TagBreadcrumb";
 import { formatDate } from "../../lib/format";
@@ -71,9 +71,9 @@ export default function DocumentsPage() {
         />
       )}
 
-      <MyModal open={file !== null} onClose={() => setFile(null)} title={file?.name ?? ""}>
+      <Modal open={file !== null} onClose={() => setFile(null)} title={file?.name ?? ""}>
         {file && <FileViewer path={file.download} />}
-      </MyModal>
+      </Modal>
     </Box>
   );
 }
