@@ -1,159 +1,79 @@
 import { useEffect, useState } from "react";
+import Loading from "../../components/common/Loading";
 import Box from "@mui/material/Box";
+import type { GridColDef } from "@mui/x-data-grid";
 import type { DocumentTag } from "../../types/DocumentTag";
 import type { Document } from "../../types/Document";
 import DataGrid from "../../components/common/DataGrid";
 import { fetchApi } from "../../Api";
-import type { GridColDef } from "@mui/x-data-grid";
+import MyModal from "../../components/common/MyModal";
+import FileViewer from "../../components/common/FileViewer";
+import TagBreadcrumb from "./TagBreadcrumb";
+import { formatDate } from "../../lib/format";
 
+const tagColumns: GridColDef<DocumentTag>[] = [
+  { field: "id", headerName: "ID", flex: 1, minWidth: 150 },
+  { field: "name", headerName: "Name", flex: 1, minWidth: 150 },
+];
 
-// export default function DocumentPage() {
-//   const [selectedTags, setSelectedTags] = useState<DocumentTag[]>([]);
-//   const [breadcrumbDisplay, setBreadcrumbDisplay] = useState<string>(">");
-//   const [initialDocuments, setInitialDocuments] = useState<Document[]>([]);
-//   const [initialTags, setInitialTags] = useState<DocumentTag[]>([]);
-//   const [remainingTags, setRemainingTags] = useState<DocumentTag[]>([]);
-//   const [remainingDocuments, setRemainingDocuments] = useState<Document[]>([]);
-//   const [_loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     Promise.all([
-//       fetchApi("/document/tags/used", {}, { hasAttributeValue: true }).then(r => r.json()),
-//       fetchApi("/documents").then(r => r.json()),
-//     ]).then(([tags, docs]) => {
-//       setInitialTags(tags);
-//       setRemainingTags(tags);
-//       setInitialDocuments(docs);
-//       setRemainingDocuments(docs);
-//       setLoading(false);
-//     });
-//   }, []);
-
-
-//   useEffect(() => {
-//     updateBreadcrumbDisplay();
-//     updateRemainingTags();
-//     updateRemainingDocuments();
-//   }, [selectedTags]);
-
-  
-//   function updateBreadcrumbDisplay() {
-//     setBreadcrumbDisplay(selectedTags.map(tag => tag.name).join(" > "));
-//   }
-
-
-//   function updateRemainingDocuments() {
-//     setRemainingDocuments(initialDocuments.filter(doc =>
-//       selectedTags.every(tag =>
-//         doc.tags.some(t => t.idDocumentTag === tag.id)
-//       )
-//     ));
-//   }
-
-
-//   function updateRemainingTags() {
-//     setRemainingTags(initialTags.filter(tag =>
-//       !selectedTags.some(selected => selected.id === tag.id)
-//     ));
-//   }
-
-
-//   function handleTagSelection(selectedTagId: string) {
-//     setSelectedTags(prev => {
-//       const newSelectedTags = [...prev, remainingTags.find(tag => tag.id === selectedTagId)!];
-//       updateBreadcrumbDisplay();
-//       updateRemainingTags();
-//       updateRemainingDocuments();
-//       return newSelectedTags;
-//     });
-//   }
-
-//   const columns: GridColDef<DocumentTag>[] = [
-//     { 
-//       field: "id", 
-//       headerName: "ID", 
-//       flex: 1, 
-//       minWidth: 150 
-//     },
-//     {
-//       field: "name",
-//       headerName: "Name",
-//       flex: 1,
-//       minWidth: 150,
-//     },
-//   ];
-
-//   return (
-//     <Box>
-//       {breadcrumbDisplay}
-
-//       <DataGrid
-//         rows={remainingTags}
-//         columns={columns}
-//         onSelect={(params) => handleTagSelection(params.row.id)} 
-//       />
-
-//       {/* just make a bunch of boxes representing remaining documents */}
-//       {remainingDocuments.map(doc => (
-//         <Box key={doc.id}>
-//           {doc.name}
-//         </Box>
-//       ))}
-
-//     </Box>
-    
-//   );
-// }
-
+const documentColumns: GridColDef<Document>[] = [
+  { field: "id", headerName: "ID", flex: 1, minWidth: 150 },
+  { field: "name", headerName: "Document", flex: 1, minWidth: 150, valueGetter: (_value: string, doc: Document) => `${doc.name}.${doc.extension}` },
+  { field: "created", headerName: "Created", flex: 1, minWidth: 150, valueGetter: (_value: string, doc: Document) => formatDate(doc.created) },
+];
 
 export default function DocumentsPage() {
   const [allTags, setAllTags] = useState<DocumentTag[]>([]);
   const [allDocuments, setAllDocuments] = useState<Document[]>([]);
   const [selectedTags, setSelectedTags] = useState<DocumentTag[]>([]);
   const [loading, setLoading] = useState(true);
+  const [file, setFile] = useState<Document | null>(null);
 
   useEffect(() => {
     Promise.all([
       fetchApi("/document/tags/used", {}, { hasAttributeValue: false }).then(r => r.json()),
       fetchApi("/documents").then(r => r.json()),
-    ]).then(([tags, docs]) => {
-      setAllTags(tags);
-      setAllDocuments(docs);
-      setLoading(false);
-    });
+    ])
+      .then(([tags, docs]) => {
+        setAllTags(tags);
+        setAllDocuments(docs);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
-  // Derived on every render. No state, no effects, always in sync.
-  const breadcrumb = selectedTags.map(t => t.name).join(" > ");
-
-  const remainingTags = allTags.filter(tag =>
-    !selectedTags.some(s => s.id === tag.id)
-  );
-
+  // Documents that have every selected tag
+  const selectedIds = new Set(selectedTags.map(t => t.id));
   const remainingDocuments = allDocuments.filter(doc =>
     selectedTags.every(tag => doc.tags.some(t => t.idDocumentTag === tag.id))
   );
 
-  const columns: GridColDef<DocumentTag>[] = [
-    { field: "id", headerName: "ID", flex: 1, minWidth: 150 },
-    { field: "name", headerName: "Name", flex: 1, minWidth: 150 },
-  ];
+  // Unselected tags that still appear on at least one remaining document
+  const tagIdsInDocs = new Set(remainingDocuments.flatMap(doc => doc.tags.map(t => t.idDocumentTag)));
+  const remainingTags = allTags.filter(tag => !selectedIds.has(tag.id) && tagIdsInDocs.has(tag.id));
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Loading />;
 
   return (
     <Box>
-      {breadcrumb}
+      <TagBreadcrumb selectedTags={selectedTags} setSelectedTags={setSelectedTags} />
 
-      <DataGrid
-        rows={remainingTags}
-        columns={columns}
-        onSelect={params => setSelectedTags(prev => [...prev, params.row])}
-      />
+      {remainingTags.length > 1 ? (
+        <DataGrid
+          rows={remainingTags}
+          columns={tagColumns}
+          onSelect={params => setSelectedTags(prev => [...prev, params.row])}
+        />
+      ) : (
+        <DataGrid
+          rows={remainingDocuments}
+          columns={documentColumns}
+          onSelect={params => setFile(params.row)}
+        />
+      )}
 
-      {remainingDocuments.map(doc => (
-        <Box key={doc.id}>{doc.name}</Box>
-      ))}
+      <MyModal open={file !== null} onClose={() => setFile(null)} title={file?.name ?? ""}>
+        {file && <FileViewer path={file.download} />}
+      </MyModal>
     </Box>
   );
 }
