@@ -26,7 +26,6 @@ WORKDIR /app
 COPY web/backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY _models/ ./models/
 COPY web/backend/ ./backend/
 COPY --from=frontend /frontend/dist ./frontend/dist
 
