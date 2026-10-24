@@ -1,0 +1,6 @@
+CREATE TABLE [dbo].[Family] (
+    [idFamily] INT IDENTITY(1,1) PRIMARY KEY,
+    [FamilyName] NVARCHAR(255) NOT NULL,
+    [Created] DATETIME2(0) NOT NULL DEFAULT GETDATE(),
+    [Updated] DATETIME2(0) NOT NULL DEFAULT GETDATE()
+);
