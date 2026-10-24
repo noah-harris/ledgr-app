@@ -2,9 +2,14 @@ import Box from "@mui/material/Box";
 import type { GridColDef, GridRowId, GridRowParams } from "@mui/x-data-grid";
 import { DataGrid as MuiDataGrid } from "@mui/x-data-grid";
 
-export default function DataGrid<T extends { id: GridRowId }>({
+const defaultGetRowId = (row: any): GridRowId => row.id;
+const defaultHiddenColumns = ["id"];
+
+export default function DataGrid<T extends object>({
   rows,
   columns,
+  getRowId = defaultGetRowId,
+  hiddenColumns = defaultHiddenColumns,
   onSelect,
   onSelectionChange,
   checkboxSelection = false,
@@ -13,12 +18,13 @@ export default function DataGrid<T extends { id: GridRowId }>({
 }: {
   rows: T[];
   columns: GridColDef<T>[];
+  getRowId?: (row: T) => GridRowId;
+  hiddenColumns?: string[];
   onSelect?: (params: GridRowParams) => void;
   onSelectionChange?: (ids: GridRowId[]) => void;
   checkboxSelection?: boolean;
   loading?: boolean;
   pageSize?: number;
-  
 }) {
   return (
     // Fills the parent's height (parent must be a flex column or have a height)
@@ -26,6 +32,7 @@ export default function DataGrid<T extends { id: GridRowId }>({
       <MuiDataGrid
         rows={rows}
         columns={columns}
+        getRowId={getRowId}
         loading={loading}
         checkboxSelection={checkboxSelection}
         disableRowSelectionOnClick // clicking a row calls onSelect without toggling its checkbox
@@ -36,13 +43,15 @@ export default function DataGrid<T extends { id: GridRowId }>({
           const ids =
             model.type === "include"
               ? [...model.ids]
-              : rows.map((r) => r.id).filter((id) => !model.ids.has(id));
+              : rows.map((r) => getRowId(r)).filter((id) => !model.ids.has(id));
           onSelectionChange?.(ids);
         }}
         pageSizeOptions={[25, 50, 100]}
         initialState={{
           pagination: { paginationModel: { pageSize } },
-          columns: { columnVisibilityModel: { id: false } },
+          columns: {
+            columnVisibilityModel: Object.fromEntries(hiddenColumns.map((field) => [field, false])),
+          },
         }}
         // Hide the blue focus outline on clicked cells and headers
         sx={{
@@ -55,3 +64,61 @@ export default function DataGrid<T extends { id: GridRowId }>({
     </Box>
   );
 }
+
+// import Box from "@mui/material/Box";
+// import type { GridColDef, GridRowId, GridRowParams } from "@mui/x-data-grid";
+// import { DataGrid as MuiDataGrid } from "@mui/x-data-grid";
+
+// export default function DataGrid<T extends object>({
+//   rows,
+//   columns,
+//   getRowId,
+//   onSelect,
+//   onSelectionChange,
+//   checkboxSelection = false,
+//   loading = false,
+//   pageSize = 25,
+// }: {
+//   rows: T[];
+//   columns: GridColDef<T>[];
+//   getRowId?: (row: T) => GridRowId;
+//   onSelect?: (params: GridRowParams) => void;
+//   onSelectionChange?: (ids: GridRowId[]) => void;
+//   checkboxSelection?: boolean;
+//   loading?: boolean;
+//   pageSize?: number;
+// }) {
+//   return (
+//     // Fills the parent's height (parent must be a flex column or have a height)
+//     <Box sx={{ flex: 1, minHeight: 0 }}>
+//       <MuiDataGrid
+//         rows={rows}
+//         columns={columns}
+//         getRowId={getRowId}
+//         loading={loading}
+//         checkboxSelection={checkboxSelection}
+//         disableRowSelectionOnClick // clicking a row calls onSelect without toggling its checkbox
+//         onRowClick={(params: GridRowParams) => onSelect?.(params)}
+//         onRowSelectionModelChange={(model) => {
+//           const ids =
+//             model.type === "include"
+//               ? [...model.ids]
+//               : rows.map(r => getRowId!(r)).filter((id) => !model.ids.has(id));
+//           onSelectionChange?.(ids);
+//         }}
+//         pageSizeOptions={[25, 50, 100]}
+//         initialState={{
+//           pagination: { paginationModel: { pageSize } },
+//           columns: { columnVisibilityModel: { id: false } },
+//         }}
+//         // Hide the blue focus outline on clicked cells and headers
+//         sx={{
+//           userSelect: "none",
+//           "& .MuiDataGrid-cell, & .MuiDataGrid-columnHeader": {
+//             "&:focus, &:focus-within": { outline: "none" },
+//           },
+//         }}
+//       />
+//     </Box>
+//   );
+// }

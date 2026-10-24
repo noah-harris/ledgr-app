@@ -1,2 +1,2 @@
-from .user import *
+from .generated import *
 from .token import *

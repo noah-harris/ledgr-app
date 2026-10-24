@@ -17,17 +17,7 @@ def get_files(current_user:dict=Depends(get_current_user)):
 
     file_rows = exec(
         statement="""
-            SELECT  
-                [idFile] AS [id], 
-                [FileName] AS [name], 
-                [FileExtension] AS [extension], 
-                [FileSizeBytes] AS [size],
-                [DownloadEndpoint] AS [download],
-                [isSupportedImageExtension] AS [supportedImage],
-                [isJunk] AS [isJunk],
-                [isAllowedAny] AS [isAllowedAny],
-                [Created] AS [created],
-                [Updated] AS [updated]
+            SELECT *
             FROM [usr].[File] 
             WHERE [idUsers] = :user_id
         """, 
@@ -58,17 +48,7 @@ def get_file(idFile:str, current_user:dict=Depends(get_current_user)):
 
     file_row = exec(
         statement=f"""
-            SELECT  
-                [idFile] AS [id], 
-                [FileName] AS [name], 
-                [FileExtension] AS [extension], 
-                [FileSizeBytes] AS [size],
-                [DownloadEndpoint] AS [download],
-                [isSupportedImageExtension] AS [supportedImage],
-                [isJunk] AS [isJunk],
-                [isAllowedAny] AS [isAllowedAny],
-                [Created] AS [created],
-                [Updated] AS [updated]
+            SELECT *
             FROM [usr].[File] 
             WHERE 1=1 
                 AND [idUsers] = :idUsers
@@ -206,17 +186,9 @@ async def upload_image(files:list[UploadFile], current_user:dict=Depends(get_cur
 @app.post("/file/edit/allow/all")
 @catch("")
 def get_file_tags(idFile:str, current_user:dict=Depends(get_current_user)):
-
-
-
-    
     return exec(
         statement="""
-            SELECT  
-                [idDocumentTag] AS [id], 
-                [DocumentTagName] AS [name], 
-                [hasAttributeValue] AS [hasAttributeValue], 
-                [isDefaultDocumentTag] AS [isDefaultDocumentTag]
+            SELECT *
             FROM [usr].[DocumentTag] 
             WHERE 1=2 
                 OR [idUsers] = :user_id 

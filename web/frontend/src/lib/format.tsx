@@ -9,5 +9,6 @@ export function formatFileSize(size: number): string {
 export function formatDate(date: string): string {
   if (!date) return "";
   const d = new Date(date);
-  return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${pad(d.getMonth() + 1)}/${pad(d.getDate())}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 }

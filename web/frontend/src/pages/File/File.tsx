@@ -7,30 +7,30 @@ import FileViewer from "../../components/common/FileViewer";
 import { formatFileSize } from "../../lib/format";
 import { fetchApi } from "../../Api";
 import Modal from "../../components/common/Modal";
-import type { Row } from "../../types/GridFileRow";
+import type { File } from "../../types";
 
 
-const columns: GridColDef<Row>[] = [
+const columns: GridColDef<File>[] = [
   { 
-    field: "id", 
+    field: "idFile", 
     headerName: "ID", 
     flex: 1, 
     minWidth: 150 
   },
   {
-    field: "name",
+    field: "FileName",
     headerName: "Name",
     flex: 1,
     minWidth: 150,
-    valueGetter: (_value: string, row: Row) => row.name,
+    valueGetter: (_value: string, file: File) => file.FileName,
   },
   { 
-    field: "extension", 
+    field: "FileExtension", 
     headerName: "Extension", 
     width: 140 
   },
   {
-    field: "size",
+    field: "FileSizeBytes",
     headerName: "Size",
     width: 150,
     valueFormatter: (value: number) => formatFileSize(value)
@@ -40,14 +40,14 @@ const columns: GridColDef<Row>[] = [
     headerName: "Mime Type",
     flex: 1,
     minWidth: 150,
-    valueGetter: (value: string, row: Row) => value ?? mime.getType(row.extension) ?? "unknown",
+    valueGetter: (value: string, file: File) => value ?? mime.getType(file.FileExtension) ?? "unknown", 
   }
 ];
 
 export default function File() {
-  const [rows, setRows] = useState<Row[]>([]);
+  const [rows, setRows] = useState<File[]>([]);
   const [_selectedIds, setSelectedIds] = useState<GridRowId[]>([]);
-  const [file, setFile] = useState<Row | null>(null);
+  const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
     fetchApi("/files")
@@ -62,13 +62,14 @@ export default function File() {
       <DataGrid 
         rows={rows} 
         columns={columns} 
+        getRowId={row => row.idFile}
         onSelect={(params) => setFile(params.row)} 
         onSelectionChange={(ids) => setSelectedIds(ids)}
         checkboxSelection
       />
 
-      <Modal open={file !== null} onClose={() => setFile(null)} title={file?.name ?? ""}>
-        {file && <FileViewer path={file.download} />}
+      <Modal open={file !== null} onClose={() => setFile(null)} title={file?.FileName ?? ""}>
+        {file && <FileViewer path={`${file.DownloadEndpoint}`} />}
       </Modal>
     </div>
   );

@@ -1,31 +1,31 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 
 import { API_HOST } from "../config/config";
-import type { User } from "../types/User";
+import type { Users } from "../types";
 
 type AuthContextType = {
   token: string | null;
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
-  user: User | null;
+  users: Users | null;
 };
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(localStorage.getItem("token"));
-  const [user, setUser] = useState<User | null>(null);
+  const [users, setUsers] = useState<Users | null>(null);
 
   useEffect(() => {
     if (!token) {
-      setUser(null);
+      setUsers(null);
       return;
     }
 
     fetch(`${API_HOST}/user`, { headers: { Authorization: `Bearer ${token}` } })
       .then(res => (res.ok ? res.json() : Promise.reject()))
       .then(json => json["data"])
-      .then(setUser)
+      .then(setUsers)
       .catch(logout);
   }, [token]);
 
@@ -48,10 +48,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   function logout() {
     localStorage.removeItem("token");
     setToken(null);
+    setUsers(null);
   }
 
   return (
-    <AuthContext.Provider value={{ token, login, logout, user }}>
+    <AuthContext.Provider value={{ token, login, logout, users }}>
       {children}
     </AuthContext.Provider>
   );

@@ -3,6 +3,7 @@ from contextlib import contextmanager
 from sqlalchemy import create_engine, Connection, text
 from sqlalchemy.engine import CursorResult, Engine
 from sqlalchemy.sql.elements import TextClause
+from sqlalchemy.exc import IntegrityError
 from config import USERNAME, PASSWORD, EXTERNAL_HOST, EXTERNAL_PORT
 from typing import Any
 
@@ -88,6 +89,8 @@ def exec(statement:str, database:str='ldr', parameters:dict|None=None, execution
     with get_connection(database) as conn:
         try:
             result:CursorResult[Any] = conn.execute(statement, parameters or {}, execution_options=execution_options or {})
+        except IntegrityError as e:
+            raise e
         except Exception as e:
             raise RuntimeError(f"Error executing statement: {e}") from e
         else:

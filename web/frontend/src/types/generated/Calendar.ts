@@ -1,0 +1,37 @@
+export interface Calendar {
+  Date: string;
+  DayOfWeek: number;
+  DayOfMonth: number;
+  DayOfYear: number;
+  WeekOfYear: number;
+  Month: number;
+  Quarter: number;
+  Year: number;
+  DayName: string;
+  DayNameShort: string;
+  MonthName: string;
+  MonthNameShort: string;
+  MonthYear: string;
+  QuarterLabel: string;
+  MonthKey: number;
+  QuarterKey: number;
+  YearKey: number;
+  FiscalMonth: number;
+  FiscalQuarter: number;
+  FiscalYear: number;
+  FiscalYearLabel: string;
+  IsWeekend: boolean;
+  IsWeekday: boolean;
+  IsHoliday: boolean;
+  HolidayName: string | null;
+  IsBusinessDay: boolean;
+  IsLeapYear: boolean;
+  IsLastDayOfMonth: boolean;
+  IsFirstDayOfMonth: boolean;
+  FirstDayOfMonth: string;
+  LastDayOfMonth: string;
+  FirstDayOfQuarter: string;
+  LastDayOfQuarter: string;
+  FirstDayOfYear: string;
+  LastDayOfYear: string;
+}

@@ -8,11 +8,11 @@ from jose.exceptions import ExpiredSignatureError
 from passlib.context import CryptContext
 from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError
-from db import get_connection
+import db
 from config import API_SECRET_KEY
 from app import app
-from models import User, Token
 import shutil
+from models import Users, Token
 
 ALGORITHM = "HS256"
 TOKEN_EXPIRE_MINUTES = 120
@@ -43,33 +43,27 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> dict:
     if id_users is None:
         raise _unauthorized("Invalid credentials")
 
-    with get_connection("ldr") as conn:
-        row = conn.execute(
-            text(
-                "SELECT [idUsers], [Username], [FirstName], [LastName], [Email], [Phone], [ContainerDataPathRoot], [Created], [Updated]"
-                "FROM [dbo].[Users] WHERE [idUsers] = :idUsers"
-            ),
-            {"idUsers": id_users},
-        ).mappings().first()
+    res = db.exec(
+        statement="SELECT * FROM [dbo].[Users] WHERE [idUsers] = :idUsers",
+        database="ldr",
+        parameters={"idUsers": id_users},
+    )
 
-    if row is None:
+    if len(res) != 1:
         raise _unauthorized("Invalid credentials")
-
-    user = dict(row)
+    user = dict(res[0])
     user["idUsers"] = str(user["idUsers"])
     return user
 
 
 @app.post("/login", response_model=Token)
 def login(form: OAuth2PasswordRequestForm = Depends()):
-    with get_connection("ldr") as conn:
-        row = conn.execute(
-            text(
-                "SELECT [idUsers], [Username], [Password] "
-                "FROM [dbo].[Users] WHERE [Username] = :Username"
-            ),
-            {"Username": form.username},
-        ).mappings().first()
+    rows = db.exec(
+        statement="SELECT [idUsers], [Username], [Password] FROM [dbo].[Users] WHERE [Username] = :Username",
+        database="ldr",
+        parameters={"Username": form.username},
+    )
+    row = rows[0] if rows else None
 
     if row is None or not pwd_context.verify(form.password, row["Password"]):
         raise _unauthorized("Wrong username or password")
@@ -83,24 +77,15 @@ def login(form: OAuth2PasswordRequestForm = Depends()):
     return Token(access_token=access_token, token_type="bearer")
 
 
-@app.get("/user", response_model=dict)
+@app.get("/user", response_model=Users)
 def get_user(current_user:dict=Depends(get_current_user)):
-    return {
-        "id": current_user["idUsers"],
-        "username": current_user["Username"],
-        "firstName": current_user["FirstName"],
-        "lastName": current_user["LastName"],
-        "email": current_user["Email"],
-        "phone": current_user["Phone"],
-        "containerDataPathRoot": current_user["ContainerDataPathRoot"],
-        "created": current_user["Created"],
-        "updated": current_user["Updated"],
-    }
+    user = Users(**current_user)
+    return user
 
 
 
 @app.post("/register", status_code=status.HTTP_201_CREATED)
-def register(user:User):
+def register(user:Users):
     HashedPassword = pwd_context.hash(user.Password)
     idUsers = str(uuid4()).upper()
     user_root = USER_DATA_ROOT / idUsers
@@ -115,23 +100,23 @@ def register(user:User):
         )
 
     try:
-        with get_connection("ldr") as conn:
-            conn.execute(
-                text(
-                    "INSERT INTO [dbo].[Users] "
-                    "([idUsers], [Username], [Password], [FirstName], [LastName], [Email], [Phone]) "
-                    "VALUES (:idUsers, :username, :password, :first_name, :last_name, :email, :phone)"
-                ),
-                {
-                    "idUsers": idUsers,
-                    "username": user.Username,
-                    "password": HashedPassword,
-                    "first_name": user.FirstName,
-                    "last_name": user.LastName,
-                    "email": user.Email,
-                    "phone": user.Phone,
-                },
-            )
+        db.exec(
+            statement="""
+                INSERT INTO [dbo].[Users] ([idUsers], [Username], [Password], [FirstName], [LastName], [Email], [Phone])
+                VALUES (:idUsers, :username, :password, :first_name, :last_name, :email, :phone)
+            """,
+            database="ldr",
+            parameters={
+                "idUsers": idUsers,
+                "username": user.Username,
+                "password": HashedPassword,
+                "first_name": user.FirstName,
+                "last_name": user.LastName,
+                "email": user.Email,
+                "phone": user.Phone,
+            },
+        )
+
     except IntegrityError:
         shutil.rmtree(user_root, ignore_errors=True)
         raise HTTPException(

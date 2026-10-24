@@ -5,11 +5,11 @@ import Footer from "./components/layout/Footer";
 import { useAuth } from "./context/AuthContext";
 
 export default function Layout() {
-  const { user } = useAuth();
+  const { users } = useAuth();
 
   return (
     <>
-      <Header user={user} />
+      <Header users={users} />
       <NavBar />
       <main>
         <Outlet />

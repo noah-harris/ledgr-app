@@ -5,11 +5,7 @@ from ._imports import *
 def get_document_tags(current_user:dict=Depends(get_current_user)):
     return exec(
         statement="""
-            SELECT  
-                [idDocumentTag] AS [id], 
-                [DocumentTagName] AS [name], 
-                [hasAttributeValue] AS [hasAttributeValue], 
-                [isDefaultDocumentTag] AS [isDefaultDocumentTag]
+            SELECT *
             FROM [usr].[DocumentTag] 
             WHERE 1=2 
                 OR [idUsers] = :idUsers 
@@ -28,8 +24,8 @@ def get_used_document_tags(hasAttributeValue:bool=True, current_user:dict=Depend
     return exec(
         statement="""
             SELECT DISTINCT 
-                [idDocumentTag] AS [id],
-                [DocumentTagName] AS [name]
+                [idDocumentTag],
+                [DocumentTagName]
             FROM [usr].[v_DocumentTagLink] 
             WHERE 1=1
                 AND [idUsers] = :idUsers
