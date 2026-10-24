@@ -4,13 +4,9 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
+import type { User } from "../../types/User";
 
-type Props = {
-  username: string;
-  avatarUrl?: string;
-};
-
-export default function Header({ username, avatarUrl }: Props) {
+export default function Header({ user }: { user: User | null }) {
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
@@ -33,9 +29,9 @@ export default function Header({ username, avatarUrl }: Props) {
           <Typography variant="body2">
             {now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
           </Typography>
-          <Typography variant="body1">{username}</Typography>
-          <Avatar src={avatarUrl} alt={username}>
-            {username[0].toUpperCase()}
+          <Typography variant="body1">{user?.username}</Typography>
+          <Avatar src={user?.avatarUrl} alt={user?.username}>
+            {user?.username[0].toUpperCase()}
           </Avatar>
         </Box>
       </Toolbar>

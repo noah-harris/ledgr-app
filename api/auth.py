@@ -46,7 +46,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> dict:
     with get_connection("ldr") as conn:
         row = conn.execute(
             text(
-                "SELECT [idUsers], [Username], [FirstName], [LastName], [Email], [Phone], [ContainerDataPathRoot]"
+                "SELECT [idUsers], [Username], [FirstName], [LastName], [Email], [Phone], [ContainerDataPathRoot], [Created], [Updated]"
                 "FROM [dbo].[Users] WHERE [idUsers] = :idUsers"
             ),
             {"idUsers": id_users},
@@ -81,6 +81,22 @@ def login(form: OAuth2PasswordRequestForm = Depends()):
         algorithm=ALGORITHM,
     )
     return Token(access_token=access_token, token_type="bearer")
+
+
+@app.get("/user", response_model=dict)
+def get_user(current_user:dict=Depends(get_current_user)):
+    return {
+        "id": current_user["idUsers"],
+        "username": current_user["Username"],
+        "firstName": current_user["FirstName"],
+        "lastName": current_user["LastName"],
+        "email": current_user["Email"],
+        "phone": current_user["Phone"],
+        "containerDataPathRoot": current_user["ContainerDataPathRoot"],
+        "created": current_user["Created"],
+        "updated": current_user["Updated"],
+    }
+
 
 
 @app.post("/register", status_code=status.HTTP_201_CREATED)
