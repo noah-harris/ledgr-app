@@ -8,6 +8,7 @@ import { formatFileSize } from "../../lib/format";
 import { fetchApi } from "../../Api";
 import Modal from "../../components/common/Modal";
 import type { File } from "../../types";
+import { Typography } from "@mui/material";
 
 
 const columns: GridColDef<File>[] = [
@@ -58,7 +59,7 @@ export default function File() {
 
   return (
     <div>
-      <h1>File Page</h1>
+      <Typography variant="h4" gutterBottom>Files</Typography>
       <DataGrid 
         rows={rows} 
         columns={columns} 
@@ -68,9 +69,14 @@ export default function File() {
         checkboxSelection
       />
 
-      <Modal open={file !== null} onClose={() => setFile(null)} title={file?.FileName ?? ""}>
+      <Modal 
+        open={file !== null} 
+        onClose={() => setFile(null)} 
+        title={file?.FileName ?? ""}
+      >
         {file && <FileViewer path={`${file.DownloadEndpoint}`} />}
       </Modal>
+      
     </div>
   );
 }

@@ -10,14 +10,30 @@ import MenuItem from "@mui/material/MenuItem";
 
 
 type NavLink = { to: string; label: string; children?: { to: string; label: string }[] };
-
 const links: NavLink[] = [
-  { to: "/ledgr", label: "Ledgr", children: [
-    { to: "/ledgr/accounts", label: "Accounts" },
-    { to: "/ledgr/transactions", label: "Transactions" },
+  { 
+    to: "/ledgr", 
+    label: "Ledgr", 
+    children: [
+      { to: "/ledgr/accounts", label: "Accounts" },
+      { to: "/ledgr/transactions", label: "Transactions" }
   ]},
-  { to: "/documents", label: "Documents" },
-  { to: "/settings", label: "Settings" },
+  { 
+    to: "/documents/manage", 
+    label: "Documents",
+    children: [
+      { to: "/documents/manage", label: "Manage" },
+      { to: "/documents/search", label: "Search" },
+      { to: "/document/tags/manage", label: "Tags" }
+  ]},
+  {
+    to: "/files",
+    label: "Files"
+  },
+  { 
+    to: "/settings", 
+    label: "Settings" 
+  },
 ];
 
 export default function NavBar() {

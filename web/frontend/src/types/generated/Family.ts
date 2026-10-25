@@ -1,5 +1,5 @@
 export interface Family {
-  idFamily: number;
+  idFamily: string;
   FamilyName: string;
   Created: string;
   Updated: string;

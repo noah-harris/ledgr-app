@@ -1,4 +1,4 @@
-CREATE TABLE [dbo].[FamilyPermissionType] (
+CREATE TABLE [enum].[FamilyPermissionType] (
     [idFamilyPermissionType] UNIQUEIDENTIFIER PRIMARY KEY,
     [PermissionName] NVARCHAR(255) NOT NULL,
     [Created] DATETIME2(0) NOT NULL DEFAULT GETDATE(),

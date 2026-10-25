@@ -2,7 +2,7 @@ import { Outlet } from "react-router";
 import Header from "./components/layout/Header";
 import NavBar from "./components/layout/NavBar";
 import Footer from "./components/layout/Footer";
-import { useAuth } from "./context/AuthContext";
+import { useAuth } from "./auth/AuthContext";
 
 export default function Layout() {
   const { users } = useAuth();
@@ -10,7 +10,7 @@ export default function Layout() {
   return (
     <>
       <Header users={users} />
-      <NavBar />
+      <NavBar/>
       <main>
         <Outlet />
       </main>

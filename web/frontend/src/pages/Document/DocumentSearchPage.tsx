@@ -27,7 +27,7 @@ const getDocumentId = (row: DocumentView) => row.idDocument;
 const tagHiddenColumns = ["idDocumentTag"];
 const documentHiddenColumns = ["idDocument"];
 
-export default function DocumentsPage() {
+export default function DocumentsSearchPage() {
   const [allTags, setAllTags] = useState<DocumentTag[]>([]);
   const [allDocuments, setAllDocuments] = useState<DocumentView[]>([]);
   const [selectedTags, setSelectedTags] = useState<DocumentTag[]>([]);
@@ -56,6 +56,7 @@ export default function DocumentsPage() {
   const tagIdsInDocs = new Set(remainingDocuments.flatMap(doc => (doc.Tags ?? []).map(t => t.idDocumentTag)));
   const remainingTags = allTags.filter(tag => !selectedIds.has(tag.idDocumentTag) && tagIdsInDocs.has(tag.idDocumentTag));
 
+  console.log(allTags[0]?.idDocumentTag, allDocuments[0]?.Tags?.[0]?.idDocumentTag);
   if (loading) return <Loading />;
 
   return (

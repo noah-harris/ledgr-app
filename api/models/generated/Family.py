@@ -7,7 +7,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 
 class Family(BaseModel):
-    idFamily: int
+    idFamily: UUID
     FamilyName: str
     Created: datetime
     Updated: datetime
