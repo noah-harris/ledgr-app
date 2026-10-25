@@ -3,9 +3,7 @@ export interface DocumentTagLinkView {
   idDocument: string;
   idDocumentTag: string;
   DocumentTagName: string;
-  Value: string | null;
   isDefaultDocumentTag: unknown | null;
-  hasAttributeValue: boolean;
   Created: string;
   Updated: string;
 }

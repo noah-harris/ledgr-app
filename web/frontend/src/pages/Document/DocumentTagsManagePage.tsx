@@ -23,11 +23,6 @@ const columns: GridColDef<DocumentTag>[] = [
     flex: 1,
     minWidth: 150,
     valueGetter: (_value: string, tag: DocumentTag) => tag.DocumentTagName,
-  },
-  { 
-    field: "hasAttributeValue", 
-    headerName: "Settable Value", 
-    width: 140 
   }
 ];
 
@@ -66,8 +61,7 @@ export default function ManageDocumentTagPage() {
         columns={columns}
         rows={documentTags}
         hiddenColumns={["idDocumentTag"]}
-        
-        
+      
       />
 
       <Button 

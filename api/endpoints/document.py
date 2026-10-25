@@ -46,7 +46,7 @@ def get_document_tags(current_user:dict=Depends(get_current_user)):
 
 @app.get("/document/tags/used", status_code=200, response_model=list[DocumentTag])
 @catch("Failed to get used document tags")
-def get_used_document_tags(hasAttributeValue:bool=True, current_user:dict=Depends(get_current_user)):
+def get_used_document_tags(current_user:dict=Depends(get_current_user)):
     return exec(
         statement="""
             SELECT * 
@@ -55,16 +55,11 @@ def get_used_document_tags(hasAttributeValue:bool=True, current_user:dict=Depend
                 AND [idDocumentTag] IN (
                     SELECT [idDocumentTag]
                     FROM [usr].[v_DocumentTagLink]
-                    WHERE 1=1
-                        AND [idUsers] = :idUsers
-                        AND [hasAttributeValue] = :hasAttributeValue
+                    WHERE [idUsers] = :idUsers
                 )
         """, 
         database="ldr", 
-        parameters={
-            "idUsers": current_user["idUsers"],
-            "hasAttributeValue": hasAttributeValue
-        }
+        parameters={"idUsers": current_user["idUsers"]}
     )
 
 
@@ -73,15 +68,14 @@ def get_used_document_tags(hasAttributeValue:bool=True, current_user:dict=Depend
 def create_document_tag(documentTag:DocumentTag, current_user:dict=Depends(get_current_user)):
     exec(
         statement="""
-            INSERT INTO [usr].[DocumentTag] ([idUsers], [idDocumentTag], [DocumentTagName], [hasAttributeValue])
-            VALUES (:idUsers, :idDocumentTag, :DocumentTagName, :hasAttributeValue)
+            INSERT INTO [usr].[DocumentTag] ([idUsers], [idDocumentTag], [DocumentTagName])
+            VALUES (:idUsers, :idDocumentTag, :DocumentTagName)
         """,
         database="ldr",
         parameters={
             "idUsers": current_user["idUsers"],
             "idDocumentTag": documentTag.idDocumentTag,
             "DocumentTagName": documentTag.DocumentTagName,
-            "hasAttributeValue": documentTag.hasAttributeValue
         }
     )
 
@@ -167,15 +161,14 @@ def add_tag_to_document(documentTagLink: DocumentTagLink, current_user:dict=Depe
 
     exec(
         statement="""
-            INSERT INTO [usr].[DocumentTagLink] ([idUsers], [idDocument], [idDocumentTag], [Value])
-            VALUES (:idUsers, :idDocument, :idDocumentTag, :Value)
+            INSERT INTO [usr].[DocumentTagLink] ([idUsers], [idDocument], [idDocumentTag])
+            VALUES (:idUsers, :idDocument, :idDocumentTag)
         """,
         database="ldr",
         parameters={
             "idUsers": current_user["idUsers"],
             "idDocument": documentTagLink.idDocument,
             "idDocumentTag": documentTagLink.idDocumentTag,
-            "Value": documentTagLink.Value
         }
     )
 

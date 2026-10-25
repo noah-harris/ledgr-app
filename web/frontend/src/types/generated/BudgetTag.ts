@@ -3,7 +3,6 @@ export interface BudgetTag {
   idBudgetTag: string;
   idBudgetCategory: string | null;
   BudgetTagName: string;
-  hasAttributeValue: boolean;
   isIncludedInBudget: unknown;
   isDefaultBudgetTag: unknown | null;
   Created: string;

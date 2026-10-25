@@ -36,7 +36,7 @@ export default function DocumentsSearchPage() {
 
   useEffect(() => {
     Promise.all([
-      fetchApi("/document/tags/used", {}, { hasAttributeValue: false }).then(r => r.json()),
+      fetchApi("/document/tags/used").then(r => r.json()),
       fetchApi("/documents").then(r => r.json()),
     ])
       .then(([tags, docs]) => {

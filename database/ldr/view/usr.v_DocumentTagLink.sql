@@ -5,9 +5,7 @@ SELECT
 	dtl.[idDocument],
 	dtl.[idDocumentTag],
 	dt.[DocumentTagName],
-	dtl.[Value],
 	dt.[isDefaultDocumentTag],
-	dt.[hasAttributeValue],
 	dtl.[Created],
 	dtl.[Updated]
 FROM [usr].[DocumentTagLink] AS dtl

@@ -4,8 +4,6 @@ export interface TransactionTag {
   idStatement: string;
   idTransaction: string;
   idBudgetTag: string;
-  Value: string;
-  hasAttributeValue: unknown;
   Created: string;
   Updated: string;
 }

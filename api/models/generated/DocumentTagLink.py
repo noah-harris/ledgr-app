@@ -10,7 +10,5 @@ class DocumentTagLink(BaseModel):
     idUsers: UUID
     idDocument: UUID
     idDocumentTag: UUID
-    Value: Optional[str] = None
-    hasAttributeValue: Any
     Created: datetime
     Updated: datetime

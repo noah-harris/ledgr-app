@@ -13,7 +13,5 @@ class TransactionItemTag(BaseModel):
     idTransaction: UUID
     idTransactionItem: UUID
     idBudgetTag: UUID
-    Value: Optional[str] = None
-    hasAttributeValue: Any
     Created: datetime
     Updated: datetime

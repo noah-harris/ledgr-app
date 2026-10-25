@@ -1,5 +1,5 @@
 import Modal from "../../components/common/Modal";
-import { TextField, Checkbox, Button } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 import type { DocumentTag } from "../../types";
 import { v4 as uuidv4 } from "uuid";
 
@@ -23,11 +23,6 @@ export default function DocumentTagCreateModal(
           <TextField type="text" name="documentTagName" />
         </label>
 
-        <label>
-          Settable Value:
-          <Checkbox name="hasAttributeValue" />
-        </label>
-
         <Button 
           type="submit" 
           variant="contained" 
@@ -39,7 +34,6 @@ export default function DocumentTagCreateModal(
               idUsers: null,
               idDocumentTag: uuidv4(),
               DocumentTagName: form?.documentTagName.value,
-              hasAttributeValue: form?.hasAttributeValue.checked,
               isDefaultDocumentTag: null,
               Created: new Date().toISOString(),
               Updated: new Date().toISOString(),

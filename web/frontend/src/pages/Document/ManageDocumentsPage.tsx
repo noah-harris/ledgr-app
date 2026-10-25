@@ -17,8 +17,6 @@ async function onSubmitTagLink(idUsers: string, idDocument: string, tagName: str
     idUsers, 
     idDocument, 
     idDocumentTag: documentTag.idDocumentTag,
-    Value: null,
-    hasAttributeValue: null,
     Created: new Date().toISOString(),
     Updated: new Date().toISOString()
   };
