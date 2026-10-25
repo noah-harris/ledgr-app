@@ -19,7 +19,11 @@ const pill = {
 // Rerender the component when tags are added or removed
 // Consider using a state management solution or lifting the state up to the parent component to trigger re-renders.
 
-export default function TagList({ tags, allTags, onAddTag }: { tags: DocumentTagLinkView[]; allTags: DocumentTag[]; onAddTag: (tag: string) => Promise<void>;}) {
+//TODO: 
+// Add a very small x to each bubble for deleting the tag
+
+
+export default function TagList({ tags, allTags, onAddTag, refresh }: { tags: DocumentTagLinkView[]; allTags: DocumentTag[]; onAddTag: (tag: string) => Promise<void>; refresh: () => void;}) {
   const [adding, setAdding] = useState(false);
   const tagNames = tags.map(tag => tag.DocumentTagName).sort();
 
@@ -36,6 +40,7 @@ export default function TagList({ tags, allTags, onAddTag }: { tags: DocumentTag
             const tag:DocumentTag|undefined = allTags.find(t => t.DocumentTagName === value);
             if (tag && !tagNames.includes(tag.DocumentTagName)) await onAddTag(tag.DocumentTagName);
             setAdding(false);
+            refresh();
           }}
           onBlur={() => setAdding(false)}
           onKeyDown={(e) => {

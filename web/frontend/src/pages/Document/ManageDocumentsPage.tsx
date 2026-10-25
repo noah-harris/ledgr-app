@@ -44,52 +44,35 @@ export default function ManageDocumentsPage() {
       .then(tags => {setAllTags(tags);});
   }, []);
 
-  const columns: GridColDef<DocumentView>[] = [
-    { field: "idDocument", headerName: "ID", flex: 1, minWidth: 150 },
-    { field: "FileName", headerName: "Document", flex: 1, minWidth: 150, valueGetter: (_value: string, doc: DocumentView) => `${doc.FileName}.${doc.FileExtension}` },
-    { field: "FileExtension", headerName: "Extension", flex: 1, minWidth: 100 },
-    { field: "Tags", headerName: "Tags", 
-      renderCell: (params) => (
-        <TagList
-          tags={params.row.Tags}
-          allTags={allTags}
-          onAddTag={async (tag:string) => {await onSubmitTagLink(params.row.idUsers, params.row.idDocument, tag, allTags)}}
-        />
-      )
-    },
-    { field: "Created", headerName: "Created", flex: 1, minWidth: 150, valueGetter: (_value: string, doc: DocumentView) => formatDate(doc.Created) },
-  ];
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  return (
-    <> 
-      <DataGrid
-        rows={documents}
-        columns={columns}
-        getRowId={(row) => row.idDocument}
-        hiddenColumns={["idDocument"]}
+const columns: GridColDef<DocumentView>[] = [
+  { field: "idDocument", headerName: "ID", width: 150 },
+  { field: "FileName", headerName: "Document", width: 250, valueGetter: (_value: string, doc: DocumentView) => `${doc.FileName}.${doc.FileExtension}` },
+  { field: "FileExtension", headerName: "Extension", width: 100 },
+  { field: "Tags", headerName: "Tags", width: 300,
+    renderCell: (params) => (
+      <TagList
+        tags={params.row.Tags}
+        allTags={allTags}
+        onAddTag={async (tag: string) => { await onSubmitTagLink(params.row.idUsers, params.row.idDocument, tag, allTags) }}
+        refresh={() => {
+          fetchApi("/documents")
+            .then(r => r.json())
+            .then(docs => { setDocuments(docs); });
+        }}
       />
+    )
+  },
+  { field: "Created", headerName: "Created", width: 150, valueGetter: (_value: string, doc: DocumentView) => formatDate(doc.Created) },
+];
 
-    </>
-  );
+return (
+  <DataGrid
+    rows={documents}
+    columns={columns}
+    getRowId={(row) => row.idDocument}
+    hiddenColumns={["idDocument"]}
+    width="fit"
+  />
+);
+
 }
