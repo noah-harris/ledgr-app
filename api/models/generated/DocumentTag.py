@@ -10,6 +10,6 @@ class DocumentTag(BaseModel):
     idUsers: Optional[UUID] = None
     idDocumentTag: UUID
     DocumentTagName: str
-    isDefaultDocumentTag: Optional[Any] = None
+    isDefaultDocumentTag: Optional[bool] = None
     Created: datetime
     Updated: datetime

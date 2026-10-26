@@ -4,3 +4,7 @@ from .account import *
 from .statement import *
 from .transaction import *
 from .document import *
+from .contact import *
+from .payee import *
+from .organization import *
+from .currency import *

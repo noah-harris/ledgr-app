@@ -6,7 +6,7 @@ export interface Users {
   LastName: string;
   Email: string | null;
   Phone: string | null;
-  ContainerDataPathRoot: unknown | null;
+  ContainerDataPathRoot: string | null;
   Created: string;
   Updated: string;
 }

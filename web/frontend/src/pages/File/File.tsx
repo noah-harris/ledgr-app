@@ -9,6 +9,7 @@ import { fetchApi } from "../../Api";
 import Modal from "../../components/common/Modal";
 import type { File } from "../../types";
 import { Typography } from "@mui/material";
+import Loading from "../../components/common/Loading";
 
 
 const columns: GridColDef<File>[] = [
@@ -46,27 +47,32 @@ const columns: GridColDef<File>[] = [
 ];
 
 export default function File() {
-  const [rows, setRows] = useState<File[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
   const [_selectedIds, setSelectedIds] = useState<GridRowId[]>([]);
   const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
     fetchApi("/files")
       .then((res) => res.json())
-      .then(setRows)
+      .then(setFiles)
       .catch(console.error);
   }, []);
 
+  if (!files.length) return <Loading />;
+
+
   return (
     <div>
-      <Typography variant="h4" gutterBottom>Files</Typography>
+      <Typography variant="h4">Files</Typography>
       <DataGrid 
-        rows={rows} 
+        rows={files} 
         columns={columns} 
         getRowId={row => row.idFile}
         onSelect={(params) => setFile(params.row)} 
         onSelectionChange={(ids) => setSelectedIds(ids)}
         checkboxSelection
+        hiddenColumns={["idFile"]}
+        width="fit"
       />
 
       <Modal 

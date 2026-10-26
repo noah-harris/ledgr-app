@@ -1,0 +1,23 @@
+CREATE VIEW [usr].[v_Statement] 
+    AS
+SELECT 
+    s.[idUsers],
+    s.[idAccount],
+    s.[idStatement],
+    s.[idImage],
+    s.[StatementDate],
+    s.[StartDate],
+    s.[EndDate],
+    s.[StartBalance],
+    s.[EndBalance],
+    s.[Created],
+    s.[Updated]
+FROM [usr].[Statement] AS s
+JOIN [usr].[Account] AS a
+ON 1=1 
+    AND s.[idUsers] = a.[idUsers]
+    AND s.[idAccount] = a.[idAccount]
+JOIN [usr].[File] AS f
+ON 1=1 
+    AND s.[idUsers] = f.[idUsers]
+    AND s.[idImage] = f.[idFile]

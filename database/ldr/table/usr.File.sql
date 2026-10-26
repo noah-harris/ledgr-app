@@ -3,16 +3,13 @@ CREATE TABLE [usr].[File] (
     [idFile] UNIQUEIDENTIFIER NOT NULL,
     [FileName] NVARCHAR(850) NOT NULL,
     [FileExtension] NVARCHAR(255) NOT NULL,
-    [FullFileName] AS ([FileName] + '.' + [FileExtension]) PERSISTED,
-	[ServerFilePath] AS 'D:\Repositories\!APPDATA\ledgr-app\' + CAST([idUsers] AS CHAR(36)) + '\FILES\' + [FileName] + '.' + [FileExtension] PERSISTED,
-	[ContainerFilePath] AS '/app/data/' + CAST([idUsers] AS CHAR(36)) + '/FILES/' + [FileName] + '.' + [FileExtension] PERSISTED,
-
-    [DownloadEndpoint] AS ('/file/download?idFile=' + CAST([idFile] AS CHAR(36))) PERSISTED,
-
+    [FullFileName] AS CAST([FileName] + '.' + [FileExtension] AS NVARCHAR(1105)) PERSISTED,
+	[ServerFilePath] AS CAST('D:\Repositories\!APPDATA\ledgr-app\' + CAST([idUsers] AS CHAR(36)) + '\FILES\' + [FileName] + '.' + [FileExtension] AS NVARCHAR(1184)) PERSISTED,
+	[ContainerFilePath] AS CAST('/app/data/' + CAST([idUsers] AS CHAR(36)) + '/FILES/' + [FileName] + '.' + [FileExtension] AS NVARCHAR(1159)) PERSISTED,
+    [DownloadEndpoint] AS CAST('/file/download?idFile=' + CAST([idFile] AS CHAR(36)) AS NVARCHAR(58)) PERSISTED,
     [FileSizeBytes] BIGINT NULL,
-    [isSupportedImageExtension] AS ([dbo].[f_Check_isSupportedImageExtension]([FileExtension])),
+    [isSupportedImageExtension] AS CAST([dbo].[f_Check_isSupportedImageExtension]([FileExtension]) AS BIT),
     [isJunk] BIT NOT NULL DEFAULT 0,
-
     [AllowStatementImage] BIT NOT NULL DEFAULT 0,
     [AllowAccountImage] BIT NOT NULL DEFAULT 0,
     [AllowTransactionInvoiceImage] BIT NOT NULL DEFAULT 0,

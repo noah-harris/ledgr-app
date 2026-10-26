@@ -16,6 +16,6 @@ class Statement(BaseModel):
     EndDate: datetime
     StartBalance: Decimal
     EndBalance: Decimal
-    hasImage: Any
+    hasImage: Optional[bool] = None
     Created: datetime
     Updated: datetime

@@ -14,7 +14,7 @@ class Unit(BaseModel):
     UnitName: str
     UnitNamePlural: str
     ConversionFactor: float
-    isBaseUnit: Optional[Any] = None
-    isCurrency: Optional[Any] = None
+    isBaseUnit: Optional[bool] = None
+    isCurrency: Optional[bool] = None
     Created: datetime
     Updated: datetime

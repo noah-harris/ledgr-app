@@ -8,7 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class FamilyUser(BaseModel):
     idFamily: UUID
-    idUser: UUID
+    idUsers: UUID
     idFamilyPermissionType: UUID
     Created: datetime
     Updated: datetime

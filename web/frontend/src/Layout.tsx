@@ -5,6 +5,7 @@ import Footer from "./components/layout/Footer";
 import { useAuth } from "./auth/AuthContext";
 
 export default function Layout() {
+  
   const { users } = useAuth();
 
   return (

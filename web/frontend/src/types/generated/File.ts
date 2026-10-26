@@ -3,20 +3,20 @@ export interface File {
   idFile: string;
   FileName: string;
   FileExtension: string;
-  FullFileName: unknown | null;
-  ServerFilePath: unknown | null;
-  ContainerFilePath: unknown | null;
-  DownloadEndpoint: unknown | null;
+  FullFileName: string | null;
+  ServerFilePath: string | null;
+  ContainerFilePath: string | null;
+  DownloadEndpoint: string | null;
   FileSizeBytes: number | null;
-  isSupportedImageExtension: unknown | null;
+  isSupportedImageExtension: boolean | null;
   isJunk: boolean;
   AllowStatementImage: boolean;
   AllowAccountImage: boolean;
   AllowTransactionInvoiceImage: boolean;
   AllowTransactionReceiptImage: boolean;
   AllowDocument: boolean;
-  isAllowedAll: unknown | null;
-  isAllowedAny: unknown | null;
+  isAllowedAll: boolean | null;
+  isAllowedAny: boolean | null;
   Created: string;
   Updated: string;
 }

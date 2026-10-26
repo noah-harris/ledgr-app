@@ -56,7 +56,6 @@ export default function DocumentsSearchPage() {
   const tagIdsInDocs = new Set(remainingDocuments.flatMap(doc => (doc.Tags ?? []).map(t => t.idDocumentTag)));
   const remainingTags = allTags.filter(tag => !selectedIds.has(tag.idDocumentTag) && tagIdsInDocs.has(tag.idDocumentTag));
 
-  console.log(allTags[0]?.idDocumentTag, allDocuments[0]?.Tags?.[0]?.idDocumentTag);
   if (loading) return <Loading />;
 
   return (
@@ -71,6 +70,7 @@ export default function DocumentsSearchPage() {
           onSelect={params => setSelectedTags(prev => [...prev, params.row])}
           getRowId={getTagId}
           hiddenColumns={tagHiddenColumns}
+          width="fit"
         />
       ) : (
         <DataGrid
@@ -80,6 +80,7 @@ export default function DocumentsSearchPage() {
           onSelect={params => setFile(params.row)}
           getRowId={getDocumentId}
           hiddenColumns={documentHiddenColumns}
+          width="fit"
         />
       )}
 

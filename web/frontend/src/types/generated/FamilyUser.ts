@@ -1,6 +1,6 @@
 export interface FamilyUser {
   idFamily: string;
-  idUser: string;
+  idUsers: string;
   idFamilyPermissionType: string;
   Created: string;
   Updated: string;

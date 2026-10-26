@@ -28,7 +28,6 @@ const columns: GridColDef<DocumentTag>[] = [
 
 
 function onSubmitNewModal(documentTag: DocumentTag) {
-  // Send Post Request to create a new document tag
   fetchApi("/document/tag", {
     method: "POST",
     headers: {
@@ -37,7 +36,6 @@ function onSubmitNewModal(documentTag: DocumentTag) {
     body: JSON.stringify(documentTag)
   })
     .then(response => response.json())
-    .then(data => console.log(data))
     .catch(error => console.error(error));
 }
 
@@ -53,31 +51,29 @@ export default function ManageDocumentTagPage() {
   }, []);
     
   return (
-    <div>
-      <Typography variant="h4" gutterBottom>Manage Document Tags</Typography>
-
+    <>
+      <Typography variant="h4">Manage Document Tags</Typography>
+        <Button 
+          variant="contained" 
+          color="primary"
+          onClick={() => setIsCreateModalOpen(true)}
+          sx={{ alignSelf: "center", minWidth: 0, p: 0.5 }}
+        >
+          <AddIcon />
+        </Button>
       <DataGrid 
         getRowId={(row) => row.idDocumentTag}
         columns={columns}
         rows={documentTags}
         hiddenColumns={["idDocumentTag"]}
-      
+        width="fit"
       />
-
-      <Button 
-        variant="contained" 
-        color="primary"
-        onClick={() => setIsCreateModalOpen(true)}
-      >
-        <AddIcon />
-      </Button>
 
       <DocumentTagCreateModal 
         open={isCreateModalOpen} 
         onClose={() => setIsCreateModalOpen(false)}
         onSubmit={onSubmitNewModal}
       />
-
-    </div>
+    </>
   );
 }

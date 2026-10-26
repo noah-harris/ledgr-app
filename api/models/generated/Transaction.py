@@ -27,8 +27,8 @@ class Transaction(BaseModel):
     Amount: Decimal
     StatementText: Optional[str] = None
     isValidated: Optional[bool] = None
-    isTransactionSplitChild: Any
-    hasInvoiceImage: Any
-    hasReceiptImage: Any
+    isTransactionSplitChild: Optional[bool] = None
+    hasInvoiceImage: Optional[bool] = None
+    hasReceiptImage: Optional[bool] = None
     Created: datetime
     Updated: datetime

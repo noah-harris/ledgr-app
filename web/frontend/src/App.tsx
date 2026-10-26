@@ -1,4 +1,5 @@
 import { Routes, Route, Outlet, Navigate } from "react-router";
+import AccountPage from "./pages/Account/AccountPage";
 import { useAuth } from "./auth/AuthContext";
 import ManageDocumentTagPage from "./pages/Document/DocumentTagsManagePage";
 import Dev from "./pages/Dev/Dev";
@@ -12,6 +13,7 @@ import User from "./pages/User";
 import File from "./pages/File/File";
 import NotFound from "./pages/NotFound";
 import DocumentsSearchPage from "./pages/Document/DocumentSearchPage";
+import AccountDetailPage from "./pages/Account/AccountDetailPage";
 
 function RequireAuth() {
   const { token } = useAuth();
@@ -27,6 +29,8 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/ledgr" element={<Ledgr />} />
+          <Route path="/ledgr/accounts" element={<AccountPage />} />
+          <Route path="/ledgr/accounts/:idAccount" element={<AccountDetailPage />} />
           <Route path="/documents/manage" element={<ManageDocumentsPage />} />
           <Route path="/documents/search" element={<DocumentsSearchPage />} />
           <Route path="/document/tags/manage" element={<ManageDocumentTagPage />} />

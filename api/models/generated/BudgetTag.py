@@ -11,7 +11,7 @@ class BudgetTag(BaseModel):
     idBudgetTag: UUID
     idBudgetCategory: Optional[UUID] = None
     BudgetTagName: str
-    isIncludedInBudget: Any
-    isDefaultBudgetTag: Optional[Any] = None
+    isIncludedInBudget: Optional[bool] = None
+    isDefaultBudgetTag: Optional[bool] = None
     Created: datetime
     Updated: datetime

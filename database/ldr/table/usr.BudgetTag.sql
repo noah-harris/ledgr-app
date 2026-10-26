@@ -4,7 +4,7 @@ CREATE TABLE [usr].[BudgetTag] (
     [idBudgetCategory] UNIQUEIDENTIFIER NULL,
     [BudgetTagName] NVARCHAR(100) NOT NULL,
     [isIncludedInBudget] AS CAST(CASE WHEN [idBudgetCategory] IS NOT NULL THEN 1 ELSE 0 END AS BIT) PERSISTED,
-    [isDefaultBudgetTag] AS CASE WHEN [idUsers] IS NULL THEN 1 ELSE 0 END PERSISTED,
+    [isDefaultBudgetTag] AS CAST(CASE WHEN [idUsers] IS NULL THEN 1 ELSE 0 END AS BIT) PERSISTED,
     [Created] DATETIME2(0) NOT NULL DEFAULT GETDATE(),
     [Updated] DATETIME2(0) NOT NULL DEFAULT GETDATE(),
     CONSTRAINT [PK_BudgetTag] PRIMARY KEY NONCLUSTERED ([idBudgetTag]),

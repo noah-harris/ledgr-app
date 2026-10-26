@@ -6,12 +6,12 @@ export interface DocumentView {
   idDocument: string;
   FileName: string;
   FileExtension: string;
-  FullFileName: unknown | null;
-  ServerFilePath: unknown | null;
-  ContainerFilePath: unknown | null;
-  DownloadEndpoint: unknown | null;
+  FullFileName: string | null;
+  ServerFilePath: string | null;
+  ContainerFilePath: string | null;
+  DownloadEndpoint: string | null;
   FileSizeBytes: number | null;
-  isSupportedImageExtension: unknown | null;
+  isSupportedImageExtension: boolean | null;
   isJunk: boolean;
   Description: string | null;
   Created: string;

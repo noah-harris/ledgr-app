@@ -11,7 +11,7 @@ class TransactionType(BaseModel):
     TransactionTypeName: str
     Scope: str
     Cashflow: str
-    isPositive: Optional[Any] = None
+    isPositive: Optional[bool] = None
     isItemEntryRequired: Optional[bool] = None
     Description: str
     Created: datetime

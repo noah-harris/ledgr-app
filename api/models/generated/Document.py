@@ -12,7 +12,7 @@ class Document(BaseModel):
     idDocument: UUID
     idFile: UUID
     Description: Optional[str] = None
-    hasFile: Any
+    hasFile: Optional[bool] = None
     Created: datetime
     Updated: datetime
     Tags: List[_DocumentTagLinkView] = []

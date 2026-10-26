@@ -13,12 +13,12 @@ class DocumentView(BaseModel):
     idDocument: UUID
     FileName: str
     FileExtension: str
-    FullFileName: Optional[Any] = None
-    ServerFilePath: Optional[Any] = None
-    ContainerFilePath: Optional[Any] = None
-    DownloadEndpoint: Optional[Any] = None
+    FullFileName: Optional[str] = None
+    ServerFilePath: Optional[str] = None
+    ContainerFilePath: Optional[str] = None
+    DownloadEndpoint: Optional[str] = None
     FileSizeBytes: Optional[int] = None
-    isSupportedImageExtension: Optional[Any] = None
+    isSupportedImageExtension: Optional[bool] = None
     isJunk: bool
     Description: Optional[str] = None
     Created: datetime

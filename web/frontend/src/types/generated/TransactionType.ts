@@ -3,7 +3,7 @@ export interface TransactionType {
   TransactionTypeName: string;
   Scope: string;
   Cashflow: string;
-  isPositive: unknown | null;
+  isPositive: boolean | null;
   isItemEntryRequired: boolean | null;
   Description: string;
   Created: string;

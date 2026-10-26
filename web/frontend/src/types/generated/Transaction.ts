@@ -19,9 +19,9 @@ export interface Transaction {
   Amount: number;
   StatementText: string | null;
   isValidated: boolean | null;
-  isTransactionSplitChild: unknown;
-  hasInvoiceImage: unknown;
-  hasReceiptImage: unknown;
+  isTransactionSplitChild: boolean | null;
+  hasInvoiceImage: boolean | null;
+  hasReceiptImage: boolean | null;
   Created: string;
   Updated: string;
 }

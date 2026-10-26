@@ -9,4 +9,4 @@ from pydantic import BaseModel, ConfigDict, Field
 class MerchantCategoryCodeTag(BaseModel):
     Mcc: str
     idBudgetTag: UUID
-    isDefaultBudgetTag: Optional[Any] = None
+    isDefaultBudgetTag: Optional[bool] = None

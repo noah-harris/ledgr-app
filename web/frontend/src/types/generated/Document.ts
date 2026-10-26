@@ -5,7 +5,7 @@ export interface Document {
   idDocument: string;
   idFile: string;
   Description: string | null;
-  hasFile: unknown;
+  hasFile: boolean | null;
   Created: string;
   Updated: string;
   Tags: DocumentTagLinkView[];

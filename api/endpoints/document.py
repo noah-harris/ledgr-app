@@ -1,5 +1,4 @@
 from ._imports import *
-from models import DocumentTag, DocumentView, DocumentTagLink
 
 @app.get("/documents", status_code=200, response_model=list[DocumentView])
 def get_documents(current_user:dict=Depends(get_current_user)):

@@ -14,6 +14,6 @@ class Users(BaseModel):
     LastName: str
     Email: Optional[str] = None
     Phone: Optional[str] = None
-    ContainerDataPathRoot: Optional[Any] = None
+    ContainerDataPathRoot: Optional[str] = None
     Created: datetime
     Updated: datetime

@@ -1,6 +1,5 @@
 from ._imports import *
-from fastapi import UploadFile
-from fastapi.responses import JSONResponse
+
 
 @app.get("/files")
 @catch("Failed to get files")

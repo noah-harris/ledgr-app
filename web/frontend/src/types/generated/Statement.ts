@@ -8,7 +8,7 @@ export interface Statement {
   EndDate: string;
   StartBalance: number;
   EndBalance: number;
-  hasImage: unknown;
+  hasImage: boolean | null;
   Created: string;
   Updated: string;
 }

@@ -1,7 +1,9 @@
+import { Typography } from "@mui/material";
+
 export default function Ledgr() {
   return (
-    <div>
-      <h1>Ledgr Page</h1>
-    </div>
+    <>
+      <Typography variant="h4"></Typography>
+    </>
   );
 }

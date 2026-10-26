@@ -6,8 +6,8 @@ export interface Unit {
   UnitName: string;
   UnitNamePlural: string;
   ConversionFactor: number;
-  isBaseUnit: unknown | null;
-  isCurrency: unknown | null;
+  isBaseUnit: boolean | null;
+  isCurrency: boolean | null;
   Created: string;
   Updated: string;
 }

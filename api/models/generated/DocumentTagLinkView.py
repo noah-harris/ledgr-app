@@ -11,6 +11,6 @@ class DocumentTagLinkView(BaseModel):
     idDocument: UUID
     idDocumentTag: UUID
     DocumentTagName: str
-    isDefaultDocumentTag: Optional[Any] = None
+    isDefaultDocumentTag: Optional[bool] = None
     Created: datetime
     Updated: datetime

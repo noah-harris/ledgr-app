@@ -1,32 +1,28 @@
 import Modal from "../../components/common/Modal";
 import { TextField, Button } from "@mui/material";
+import SaveIcon from '@mui/icons-material/Save';
 import type { DocumentTag } from "../../types";
 import { v4 as uuidv4 } from "uuid";
-
-
 
 export default function DocumentTagCreateModal(
   { open, onClose, onSubmit }: { open: boolean; onClose: () => void; onSubmit: (documentTag: any) => void }
 ) {
 
-
   return (
     <Modal
-      title="Create Document Tag"
+      title="ADD DOCUMENT TAG"
       onClose={onClose}
       open={open}
     >      
       <form style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
 
-        <label>
-          Document Tag Name:
-          <TextField type="text" name="documentTagName" />
-        </label>
-
+        <TextField type="text" name="documentTagName" placeholder="Enter document tag name" />
+      
         <Button 
           type="submit" 
           variant="contained" 
           color="primary"
+          sx={{ alignSelf: "flex-start", minWidth: 0, p: 0.5 }}
           onClick={(e) => {
             e.preventDefault();
             const form = e.currentTarget.form;
@@ -42,7 +38,7 @@ export default function DocumentTagCreateModal(
             onClose();
           }}
         >
-          Create
+          <SaveIcon></SaveIcon>
         </Button>
       </form>
       
