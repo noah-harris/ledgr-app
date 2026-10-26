@@ -1,3 +1,9 @@
+import CircularProgress from "@mui/material/CircularProgress";
+
 export default function Loading() {
-  return <p>Loading...</p>;
+  return (
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%"}}>
+      <CircularProgress size={200} />
+    </div>
+  );
 }
