@@ -1,18 +1,19 @@
 from ._imports import *
 
 @app.get("/documents", status_code=200, response_model=list[DocumentView])
-def get_documents(current_user:dict=Depends(get_current_user)):
+@catch("Failed to get documents")
+def get_documents(current_user:Users=Depends(get_current_user)):
 
     docs = exec(
         statement="SELECT * FROM [usr].[v_Document] WHERE [idUsers] = :idUsers", 
         database="ldr", 
-        parameters={"idUsers": current_user["idUsers"]}
+        parameters={"idUsers": current_user.idUsers}
     )
 
     tags = exec(
         statement="SELECT * FROM [usr].[v_DocumentTagLink] WHERE [idUsers] = :idUsers", 
         database="ldr", 
-        parameters={"idUsers": current_user["idUsers"]}
+        parameters={"idUsers": current_user.idUsers}
     )
 
     # Zip together
@@ -27,7 +28,7 @@ def get_documents(current_user:dict=Depends(get_current_user)):
 
 @app.get("/document/tags", status_code=200, response_model=list[DocumentTag])
 @catch("Failed to get document tags")
-def get_document_tags(current_user:dict=Depends(get_current_user)):
+def get_document_tags(current_user:Users=Depends(get_current_user)):
     return exec(
         statement="""
             SELECT *
@@ -38,14 +39,14 @@ def get_document_tags(current_user:dict=Depends(get_current_user)):
         """, 
         database="ldr", 
         parameters={
-            "idUsers": current_user["idUsers"]
+            "idUsers": current_user.idUsers
         }
     )
 
 
 @app.get("/document/tags/used", status_code=200, response_model=list[DocumentTag])
 @catch("Failed to get used document tags")
-def get_used_document_tags(current_user:dict=Depends(get_current_user)):
+def get_used_document_tags(current_user:Users=Depends(get_current_user)):
     return exec(
         statement="""
             SELECT * 
@@ -58,13 +59,13 @@ def get_used_document_tags(current_user:dict=Depends(get_current_user)):
                 )
         """, 
         database="ldr", 
-        parameters={"idUsers": current_user["idUsers"]}
+        parameters={"idUsers": current_user.idUsers}
     )
 
 
 @app.post("/document/tag", status_code=201)
 @catch("Failed to create document tag")
-def create_document_tag(documentTag:DocumentTag, current_user:dict=Depends(get_current_user)):
+def create_document_tag(documentTag:DocumentTag, current_user:Users=Depends(get_current_user)):
     exec(
         statement="""
             INSERT INTO [usr].[DocumentTag] ([idUsers], [idDocumentTag], [DocumentTagName])
@@ -72,7 +73,7 @@ def create_document_tag(documentTag:DocumentTag, current_user:dict=Depends(get_c
         """,
         database="ldr",
         parameters={
-            "idUsers": current_user["idUsers"],
+            "idUsers": current_user.idUsers,
             "idDocumentTag": documentTag.idDocumentTag,
             "DocumentTagName": documentTag.DocumentTagName,
         }
@@ -89,7 +90,7 @@ def create_document_tag(documentTag:DocumentTag, current_user:dict=Depends(get_c
         database="ldr",
         parameters={
             "DocumentTagName": documentTag.DocumentTagName,
-            "idUsers": current_user["idUsers"]
+            "idUsers": current_user.idUsers
         }
     )
     if not res:
@@ -98,7 +99,7 @@ def create_document_tag(documentTag:DocumentTag, current_user:dict=Depends(get_c
 
 @app.get("/document/tag", status_code=200, response_model=DocumentTag)
 @catch("Failed to get document tag")
-def get_document_tag(idDocumentTag:str, current_user:dict=Depends(get_current_user)):
+def get_document_tag(idDocumentTag:UUID, current_user:Users=Depends(get_current_user)):
     res = exec(
         statement="""
             SELECT *
@@ -110,7 +111,7 @@ def get_document_tag(idDocumentTag:str, current_user:dict=Depends(get_current_us
         database="ldr",
         parameters={
             "idDocumentTag": idDocumentTag,
-            "idUsers": current_user["idUsers"]
+            "idUsers": current_user.idUsers
         }
     )
     if res:
@@ -121,7 +122,7 @@ def get_document_tag(idDocumentTag:str, current_user:dict=Depends(get_current_us
     
 @app.delete("/document/tag", status_code=204)
 @catch("Failed to delete document tag")
-def delete_document_tag(idDocumentTag:str, current_user:dict=Depends(get_current_user)):
+def delete_document_tag(idDocumentTag:UUID, current_user:Users=Depends(get_current_user)):
 
     ## TODO: Add any necessary pre-deletion checks or logging here ##
     ## So what needs to happen is this needs to tell the user why it cant be removed.
@@ -139,7 +140,7 @@ def delete_document_tag(idDocumentTag:str, current_user:dict=Depends(get_current
         database="ldr",
         parameters={
             "idDocumentTag": idDocumentTag,
-            "idUsers": current_user["idUsers"]
+            "idUsers": current_user.idUsers
         }
     )
 
@@ -156,7 +157,7 @@ def delete_document_tag(idDocumentTag:str, current_user:dict=Depends(get_current
 
 @app.put("/document/tag/link", status_code=204)
 @catch("Failed to add tag to document")
-def add_tag_to_document(documentTagLink: DocumentTagLink, current_user:dict=Depends(get_current_user)):
+def add_tag_to_document(documentTagLink: DocumentTagLink, current_user:Users=Depends(get_current_user)):
 
     exec(
         statement="""
@@ -165,7 +166,7 @@ def add_tag_to_document(documentTagLink: DocumentTagLink, current_user:dict=Depe
         """,
         database="ldr",
         parameters={
-            "idUsers": current_user["idUsers"],
+            "idUsers": current_user.idUsers,
             "idDocument": documentTagLink.idDocument,
             "idDocumentTag": documentTagLink.idDocumentTag,
         }
@@ -174,7 +175,7 @@ def add_tag_to_document(documentTagLink: DocumentTagLink, current_user:dict=Depe
 
 @app.delete("/document/tag/link", status_code=204)
 @catch("Failed to remove tag from document")
-def remove_tag_from_document(documentTagLink: DocumentTagLink, current_user:dict=Depends(get_current_user)):
+def remove_tag_from_document(documentTagLink: DocumentTagLink, current_user:Users=Depends(get_current_user)):
 
     exec(
         statement="""
@@ -186,10 +187,43 @@ def remove_tag_from_document(documentTagLink: DocumentTagLink, current_user:dict
         """,
         database="ldr",
         parameters={
-            "idUsers": current_user["idUsers"],
+            "idUsers": current_user.idUsers,
             "idDocument": documentTagLink.idDocument,
             "idDocumentTag": documentTagLink.idDocumentTag,
         }
     )
     
     # TODO: Verify that the tag was actually removed from the document
+
+
+@app.get("/document/files", status_code=200)
+@catch("Failed to get document files")
+def get_document_files(current_user:Users=Depends(get_current_user)):
+    # SELECT * FROM File WHERE AllowDocument = 1 and idUsers = :idUsers
+    file_rows = exec(
+        statement="""
+            SELECT *
+            FROM [usr].[File]
+            WHERE [AllowDocument] = 1
+                AND [idUsers] = :idUsers
+        """,
+        database="ldr",
+        parameters={
+            "idUsers": current_user.idUsers
+        }
+    )
+    if not file_rows or len(file_rows) == 0:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Client Error: 404 Not Found")
+    
+    return file_rows
+
+
+@app.post("/document/files", status_code=201)
+@catch("Failed to upload document files")
+def upload_document_files(files: list[UploadFile], current_user:Users=Depends(get_current_user)):
+    # Call upload file function
+    # Set allowDocument = 1
+
+    pass
+
+

@@ -2,7 +2,7 @@ from ._imports import *
 
 @app.get("/accounts", status_code=200, response_model=list[AccountView])
 @catch("Failed to get accounts")
-def get_accounts(current_user:dict=Depends(get_current_user)):
+def get_accounts(current_user:Users=Depends(get_current_user)):
     res = exec (
         statement="""
             SELECT *
@@ -12,7 +12,7 @@ def get_accounts(current_user:dict=Depends(get_current_user)):
         """,
         database="ldr",
         parameters={
-            "user_id": current_user["idUsers"]
+            "user_id": current_user.idUsers
         }
     )
     accounts = [AccountView(**row) for row in res]
@@ -21,7 +21,7 @@ def get_accounts(current_user:dict=Depends(get_current_user)):
 
 @app.get("/account", status_code=200, response_model=AccountView)
 @catch("Failed to get account")
-def get_account(idAccount:str, current_user:dict=Depends(get_current_user)):
+def get_account(idAccount:UUID, current_user:Users=Depends(get_current_user)):
     res = exec(
         statement="""
             SELECT *
@@ -32,7 +32,7 @@ def get_account(idAccount:str, current_user:dict=Depends(get_current_user)):
         """,
         database="ldr",
         parameters={
-            "user_id": current_user["idUsers"],
+            "user_id": current_user.idUsers,
             "idAccount": idAccount
         }
     )
@@ -44,7 +44,7 @@ def get_account(idAccount:str, current_user:dict=Depends(get_current_user)):
 
 @app.get("/account/statements/latest", status_code=200, response_model=StatementView)
 @catch("Failed to get latest account statement")
-def get_latest_account_statement(idAccount:str, current_user:dict=Depends(get_current_user)):
+def get_latest_account_statement(idAccount:str, current_user:Users=Depends(get_current_user)):
     res = exec(
         statement="""
             SELECT TOP 1 *
@@ -56,7 +56,7 @@ def get_latest_account_statement(idAccount:str, current_user:dict=Depends(get_cu
         """,
         database="ldr",
         parameters={
-            "idUsers": current_user["idUsers"],
+            "idUsers": current_user.idUsers,
             "idAccount": idAccount
         }
     )
@@ -69,7 +69,7 @@ def get_latest_account_statement(idAccount:str, current_user:dict=Depends(get_cu
 
 @app.get("/account/types", status_code=200, response_model=list[AccountType])
 @catch("Failed to get account types")
-def get_account_types(current_user:dict=Depends(get_current_user)):
+def get_account_types(current_user:Users=Depends(get_current_user)):
     res = exec(
         statement="""
             SELECT * FROM [enum].[AccountType]
@@ -82,7 +82,7 @@ def get_account_types(current_user:dict=Depends(get_current_user)):
 
 @app.get("/account/subtypes", status_code=200, response_model=list[AccountSubType])
 @catch("Failed to get account subtypes")
-def get_account_subtypes(current_user:dict=Depends(get_current_user)):
+def get_account_subtypes(current_user:Users=Depends(get_current_user)):
     res = exec(
         statement="""
             SELECT * FROM [enum].[AccountSubType]

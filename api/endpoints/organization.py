@@ -2,7 +2,7 @@ from ._imports import *
 
 @app.get("/organizations", status_code=200, response_model=list[OrganizationView])
 @catch("Failed to get organizations")
-def get_organizations(current_user:dict=Depends(get_current_user)):
+def get_organizations(current_user:Users=Depends(get_current_user)):
     res = exec(
         statement="""
             SELECT *
@@ -10,7 +10,7 @@ def get_organizations(current_user:dict=Depends(get_current_user)):
             WHERE [idUsers] = :idUsers
         """,
         database="ldr",
-        parameters={"idUsers": current_user["idUsers"]}
+        parameters={"idUsers": current_user.idUsers}
     )
     organizations = [OrganizationView(**row) for row in res]
     return organizations
@@ -18,7 +18,7 @@ def get_organizations(current_user:dict=Depends(get_current_user)):
 
 @app.get("/organization", status_code=200, response_model=OrganizationView)
 @catch("Failed to get organization")
-def get_organization(idOrganization:str, current_user:dict=Depends(get_current_user), ):
+def get_organization(idOrganization:UUID, current_user:Users=Depends(get_current_user)):
     res = exec(
         statement="""
             SELECT *
@@ -28,7 +28,10 @@ def get_organization(idOrganization:str, current_user:dict=Depends(get_current_u
                 AND [idOrganization] = :idOrganization
         """,
         database="ldr",
-        parameters={"idUsers": current_user["idUsers"],"idOrganization": idOrganization}
+        parameters={
+            "idUsers": current_user.idUsers,
+            "idOrganization": idOrganization
+        }
     )
     organization = OrganizationView(**res[0]) if res else None
     return organization

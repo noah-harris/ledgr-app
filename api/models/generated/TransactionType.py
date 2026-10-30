@@ -8,11 +8,16 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class TransactionType(BaseModel):
     idTransactionType: UUID
-    TransactionTypeName: str
     Scope: str
     Cashflow: str
-    isPositive: Optional[bool] = None
-    isItemEntryRequired: Optional[bool] = None
+    isCashflowInName: bool
+    Action: str
+    isActionInName: bool
+    Target: str
+    isTargetInName: bool
+    TransactionTypeName: Optional[str] = None
+    requireTransactionItems: bool
     Description: str
+    Sign: Optional[int] = None
     Created: datetime
     Updated: datetime

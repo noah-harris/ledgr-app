@@ -1,2 +1,2 @@
 from .generated import *
-from .token import *
+from .Token import *

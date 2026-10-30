@@ -15,7 +15,6 @@ export interface Transaction {
   DueDate: string | null;
   StartDate: string | null;
   EndDate: string | null;
-  ReferenceNumber: string | null;
   Amount: number;
   StatementText: string | null;
   isValidated: boolean | null;

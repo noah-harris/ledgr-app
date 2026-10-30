@@ -1,4 +1,4 @@
-CREATE FUNCTION [dbo].[f_Check_GetAllowImageColumns] ()
+CREATE FUNCTION [dbo].[tvf_Check_GetAllowImageColumns] ()
 RETURNS 
 @AllowImageColumns TABLE ([Name] NVARCHAR(255) NOT NULL)
 AS
@@ -12,3 +12,5 @@ BEGIN
 
     RETURN
 END
+
+

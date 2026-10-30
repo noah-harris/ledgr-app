@@ -15,7 +15,6 @@ CREATE TABLE [usr].[Transaction] (
     [DueDate] DATE NULL,
     [StartDate] DATETIME2(0) NULL,
     [EndDate] DATETIME2(0) NULL,
-    [ReferenceNumber] NVARCHAR(100) NULL,
     [Amount] DECIMAL(18, 2) NOT NULL,
     [StatementText] NVARCHAR(200) NULL,
     [isValidated] BIT NULL,
@@ -25,8 +24,10 @@ CREATE TABLE [usr].[Transaction] (
     [Created] DATETIME2(0) NOT NULL DEFAULT GETDATE(),
     [Updated] DATETIME2(0) NOT NULL DEFAULT GETDATE(),
     CONSTRAINT [PK_Transaction] PRIMARY KEY NONCLUSTERED ([idUsers], [idAccount], [idStatement], [idTransaction]),
-    CONSTRAINT [UQ_Transaction_ImageInvoice] UNIQUE ([idUsers], [idImageInvoice], [hasInvoiceImage]),
-    CONSTRAINT [UQ_Transaction_ImageReceipt] UNIQUE ([idUsers], [idImageReceipt], [hasReceiptImage]),
+    -- CONSTRAINT [UQ_Transaction_ImageInvoice] UNIQUE ([idUsers], [idImageInvoice], [hasInvoiceImage]),
+    -- CONSTRAINT [UQ_Transaction_ImageReceipt] UNIQUE ([idUsers], [idImageReceipt], [hasReceiptImage]),
+    -- INDEX [UQ_Transaction_ImageInvoice] UNIQUE ([idUsers], [idImageInvoice]) WHERE [idImageInvoice] IS NOT NULL AND [idImageInvoice] <> '00000000-0000-0000-0000-000000000000',
+    -- INDEX [UQ_Transaction_ImageReceipt] UNIQUE ([idUsers], [idImageReceipt]) WHERE [idImageReceipt] IS NOT NULL AND [idImageReceipt] <> '00000000-0000-0000-0000-000000000000',
     CONSTRAINT [FK_Transaction_Users] FOREIGN KEY ([idUsers]) REFERENCES [dbo].[Users]([idUsers]),
     CONSTRAINT [FK_Transaction_Account] FOREIGN KEY ([idUsers], [idAccount]) REFERENCES [usr].[Account]([idUsers], [idAccount]),
     CONSTRAINT [FK_Transaction_Statement] FOREIGN KEY ([idUsers], [idAccount], [idStatement]) REFERENCES [usr].[Statement]([idUsers], [idAccount], [idStatement]),
@@ -54,3 +55,5 @@ ALTER TABLE [usr].[Transaction] ADD
     CONSTRAINT [FK_Transaction_ImageReceipt]
         FOREIGN KEY ([idUsers], [idImageReceipt], [hasReceiptImage])
         REFERENCES [usr].[File]([idUsers], [idFile], [AllowTransactionReceiptImage]);
+
+

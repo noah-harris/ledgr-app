@@ -31,7 +31,7 @@ def _unauthorized(detail:str) -> HTTPException:
     )
 
 
-def get_current_user(token: str = Depends(oauth2_scheme)) -> dict:
+def get_current_user(token:str=Depends(oauth2_scheme)) -> Users:
     try:
         payload = jwt.decode(token, API_SECRET_KEY, algorithms=[ALGORITHM])
     except ExpiredSignatureError:
@@ -48,12 +48,10 @@ def get_current_user(token: str = Depends(oauth2_scheme)) -> dict:
         database="ldr",
         parameters={"idUsers": id_users},
     )
-
     if len(res) != 1:
         raise _unauthorized("Invalid credentials")
-    user = dict(res[0])
-    user["idUsers"] = str(user["idUsers"])
-    return user
+    else:
+        return Users(**res[0])
 
 
 @app.post("/login", response_model=Token)
@@ -78,10 +76,8 @@ def login(form: OAuth2PasswordRequestForm = Depends()):
 
 
 @app.get("/user", response_model=Users)
-def get_user(current_user:dict=Depends(get_current_user)):
-    user = Users(**current_user)
-    return user
-
+def get_user(current_user:Users=Depends(get_current_user)):
+    return current_user
 
 
 @app.post("/register", status_code=status.HTTP_201_CREATED)

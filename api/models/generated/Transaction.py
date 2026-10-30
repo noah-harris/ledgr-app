@@ -23,7 +23,6 @@ class Transaction(BaseModel):
     DueDate: Optional[date] = None
     StartDate: Optional[datetime] = None
     EndDate: Optional[datetime] = None
-    ReferenceNumber: Optional[str] = None
     Amount: Decimal
     StatementText: Optional[str] = None
     isValidated: Optional[bool] = None

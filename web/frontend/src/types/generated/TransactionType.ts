@@ -1,11 +1,16 @@
 export interface TransactionType {
   idTransactionType: string;
-  TransactionTypeName: string;
   Scope: string;
   Cashflow: string;
-  isPositive: boolean | null;
-  isItemEntryRequired: boolean | null;
+  isCashflowInName: boolean;
+  Action: string;
+  isActionInName: boolean;
+  Target: string;
+  isTargetInName: boolean;
+  TransactionTypeName: string | null;
+  requireTransactionItems: boolean;
   Description: string;
+  Sign: number | null;
   Created: string;
   Updated: string;
 }

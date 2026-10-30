@@ -27,6 +27,7 @@ export default function AccountDetailPage() {
   if (!account || !latestStatement) return <Loading />;
 
   return (
+    <>
     <Box sx={{ display: "flex", alignItems: "center" }}>
       <Link href={account.LoginPage || "/"} style={{ display: "block", width: "fit-content", textDecoration: "none" }}>
         <Box sx={{ display: "inline-block", verticalAlign: "top", textAlign: "right" }}>
@@ -39,5 +40,10 @@ export default function AccountDetailPage() {
         <Typography style={{ fontSize: "10px", fontStyle: "italic", verticalAlign:"top" }}>As of {formatDate(latestStatement?.EndDate, false) ?? "N/A"} </Typography>
       </Box>
     </Box>
+    <Box>
+      
+    </Box>
+
+    </>
   );
 }

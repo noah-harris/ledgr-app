@@ -7,5 +7,5 @@ CREATE TABLE [dbo].[FamilyUser] (
     CONSTRAINT [PK_FamilyUser] PRIMARY KEY ([idFamily], [idUsers]),
     CONSTRAINT [FK_FamilyUser_Family] FOREIGN KEY ([idFamily]) REFERENCES [dbo].[Family]([idFamily]),
     CONSTRAINT [FK_FamilyUser_User] FOREIGN KEY ([idUsers]) REFERENCES [dbo].[Users]([idUsers]),
-    CONSTRAINT [FK_FamilyUser_FamilyPermissionType] FOREIGN KEY ([idFamilyPermissionType]) REFERENCES [dbo].[FamilyPermissionType]([idFamilyPermissionType])
+    CONSTRAINT [FK_FamilyUser_FamilyPermissionType] FOREIGN KEY ([idFamilyPermissionType]) REFERENCES [enum].[FamilyPermissionType]([idFamilyPermissionType])
 );

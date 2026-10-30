@@ -8,47 +8,46 @@ import { formatFileSize } from "../../lib/format";
 import { fetchApi } from "../../Api";
 import Modal from "../../components/common/Modal";
 import type { File } from "../../types";
-import { Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
+import UploadIcon from "@mui/icons-material/Upload";
+import DownloadIcon from "@mui/icons-material/Download";
 import Loading from "../../components/common/Loading";
-
 
 const columns: GridColDef<File>[] = [
   { 
     field: "idFile", 
     headerName: "ID", 
     flex: 1, 
-    minWidth: 150 
   },
   {
     field: "FileName",
     headerName: "Name",
     flex: 1,
-    minWidth: 150,
     valueGetter: (_value: string, file: File) => file.FileName,
   },
   { 
     field: "FileExtension", 
     headerName: "Extension", 
-    width: 140 
   },
   {
     field: "FileSizeBytes",
     headerName: "Size",
-    width: 150,
+    flex: 1,
     valueFormatter: (value: number) => formatFileSize(value)
   },
   {
     field: "mimeType",
     headerName: "Mime Type",
     flex: 1,
-    minWidth: 150,
     valueGetter: (value: string, file: File) => value ?? mime.getType(file.FileExtension) ?? "unknown", 
   }
 ];
 
+
+
 export default function File() {
   const [files, setFiles] = useState<File[]>([]);
-  const [_selectedIds, setSelectedIds] = useState<GridRowId[]>([]);
+  const [selectedIds, setSelectedIds] = useState<GridRowId[]>([]);
   const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
@@ -58,12 +57,72 @@ export default function File() {
       .catch(console.error);
   }, []);
 
+
+  function exportSelectedFiles() {
+    fetchApi("/file/export", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(
+         selectedIds
+      )
+    })
+      .then((res) => res.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `ledgr-export-${selectedIds.length}-files-${new Date().toISOString()}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      })
+      .catch(console.error);
+  }
+
+  function importFiles() {
+
+    // Open file dialog to select files for import
+    const input = document.createElement("input");
+    input.type = "file";
+    input.multiple = true;
+    input.onchange = async (event: Event) => {
+      const target = event.target as HTMLInputElement;
+      if (target.files) {
+        const formData = new FormData();
+        for (const file of Array.from(target.files)) {
+          formData.append("files", file);
+        }
+        try {
+          const res = await fetchApi("/file/upload", {
+            method: "POST",
+            body: formData
+          });
+          if (res.ok) {
+            const newFiles = await res.json();
+            setFiles((prev) => [...prev, ...newFiles]);
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    };
+    input.click();
+
+  } 
   if (!files.length) return <Loading />;
 
 
   return (
     <div>
       <Typography variant="h4">Files</Typography>
+
+      <Box>
+        <Button variant="contained" onClick={() => importFiles()}><UploadIcon /></Button>
+        <Button variant="contained" onClick={() => exportSelectedFiles()}><DownloadIcon /></Button>
+      </Box>
+
       <DataGrid 
         rows={files} 
         columns={columns} 
