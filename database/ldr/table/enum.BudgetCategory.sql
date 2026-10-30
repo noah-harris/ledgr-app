@@ -6,5 +6,6 @@ CREATE TABLE [enum].[BudgetCategory] (
     [Created] DATETIME2(0) NOT NULL DEFAULT GETDATE(),
     [Updated] DATETIME2(0) NOT NULL DEFAULT GETDATE(),
     CONSTRAINT [PK_BudgetCategory] PRIMARY KEY NONCLUSTERED ([idBudgetCategory]),
-    CONSTRAINT [UQ_BudgetCategory] UNIQUE ([CategoryLevel1Name], [CategoryLevel2Name], [CategoryLevel3Name])
+    CONSTRAINT [UQ_BudgetCategory] UNIQUE ([CategoryLevel1Name], [CategoryLevel2Name], [CategoryLevel3Name]),
+    INDEX [IX_BudgetCategory] CLUSTERED ([CategoryLevel1Name], [CategoryLevel2Name], [CategoryLevel3Name])
 );

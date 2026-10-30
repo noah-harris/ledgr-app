@@ -73,7 +73,7 @@ async def upload_image(files:list[UploadFile], current_user:Users=Depends(get_cu
 
 @app.get("/file", status_code=200)
 @catch("Failed to get file")
-def get_file(idFile:str, current_user:Users=Depends(get_current_user)):
+def get_file(idFile:UUID, current_user:Users=Depends(get_current_user)):
     file_row = exec(
         statement=f"""
             SELECT *
@@ -93,7 +93,7 @@ def get_file(idFile:str, current_user:Users=Depends(get_current_user)):
         raise HTTPException(status.HTTP_404_NOT_FOUND, f"Client Error: 404 Not Found")
     
     file = file_row[0]
-    return file
+    return FileView(**file)
 
 
 @app.get("/files")
@@ -102,7 +102,7 @@ def get_files(current_user:Users=Depends(get_current_user)):
     file_rows = exec(
         statement="""
             SELECT *
-            FROM [usr].[File] 
+            FROM [usr].[v_File] 
             WHERE [idUsers] = :user_id
         """, 
         database="ldr", 
@@ -113,12 +113,12 @@ def get_files(current_user:Users=Depends(get_current_user)):
     if not file_rows or len(file_rows) == 0:
         raise HTTPException(status.HTTP_404_NOT_FOUND, f"Client Error: 404 Not Found")
     
-    return file_rows
+    return [FileView(**file) for file in file_rows]
 
 
 @app.get("/file/download", status_code=200, response_class=FileResponse)
 @catch("Failed to download file")
-def get_file_download(current_user:Users=Depends(get_current_user), idFile:str|None=None, filename:str|None=None):
+def get_file_download(current_user:Users=Depends(get_current_user), idFile:UUID|None=None, filename:str|None=None):
 
     if not idFile and not filename:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, f"Client Error: Either idFile or filename must be provided")
@@ -138,27 +138,22 @@ def get_file_download(current_user:Users=Depends(get_current_user), idFile:str|N
             )
     except Exception as e:
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Server Error: Failed to retrieve file")
+
     
     file_row = result[0] if result else None
     if not file_row:
         raise HTTPException(status.HTTP_404_NOT_FOUND, f"Client Error: 404 Not Found")
 
-    container_file_path = file_row.get("ContainerFilePath", None)
+    file_object = FileView(**file_row)
 
-    if container_file_path is None:
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Server Error")
-    
-    container_file_path = Path(container_file_path)
-    if not container_file_path.exists():
+    if not Path(file_object.ContainerFilePath).exists():
         raise HTTPException(status.HTTP_404_NOT_FOUND, f"Client Error: 404 Not Found")
 
-    mimetype = guess_type(file_row["FullFileName"])[0] or "application/octet-stream"
-
     return FileResponse(
-        path=container_file_path,
+        path=Path(file_object.ContainerFilePath),
         status_code=200,
-        filename=file_row["FullFileName"],
-        media_type=mimetype
+        filename=file_object.FullFileName,
+        media_type=file_object.MimeType
     )
 
 

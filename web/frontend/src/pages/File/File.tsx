@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import type { GridColDef, GridRowId } from "@mui/x-data-grid";
-import mime from "mime";
-
 import DataGrid from "../../components/common/DataGrid";
 import FileViewer from "../../components/common/FileViewer";
 import { formatFileSize } from "../../lib/format";
@@ -23,7 +21,6 @@ const columns: GridColDef<File>[] = [
     field: "FileName",
     headerName: "Name",
     flex: 1,
-    valueGetter: (_value: string, file: File) => file.FileName,
   },
   { 
     field: "FileExtension", 
@@ -36,10 +33,9 @@ const columns: GridColDef<File>[] = [
     valueFormatter: (value: number) => formatFileSize(value)
   },
   {
-    field: "mimeType",
+    field: "MimeType",
     headerName: "Mime Type",
     flex: 1,
-    valueGetter: (value: string, file: File) => value ?? mime.getType(file.FileExtension) ?? "unknown", 
   }
 ];
 

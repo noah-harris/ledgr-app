@@ -19,11 +19,13 @@ from .FamilyPermissionType import *
 from .FamilyUser import *
 from .File import *
 from .FileExtension import *
+from .FileView import *
 from .MerchantCategoryCode import *
 from .MerchantCategoryCodeTag import *
 from .Organization import *
 from .OrganizationView import *
 from .Payee import *
+from .PayeeTag import *
 from .PayeeView import *
 from .Statement import *
 from .StatementView import *
