@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [token]);
 
   async function login(username: string, password: string) {
-    const res = await fetch(`${API_HOST}/login`, {
+    const res = await fetch(`${API_HOST}/user/login`, {
       method: "POST",
       body: new URLSearchParams({ username, password }),
     });

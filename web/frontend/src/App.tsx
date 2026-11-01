@@ -18,14 +18,14 @@ import AccountDetailPage from "./pages/Account/AccountDetailPage";
 
 function RequireAuth() {
   const { token } = useAuth();
-  return token ? <Outlet /> : <Navigate to="/login" replace />;
+  return token ? <Outlet /> : <Navigate to="/user/login" replace />;
 }
 // Add a route for page not found. Basically a catch-all route that redirects to the home page or a 404 page.
 export default function App() {
 
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route path="/user/login" element={<Login />} />
       <Route element={<RequireAuth />}>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />

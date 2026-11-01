@@ -1,9 +1,10 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
-from db import warm, dispose_engines
 from fastapi.middleware.cors import CORSMiddleware
-import traceback
 from fastapi.responses import JSONResponse
+import traceback
+from db import warm, dispose_engines
+
 
 @asynccontextmanager
 async def lifespan(app:FastAPI):
@@ -14,9 +15,11 @@ async def lifespan(app:FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 
-# Turn any unhandled exception into a 500 JSON response
 @app.middleware("http")
 async def catch_exceptions(request: Request, call_next):
+    """
+        Catch any unhandled exceptions and return a JSON response with status code 500.
+    """
     try:
         return await call_next(request)
     except Exception as exc:
@@ -25,7 +28,6 @@ async def catch_exceptions(request: Request, call_next):
             status_code=500,
             content={"detail": "Internal server error", "error": f"{type(exc).__name__}: {exc}"},
         )
-
 
 
 app.add_middleware(

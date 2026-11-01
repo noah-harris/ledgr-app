@@ -34,7 +34,7 @@ export async function fetchApi(
 
   if (res.status === 401) {
     localStorage.removeItem("token");
-    window.location.href = "/login";
+    window.location.href = "/user/login";
     throw new Error("Unauthorized");
   }
 
