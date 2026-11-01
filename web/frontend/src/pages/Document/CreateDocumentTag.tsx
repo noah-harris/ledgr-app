@@ -1,8 +1,8 @@
-import Modal from "../../components/common/Modal";
 import { TextField, Button } from "@mui/material";
 import SaveIcon from '@mui/icons-material/Save';
-import type { DocumentTag } from "../../types";
 import { v4 as uuidv4 } from "uuid";
+import { Modal } from "../../components";
+import type { DocumentTag } from "../../types";
 
 export default function DocumentTagCreateModal(
   { open, onClose, onSubmit }: { open: boolean; onClose: () => void; onSubmit: (documentTag: any) => void }

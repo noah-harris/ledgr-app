@@ -1,9 +1,10 @@
 import { fetchApi } from "../../Api";
-import type { AccountView, AccountType } from "../../types";
 import { useEffect, useState } from "react";
+import { Stack, Box, Typography } from "@mui/material";
+
 import AccountCard from "./AccountCard";
-import Typography from "@mui/material/Typography";
-import { Stack, Box } from "@mui/material";
+
+import type { AccountView, AccountType } from "../../types";
 
 
 export default function AccountPage() {

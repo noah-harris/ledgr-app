@@ -1,15 +1,11 @@
 import { useEffect, useState } from "react";
-import Loading from "../../components/common/Loading";
-import Box from "@mui/material/Box";
-import type { GridColDef } from "@mui/x-data-grid";
-import type { DocumentTag } from "../../types";
-import type { DocumentView } from "../../types";
-import DataGrid from "../../components/common/DataGrid";
+import { Box } from "@mui/material";
+import { DataGrid, Modal, FileViewer, Loading, TagBreadcrumb } from "../../components";
 import { fetchApi } from "../../Api";
-import Modal from "../../components/common/Modal";
-import FileViewer from "../../components/common/FileViewer";
-import TagBreadcrumb from "./TagBreadcrumb";
 import { formatDate } from "../../lib/format";
+
+import type { GridColDef } from "@mui/x-data-grid";
+import type { DocumentTag, DocumentView } from "../../types";
 
 const tagColumns: GridColDef<DocumentTag>[] = [
   { field: "idDocumentTag", headerName: "ID", flex: 1, minWidth: 150 },

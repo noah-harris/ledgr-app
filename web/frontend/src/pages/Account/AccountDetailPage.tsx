@@ -1,11 +1,11 @@
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
-import type { AccountView, StatementView } from "../../types"; 
 import { fetchApi } from "../../Api";
 import { Box, Link, Typography } from "@mui/material";
-import Loading from "../../components/common/Loading";
+import { Loading } from "../../components";
 import { screamSnakeToTitleCase, formatDate } from "../../lib/format";
 
+import type { AccountView, StatementView } from "../../types"; 
 
 export default function AccountDetailPage() {
   const { idAccount } = useParams();

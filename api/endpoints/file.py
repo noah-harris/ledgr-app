@@ -2,8 +2,6 @@ from ._imports import *
 
 ##### CREATE
 
-# @app.post("/file/upload", status_code=200, description="Upload a file for the current user", response_description="Success message", response_model=dict)
-# @catch("Failed to upload image")
 async def upload_file(file:UploadFile, user:Users, file_allowance:FileAllowance) -> bool:
     """
     Upload a file for the given user, ensuring no duplicates exist in the database or on disk.
@@ -251,45 +249,6 @@ def export_files(idFiles: list[UUID], current_user: Users = Depends(get_current_
         background=BackgroundTask(rmtree, temp_path, ignore_errors=True),
     )
 
-# @app.post("/file/export")
-# @catch("Error exporting files")
-# def get_user_file_tags(idFiles:list[UUID], current_user:Users=Depends(get_current_user)):
-#     res = exec(
-#         statement="""
-#             SELECT *
-#             FROM [usr].[File]
-#             WHERE [idUsers] = :idUsers
-#             AND [idFile] IN (SELECT CAST([value] AS UNIQUEIDENTIFIER) FROM OPENJSON(:idFiles))
-#         """,
-#         database="ldr",
-#         parameters={
-#             "idFiles": json.dumps(idFiles, default=str),
-#             "idUsers": current_user.idUsers,
-#         },
-#     )
-
-#     files:list[File] = [File(**file) for file in res]
-#     # Collect and zip the files for export
-#     temp_dir = TemporaryDirectory()
-#     temp_path = Path(temp_dir.name)
-
-#     for file in files:
-#         dest_path = temp_path / file.FullFileName
-#         dest_path.write_bytes(Path(file.ContainerFilePath).read_bytes())
-    
-#     # Create a zip file containing all the exported files
-#     zip_path = temp_path / f"ledgr-export-{len(files)}-files-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.zip"
-#     with ZipFile(zip_path, "w") as zipf:
-#         for file in files:
-#             zipf.write(temp_path / file.FullFileName, arcname=file.FullFileName)
-
-#     return FileResponse(
-#         zip_path,
-#         media_type="application/zip",
-#         filename=zip_path.name,
-#         background=BackgroundTask(rmtree, temp_path, ignore_errors=True),
-#     )
-
 ##### DELETE
 
 @app.delete("/file", status_code=200)
@@ -338,21 +297,173 @@ def get_junk_files(current_user:Users=Depends(get_current_user)):
     return file_rows
 
 
-@app.post("/file/edit/allow/all")
-@catch("")
-def get_file_tags(idFile:str, current_user:Users=Depends(get_current_user)):
-    return exec(
+
+####################################################################################################
+# CHECKS
+####################################################################################################
+
+@app.get("/file/statement/orphan")
+@catch("Failed to get orphan file statements")
+def get_orphan_file_statements(current_user:Users=Depends(get_current_user)):
+
+    resp = exec(
         statement="""
             SELECT *
-            FROM [usr].[DocumentTag] 
-            WHERE 1=2 
-                OR [idUsers] = :idUsers 
-                OR [isDefaultDocumentTag] = 1
-        """, 
-        database="ldr", 
+            FROM [usr].[v_File] AS f
+            WHERE 1=1
+                AND [idUsers] = :idUsers
+                AND f.[idFile] <> '00000000-0000-0000-0000-000000000000'
+                AND [AllowStatementImage] = 1
+                AND NOT EXISTS (
+                    SELECT NULL
+                    FROM [usr].[Statement] AS s
+                    WHERE 1=1
+                        AND s.[idUsers] = f.[idUsers]
+                        AND s.[idImage] = f.[idFile]
+                    )
+        """,
+        database="ldr",
         parameters={
             "idUsers": current_user.idUsers
         }
     )
+    if not resp or len(resp) == 0:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Client Error: 404 Not Found")
 
+    return [FileView(**file) for file in resp]
+
+
+@app.get("/file/document/orphan")
+@catch("Failed to get orphan file documents")
+def get_orphan_file_documents(current_user:Users=Depends(get_current_user)):
+
+    resp = exec(
+        statement="""
+            SELECT *
+            FROM [usr].[v_File] AS f
+            WHERE 1=1
+                AND [idUsers] = :idUsers
+                AND [AllowDocument] = 1
+                AND f.[idFile] <> '00000000-0000-0000-0000-000000000000'
+                AND NOT EXISTS (
+                    SELECT NULL
+                    FROM [usr].[Document] AS d
+                    WHERE 1=1
+                        AND d.[idUsers] = f.[idUsers]
+                        AND d.[idFile] = f.[idFile]
+                    )
+        """,
+        database="ldr",
+        parameters={
+            "idUsers": current_user.idUsers
+        }
+    )
+    if not resp or len(resp) == 0:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Client Error: 404 Not Found")
+
+    return [FileView(**file) for file in resp]
+
+
+@app.get("/file/transaction/invoice/orphan")
+@catch("Failed to get orphan transaction invoice files")
+def get_orphan_transaction_invoice_files(current_user:Users=Depends(get_current_user)):
+
+    resp = exec(
+        statement="""
+            SELECT *
+            FROM [usr].[v_File] AS f
+            WHERE 1=1
+                AND [idUsers] = :idUsers
+                AND [AllowTransactionInvoiceImage] = 1 AND [AllowTransactionReceiptImage] = 0
+                AND f.[idFile] <> '00000000-0000-0000-0000-000000000000'
+                AND NOT EXISTS (
+                    SELECT NULL
+                    FROM [usr].[Transaction] AS t
+                    WHERE 1=1
+                        AND t.[idUsers] = f.[idUsers]
+                        AND t.[idImageInvoice] = f.[idFile]
+                    )
+        """,
+        database="ldr",
+        parameters={
+            "idUsers": current_user.idUsers
+        }
+    )
+    if not resp or len(resp) == 0:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Client Error: 404 Not Found")
+
+    return [FileView(**file) for file in resp]
+
+
+@app.get("/file/transaction/receipt/orphan")
+@catch("Failed to get orphan transaction receipt files")
+def get_orphan_transaction_receipt_files(current_user:Users=Depends(get_current_user)):
+
+    resp = exec(
+        statement="""
+            SELECT *
+            FROM [usr].[v_File] AS f
+            WHERE 1=1
+                AND [idUsers] = :idUsers
+                AND [AllowTransactionInvoiceImage] = 0 AND [AllowTransactionReceiptImage] = 1
+                AND f.[idFile] <> '00000000-0000-0000-0000-000000000000'
+                AND NOT EXISTS (
+                    SELECT NULL
+                    FROM [usr].[Transaction] AS t
+                    WHERE 1=1
+                        AND t.[idUsers] = f.[idUsers]
+                        AND t.[idImageReceipt] = f.[idFile]
+                    )
+        """,
+        database="ldr",
+        parameters={
+            "idUsers": current_user.idUsers
+        }
+    )
+    if not resp or len(resp) == 0:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Client Error: 404 Not Found")
+
+    return [FileView(**file) for file in resp]
+
+
+@app.get("/file/transaction/orphan")
+@catch("Failed to get orphan transaction invoice files")
+def get_orphan_transaction_invoice_files(current_user:Users=Depends(get_current_user)):
+
+    resp = exec(
+        statement="""
+            SELECT *
+            FROM [usr].[v_File] AS f
+            WHERE 1=1
+                AND [idUsers] = :idUsers
+                AND [AllowTransactionInvoiceImage] = 1 AND [AllowTransactionReceiptImage] = 1
+                AND f.[idFile] <> '00000000-0000-0000-0000-000000000000'
+                AND (1=2
+                    OR NOT EXISTS (
+                        SELECT NULL
+                        FROM [usr].[Transaction] AS t
+                        WHERE 1=1
+                            AND t.[idUsers] = f.[idUsers]
+                            AND t.[idImageReceipt] = f.[idFile]
+                            AND t.[idImageInvoice] = f.[idFile]
+                    )
+                    OR EXISTS (
+                        SELECT NULL
+                        FROM [usr].[Transaction] AS t
+                        WHERE 1=1
+                            AND t.[idUsers] = f.[idUsers]
+                            AND (t.[idImageReceipt] = f.[idFile] OR t.[idImageInvoice] = f.[idFile])
+                            AND NOT (t.[idImageReceipt] = f.[idFile] AND t.[idImageInvoice] = f.[idFile])
+                    )
+            )
+        """,
+        database="ldr",
+        parameters={
+            "idUsers": current_user.idUsers
+        }
+    )
+    if not resp or len(resp) == 0:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Client Error: 404 Not Found")
+
+    return [FileView(**file) for file in resp]
 

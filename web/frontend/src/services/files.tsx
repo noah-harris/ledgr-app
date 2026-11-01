@@ -11,7 +11,7 @@ export function getFiles({ setFiles }: { setFiles: (files: any) => void }) {
 
 
 
-export async function uploadFile(file: File, endpoint: string): Promise<FileStatus> {
+export async function uploadFile(file:File, endpoint:string): Promise<FileStatus> {
   const formData = new FormData();
   formData.append("file", file);
   try {

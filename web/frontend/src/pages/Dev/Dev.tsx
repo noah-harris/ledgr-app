@@ -1,14 +1,10 @@
-import { useState } from "react";
-import Typography from "@mui/material/Typography";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Autocomplete from "@mui/material/Autocomplete";
-import { Button } from "@mui/material";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
+import { Typography, TextField, Box, Autocomplete, Button } from "@mui/material";
 import { fetchApi } from "../../Api";
 import ParameterBox from "./ParameterBox";
 import type { Param } from "./ParameterBox";
 import type { Route } from "../../types/Route";
+
 
 export default function Dev() {
   const [route, setRoute] = useState<Route | null>(null);
