@@ -196,34 +196,3 @@ def remove_tag_from_document(documentTagLink: DocumentTagLink, current_user:User
     # TODO: Verify that the tag was actually removed from the document
 
 
-@app.get("/document/files", status_code=200)
-@catch("Failed to get document files")
-def get_document_files(current_user:Users=Depends(get_current_user)):
-    # SELECT * FROM File WHERE AllowDocument = 1 and idUsers = :idUsers
-    file_rows = exec(
-        statement="""
-            SELECT *
-            FROM [usr].[File]
-            WHERE [AllowDocument] = 1
-                AND [idUsers] = :idUsers
-        """,
-        database="ldr",
-        parameters={
-            "idUsers": current_user.idUsers
-        }
-    )
-    if not file_rows or len(file_rows) == 0:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Client Error: 404 Not Found")
-    
-    return file_rows
-
-
-@app.post("/document/files", status_code=201)
-@catch("Failed to upload document files")
-def upload_document_files(files: list[UploadFile], current_user:Users=Depends(get_current_user)):
-    # Call upload file function
-    # Set allowDocument = 1
-
-    pass
-
-
