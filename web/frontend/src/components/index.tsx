@@ -20,12 +20,10 @@ import Footer from "./layout/Footer";
 import Header from "./layout/Header";
 import NavBar from "./layout/NavBar";
 
-import FileUploadExport from "./uncommon/FileUploadExport";
 import TagBreadcrumb from "./uncommon/TagBreadcrumb";
 import TagList from "./uncommon/TagList";
 
 export { 
-  FileUploadExport,
   FileViewer, 
   Loading, 
   Modal, 
