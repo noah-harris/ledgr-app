@@ -1,23 +1,17 @@
 import { useRef, useState } from "react";
 import { Link, matchPath, useLocation } from "react-router";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Box from "@mui/material/Box";
-import Popper from "@mui/material/Popper";
-import Paper from "@mui/material/Paper";
-import MenuList from "@mui/material/MenuList";
-import MenuItem from "@mui/material/MenuItem";
+import { Tabs, Tab, Box, Popper, Paper, MenuList, MenuItem } from "@mui/material";
+import type { NavLink } from "../../types";
 
-
-type NavLink = { to: string; label: string; children?: { to: string; label: string }[] };
 const links: NavLink[] = [
   { 
-    to: "/ledgr", 
-    label: "Ledgr", 
-    children: [
-      { to: "/ledgr/accounts", label: "Accounts" },
-      { to: "/ledgr/transactions", label: "Transactions" }
-  ]},
+    to: "/accounts", 
+    label: "Accounts", 
+  },
+  {
+    to: "/transactions",
+    label: "Transactions"
+  },
   { 
     to: "/documents/manage", 
     label: "Documents",
@@ -28,11 +22,19 @@ const links: NavLink[] = [
   ]},
   {
     to: "/files",
-    label: "Files"
+    label: "Files",
+    children: [
+      { to: "/files", label: "All Files" },
+      { to: "/file/junk", label: "Junk" }
+    ]
   },
   { 
     to: "/settings", 
     label: "Settings" 
+  },
+  { 
+    to: "/dev", 
+    label: "Developer" 
   },
 ];
 
@@ -90,35 +92,3 @@ export default function NavBar() {
     </Box>
   );
 }
-
-// // src/components/NavBar.tsx
-// import { Link, matchPath, useLocation } from "react-router";
-// import Tabs from "@mui/material/Tabs";
-// import Tab from "@mui/material/Tab";
-// import Box from "@mui/material/Box";
- 
-
-// const links = [
-//   { to: "/ledgr", label: "Ledgr" },
-//   { to: "/documents", label: "Documents", end: true },
-//   { to: "/settings", label: "Settings" },
-
-// ];
-
-// export default function NavBar() {
-//   const { pathname } = useLocation();
-
-//   const current =
-//     links.find((l) => matchPath({ path: l.to, end: l.to === "/" }, pathname))?.to ?? false;
- 
-//   return (
-//     <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-//       <Tabs value={current}>
-//         {links.map((l) => (
-//           <Tab key={l.to} label={l.label} value={l.to} to={l.to} component={Link} />
-//         ))}
-//       </Tabs>
-//     </Box>
-//   );
-// }
- 

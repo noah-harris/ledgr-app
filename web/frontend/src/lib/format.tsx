@@ -23,3 +23,9 @@ export function screamSnakeToTitleCase(str: string): string {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
+
+
+export function title(s: string | undefined): string {
+  if (!s) return "";
+  return s.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+}

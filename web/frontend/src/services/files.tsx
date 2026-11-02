@@ -1,7 +1,7 @@
 import { fetchApi } from "../Api";
 import type { FileStatus } from "../types";
 
-
+// Function to get all files
 export function getFiles({ setFiles }: { setFiles: (files: any) => void }) {
   fetchApi("/files")
     .then((res) => res.json())
@@ -9,8 +9,7 @@ export function getFiles({ setFiles }: { setFiles: (files: any) => void }) {
     .catch(console.error);
 }
 
-
-
+// Function to upload a single file
 export async function uploadFile(file:File, endpoint:string): Promise<FileStatus> {
   const formData = new FormData();
   formData.append("file", file);
@@ -24,11 +23,12 @@ export async function uploadFile(file:File, endpoint:string): Promise<FileStatus
   }
 }
 
+// Function to upload multiple files
 export function uploadFiles(files: File[], endpoint: string): Promise<FileStatus[]> {
   return Promise.all(files.map((file) => uploadFile(file, endpoint)));
 }
 
-
+// Function to export files
 export async function exportFiles(fileIds: string[]) {
   if (!fileIds.length) return;
   try {
@@ -49,3 +49,19 @@ export async function exportFiles(fileIds: string[]) {
     console.error(error);
   }
 }
+
+//
+export function selectAndUploadFiles({ endpoint, setUploading, setFileStatus }: { endpoint: string; setUploading: (uploading: boolean) => void; setFileStatus: (status: { filename: string; status: string }[]) => void }) {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.multiple = true;
+    input.click();
+    input.onchange = () => {
+      if (input.files?.length) {
+        setUploading(true);
+        uploadFiles(Array.from(input.files), endpoint)
+          .then(setFileStatus)
+          .finally(() => setUploading(false));
+      }
+    };
+  }

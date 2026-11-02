@@ -2,15 +2,15 @@ import { Outlet } from "react-router";
 import Header from "./components/layout/Header";
 import NavBar from "./components/layout/NavBar";
 import Footer from "./components/layout/Footer";
-import { useAuth } from "./auth/AuthContext";
+import useUser from "./hooks/useUser";
 
 export default function Layout() {
   
-  const { users } = useAuth();
+  const { user } = useUser();
 
   return (
     <>
-      <Header users={users} />
+      <Header user={user} />
       <NavBar/>
       <main>
         <Outlet />

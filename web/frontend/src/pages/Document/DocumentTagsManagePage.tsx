@@ -11,19 +11,8 @@ import { fetchApi } from "../../Api";
 
 
 const columns: GridColDef<DocumentTag>[] = [
-  { 
-    field: "idDocumentTag", 
-    headerName: "ID", 
-    flex: 1, 
-    minWidth: 150 
-  },
-  {
-    field: "DocumentTagName",
-    headerName: "Name",
-    flex: 1,
-    minWidth: 150,
-    valueGetter: (_value: string, tag: DocumentTag) => tag.DocumentTagName,
-  }
+  { field: "idDocumentTag", headerName: "ID" },
+  { field: "DocumentTagName", headerName: "Name", valueGetter: (_value: string, tag: DocumentTag) => tag.DocumentTagName }
 ];
 
 

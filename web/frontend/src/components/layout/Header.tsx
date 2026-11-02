@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
-import Avatar from "@mui/material/Avatar";
-import Box from "@mui/material/Box";
+import { AppBar, Toolbar, Typography, Avatar, Box } from "@mui/material";
 import type { Users } from "../../types";
+import { title } from "../../lib/format";
+import ClockIcon from "@mui/icons-material/AccessTime";
+import CalendarIcon from "@mui/icons-material/CalendarToday";
 
-export default function Header({ users }: { users: Users | null }) {
+export default function Header({ user }: { user: Users | null }) {
   const [now, setNow] = useState(new Date());
 
   useEffect(() => {
@@ -26,13 +25,18 @@ export default function Header({ users }: { users: Users | null }) {
 
         {/* Profile */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Typography variant="body2">
-            {now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
+
+          <Typography variant="body2" sx={{ gap: 2, display: "flex", alignItems: "center" }}>
+            <ClockIcon style={{ verticalAlign: "middle", marginRight: 4, fontSize: "1rem" }} />
+            {now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} 
+            <CalendarIcon style={{ verticalAlign: "middle", marginRight: 4, fontSize: "1rem" }} />
+            {now.toDateString()}
           </Typography>
-          <Typography variant="body1">{users?.Username}</Typography>
-          <Avatar alt={users?.Username}>
-            {users?.Username[0].toUpperCase()}
-          </Avatar>
+
+          <Typography variant="body1">{title(user?.FirstName)} {title(user?.LastName)}</Typography>
+
+          <Avatar alt={user?.Username}>{user?.Username[0].toUpperCase()}</Avatar>
+
         </Box>
       </Toolbar>
     </AppBar>

@@ -36,14 +36,8 @@ export default function FileUploadExport({endpoint, targetFileIds }:{endpoint:st
         open={uploading || fileStatus.length > 0}
         onClick={() => !uploading && setFileStatus([])}
       >
-        {/* TODO: THIS IS PRETTY JANKY, MAKE THIS LESS HORRIBLE LATER*/}
         {uploading && <style>{`body { overflow: hidden; }`}</style>}
-        {/* {!uploading && fileStatus.length === 0 && <style>{`body { overflow: auto; }`}</style>} */}
-
-        {/* <Typography variant="h6" sx={{ mb: 2 }}>
-          {uploading ? "Uploading files..." : "Upload Status"}
-        </Typography> */}
-
+        
         <Box sx={{ width: "100%", padding: 2, overflowY: "auto", scrollbarWidth: "none", "&::-webkit-scrollbar": { display: "none" } }}>
           {uploading ? <CircularProgress color="inherit" /> : fileStatus.map((s) => (
             <div key={s.filename} style={{ textAlign: "left", color: s.status !== "Uploaded" ? "red" : "inherit" }}>

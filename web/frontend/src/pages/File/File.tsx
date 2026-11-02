@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import type { GridColDef, GridRowId } from "@mui/x-data-grid";
-import { Typography } from "@mui/material";
 import { formatFileSize } from "../../lib/format";
 import { getFiles } from "../../services/files";
-import { DataGrid, FileViewer, Modal, Loading, FileUploadExport } from "../../components";
+import { DataGrid, Loading } from "../../components";
 import type { File } from "../../types";
+import { fetchApi } from "../../Api";
 
 const columns: GridColDef<File>[] = [
   { field: "idFile", headerName: "ID", flex: 1 },
@@ -22,8 +22,7 @@ const columns: GridColDef<File>[] = [
 export default function FilesPage() {
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedIds, setSelectedIds] = useState<GridRowId[]>([]);
-  const [file, setFile] = useState<File | null>(null);
+  const [_selectedIds, setSelectedIds] = useState<GridRowId[]>([]);
 
   useEffect(() => { 
     setLoading(true);
@@ -35,26 +34,24 @@ export default function FilesPage() {
   if (loading) return <Loading />;
 
   return (
-    <div>
-      <Typography variant="h4">Files</Typography>
-
-      <FileUploadExport endpoint="/file/upload" targetFileIds={selectedIds as string[]} />
+    <>
 
       <DataGrid
         rows={files}
         columns={columns}
         getRowId={(row) => row.idFile}
-        onSelect={(params) => setFile(params.row)}
+        onSelect={async (params) => {
+          const tab = window.open("", "_blank");
+          const res = await fetchApi(`/file/download?idFile=${params.row.idFile}`);
+          if (!res.ok || !tab) { tab?.close(); return; }
+          tab.location.href = URL.createObjectURL(await res.blob());
+        }}
         onSelectionChange={(ids) => setSelectedIds(ids)}
         checkboxSelection
         hiddenColumns={["idFile"]}
         width="fit"
       />
 
-      <Modal open={file !== null} onClose={() => setFile(null)} title={file?.FileName ?? ""}>
-        {file && <FileViewer path={file.DownloadEndpoint ?? ""} />}
-      </Modal>
-
-    </div>
+    </>
   );
 }

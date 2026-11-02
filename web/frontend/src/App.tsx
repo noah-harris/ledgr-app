@@ -7,7 +7,6 @@ import Dev from "./pages/Dev/Dev";
 import Layout from "./Layout";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
-import Ledgr from "./pages/Ledgr/Ledgr";
 import ManageDocumentsPage from "./pages/Document/ManageDocumentsPage";
 import Settings from "./pages/Settings";
 import User from "./pages/User";
@@ -29,9 +28,8 @@ export default function App() {
       <Route element={<RequireAuth />}>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/ledgr" element={<Ledgr />} />
-          <Route path="/ledgr/accounts" element={<AccountPage />} />
-          <Route path="/ledgr/accounts/:idAccount" element={<AccountDetailPage />} />
+          <Route path="/accounts" element={<AccountPage />} />
+          <Route path="/accounts/:idAccount" element={<AccountDetailPage />} />
           <Route path="/documents/manage" element={<ManageDocumentsPage />} />
           <Route path="/documents/search" element={<DocumentsSearchPage />} />
           <Route path="/document/tags/manage" element={<ManageDocumentTagPage />} />

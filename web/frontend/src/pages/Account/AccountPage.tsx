@@ -1,29 +1,26 @@
 import { fetchApi } from "../../Api";
 import { useEffect, useState } from "react";
 import { Stack, Box, Typography } from "@mui/material";
-
+import { Loading } from "../../components";
 import AccountCard from "./AccountCard";
-
-import type { AccountView, AccountType } from "../../types";
-
+import type {  AccountType } from "../../types";
+import useUser from "../../hooks/useUser";
 
 export default function AccountPage() {
-  const [accounts, setAccounts] = useState<AccountView[]>([]);
+  const { accounts, loading } = useUser();
+
   const [accountTypes, setAccountTypes] = useState<AccountType[]>([]);
   
- accounts.sort((a, b) => a.AccountTypeName.localeCompare(b.AccountTypeName))
+  accounts.sort((a, b) => a.AccountTypeName.localeCompare(b.AccountTypeName))
 
-  useEffect(() => {
-    fetchApi("/accounts")
-    .then((r) => r.json())
-    .then(setAccounts);
-  }, []);
 
   useEffect(() => {
     fetchApi("/account/types")
     .then((r) => r.json())
     .then(setAccountTypes);
   }, []);
+
+  if (loading) return <Loading />;
   
   return (
     <>

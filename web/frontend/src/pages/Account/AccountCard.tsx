@@ -8,7 +8,7 @@ export default function AccountCard({ account }: { account: AccountView }) {
 
   return (
     <Link
-      to={`/ledgr/accounts/${account.idAccount}`}
+      to={`/accounts/${account.idAccount}`}
       style={{ display: "block", width: "fit-content", textDecoration: "none" }}
     >
       <Card variant="outlined" sx={{ p: 2 }}>

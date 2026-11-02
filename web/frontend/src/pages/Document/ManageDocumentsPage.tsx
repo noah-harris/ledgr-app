@@ -1,93 +1,68 @@
 import { useState, useEffect } from "react";
-import type { GridColDef } from "@mui/x-data-grid/models";
-import DataGrid from "../../components/common/DataGrid";
-import type { DocumentTagLink, DocumentView } from "../../types";
 import { formatDate } from "../../lib/format";
-import { fetchApi } from "../../Api";
-import TagList from "./TagList";
-import type { DocumentTag } from "../../types";
-import Loading from "../../components/common/Loading";
-
-
-
-async function onSubmitTagLink(idUsers: string, idDocument: string, tagName: string, allTags: DocumentTag[]) {
-  const documentTag:DocumentTag|undefined = allTags.find(t => t.DocumentTagName === tagName);
-  if (!documentTag) {
-    throw new Error(`Tag with name ${tagName} not found`);
-  }
-  
-  let documentTagLink: DocumentTagLink = { 
-    idUsers, 
-    idDocument, 
-    idDocumentTag: documentTag.idDocumentTag,
-    Created: new Date().toISOString(),
-    Updated: new Date().toISOString()
-  };
-
-  await fetchApi(`/document/tag/link`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(documentTagLink),
-  });
-}
-
-async function onRemoveTagLink(tag: DocumentTagLink) {
-  await fetchApi(`/document/tag/link`, {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(tag),
-  });
-}
+import { getDocuments } from "../../services/document";
+import { getDocumentTags } from "../../services/document_tag";
+import DocumentMenubar from "./Menubar";
+import { onSubmitTagLink, onRemoveTagLink } from "../../services/document_tag";
+import { Loading, DataGrid, TagList } from "../../components";
+import { exportFiles } from "../../services/files";
+import type { DocumentView, DocumentTag } from "../../types";
+import type { GridColDef, GridRowId } from "@mui/x-data-grid/models";
 
 
 export default function ManageDocumentsPage() {
   const [documents, setDocuments] = useState<DocumentView[]>([]);
-  const [allTags, setAllTags] = useState<DocumentTag[]>([]);
+  const [documentTags, setDocumentTags] = useState<DocumentTag[]>([]);
+  const [selectedIds, setSelectedIds] = useState<GridRowId[]>([]);
+  const [_file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
-    fetchApi("/documents")
-      .then(r => r.json())
-      .then(docs => {setDocuments(docs);});
+    getDocuments({ setDocuments });
+    getDocumentTags({ setDocumentTags });
   }, []);
 
-  useEffect(() => {
-    fetchApi("/document/tags")
-      .then(r => r.json())
-      .then(tags => {setAllTags(tags);});
-  }, []);
+  const columns: GridColDef<DocumentView>[] = [
+    { field: "idDocument", headerName: "ID", },
+    { field: "FileName", headerName: "Document",  valueGetter: (_value: string, doc: DocumentView) => `${doc.FileName}.${doc.FileExtension}` },
+    { field: "FileExtension", headerName: "Extension"},
+    { field: "Tags", headerName: "Tags",
+      renderCell: (params) => (
+        <TagList
+          tags={params.row.Tags}
+          allTags={documentTags}
+          onAddTag={async (tag: string) => { await onSubmitTagLink(params.row.idUsers, params.row.idDocument, tag, documentTags) }}
+          onRemoveTag={async (tag) => { await onRemoveTagLink(tag); }} 
+          refresh={() => {getDocuments({ setDocuments }); }}
+        />
+      )
+    },
+    { field: "Created", headerName: "Created", width: 150, valueGetter: (_value: string, doc: DocumentView) => formatDate(doc.Created) },
+  ];
 
-const columns: GridColDef<DocumentView>[] = [
-  { field: "idDocument", headerName: "ID", },
-  { field: "FileName", headerName: "Document",  valueGetter: (_value: string, doc: DocumentView) => `${doc.FileName}.${doc.FileExtension}` },
-  { field: "FileExtension", headerName: "Extension"},
-  { field: "Tags", headerName: "Tags",
-    renderCell: (params) => (
-      <TagList
-        tags={params.row.Tags}
-        allTags={allTags}
-        onAddTag={async (tag: string) => { await onSubmitTagLink(params.row.idUsers, params.row.idDocument, tag, allTags) }}
-        onRemoveTag={async (tag) => { await onRemoveTagLink(tag); }} 
-        refresh={() => {
-          fetchApi("/documents")
-            .then(r => r.json())
-            .then(docs => { setDocuments(docs); });
-        }}
-      />
-    )
-  },
-  { field: "Created", headerName: "Created", width: 150, valueGetter: (_value: string, doc: DocumentView) => formatDate(doc.Created) },
-];
 
   if (!documents.length) return <Loading />;
 
   return (
-    <DataGrid
-      rows={documents}
-      columns={columns}
-      getRowId={(row) => row.idDocument}
-      hiddenColumns={["idDocument"]}
-      width="fit"
-    />
+    <>
+      <DocumentMenubar 
+        onExport={() => { exportFiles((() => {
+          const selectedRows = documents.filter(doc => selectedIds.includes(doc.idDocument));
+          const ids = selectedRows.map(row => row.idFile.toString());
+          return ids;
+        })());}
+      }
+        onShare={() => { console.log("Share clicked") }}
+      />
+      <DataGrid
+        rows={documents}
+        columns={columns}
+        getRowId={(row) => row.idDocument}
+        onSelect={(params) => setFile(params.row)}
+        onSelectionChange={(ids) => setSelectedIds(ids)}
+        checkboxSelection
+        hiddenColumns={["idDocument"]}
+        width="fit"
+      />
+    </>
   );
-
 }
