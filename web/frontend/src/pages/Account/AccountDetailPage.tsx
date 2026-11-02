@@ -1,38 +1,25 @@
 import { useParams } from "react-router";
-import { useEffect, useState } from "react";
-import { fetchApi } from "../../Api";
 import { Box, Link, Typography } from "@mui/material";
 import { Loading } from "../../components";
-import { screamSnakeToTitleCase, formatDate } from "../../lib/format";
-
-import type { AccountView, StatementView } from "../../types"; 
+import { formatDate, title } from "../../lib";
+import NotFound from "../NotFound";
+import { useAccount } from "../../hooks";
 
 export default function AccountDetailPage() {
   const { idAccount } = useParams();
-  const [account, setAccount] = useState<AccountView>();
-  const [latestStatement, setLatestStatement] = useState<StatementView>();
+  if (!idAccount) return <NotFound />;
 
-  useEffect(() => {
-    fetchApi(`/account/statements/latest?idAccount=${idAccount}`)
-    .then((response) => response.json())
-    .then(setLatestStatement);
-  }, [idAccount]);
+  const { account, latestStatement, loading } = useAccount(idAccount);
 
-  useEffect(() => {
-    fetchApi(`/account?idAccount=${idAccount}`)
-    .then((response) => response.json())
-    .then(setAccount);
-  }, [idAccount]);
-
-  if (!account || !latestStatement) return <Loading />;
+  if (loading) return <Loading />;
 
   return (
     <>
     <Box sx={{ display: "flex", alignItems: "center" }}>
-      <Link href={account.LoginPage || "/"} style={{ display: "block", width: "fit-content", textDecoration: "none" }}>
+      <Link href={account?.LoginPage || "/"} style={{ display: "block", width: "fit-content", textDecoration: "none" }}>
         <Box sx={{ display: "inline-block", verticalAlign: "top", textAlign: "right" }}>
-          {account.OrganizationName} | {screamSnakeToTitleCase(account.AccountSubTypeName)} <br />
-          <i>{account.AccountName}</i>
+          {account?.OrganizationName} | {title(account?.AccountSubTypeName)} <br />
+          <i>{account?.AccountName}</i>
         </Box>
       </Link>
       <Box sx={{ display: "inline-block", marginLeft: "20px", verticalAlign: "top" }}>

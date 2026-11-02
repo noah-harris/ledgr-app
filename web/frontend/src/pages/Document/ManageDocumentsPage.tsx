@@ -1,20 +1,28 @@
 import { useState, useEffect } from "react";
+import openFile from "../../lib/openFile";
+import { useFileExport } from "../../hooks";
 import { formatDate } from "../../lib/format";
 import { getDocuments } from "../../services/document";
 import { getDocumentTags } from "../../services/document_tag";
-import DocumentMenubar from "../../components/uncommon/menubar/Menubar";
 import { onSubmitTagLink, onRemoveTagLink } from "../../services/document_tag";
-import { Loading, DataGrid, TagList } from "../../components";
-import { exportFiles } from "../../services/files";
+import { Loading, DataGrid, TagList, DocumentMenubar } from "../../components";
 import type { DocumentView, DocumentTag } from "../../types";
 import type { GridColDef, GridRowId } from "@mui/x-data-grid/models";
 
 
 export default function ManageDocumentsPage() {
+  const [selectedRowIds, setSelectedRowIds] = useState<GridRowId[]>([]);
+  const [selectedFileIds, setSelectedFileIds] = useState<string[]>([]);
+  
   const [documents, setDocuments] = useState<DocumentView[]>([]);
   const [documentTags, setDocumentTags] = useState<DocumentTag[]>([]);
-  const [selectedIds, setSelectedIds] = useState<GridRowId[]>([]);
-  const [_file, setFile] = useState<File | null>(null);
+  const { exportFiles } = useFileExport(selectedFileIds);
+  
+  useEffect(() => {
+    const selectedRows = documents.filter(doc => selectedRowIds.includes(doc.idDocument));
+    const ids = selectedRows.map(row => row.idFile.toString());
+    setSelectedFileIds(ids);
+  }, [selectedFileIds, documents]);
 
   useEffect(() => {
     getDocuments({ setDocuments });
@@ -39,26 +47,17 @@ export default function ManageDocumentsPage() {
     { field: "Created", headerName: "Created", width: 150, valueGetter: (_value: string, doc: DocumentView) => formatDate(doc.Created) },
   ];
 
-
   if (!documents.length) return <Loading />;
 
   return (
     <>
-      <DocumentMenubar 
-        onExport={() => { exportFiles((() => {
-          const selectedRows = documents.filter(doc => selectedIds.includes(doc.idDocument));
-          const ids = selectedRows.map(row => row.idFile.toString());
-          return ids;
-        })());}
-      }
-        onShare={() => { console.log("Share clicked") }}
-      />
+      <DocumentMenubar exportFiles={exportFiles}/>
       <DataGrid
         rows={documents}
         columns={columns}
         getRowId={(row) => row.idDocument}
-        onSelect={(params) => setFile(params.row)}
-        onSelectionChange={(ids) => setSelectedIds(ids)}
+        onSelectionChange={(ids) => setSelectedRowIds(ids)}
+        onSelect={(params) => {openFile(params.row.idFile)}}
         checkboxSelection
         hiddenColumns={["idDocument"]}
         width="fit"

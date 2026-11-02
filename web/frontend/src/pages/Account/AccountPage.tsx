@@ -1,18 +1,14 @@
-import { fetchApi } from "../../Api";
 import { useEffect, useState } from "react";
 import { Stack, Box, Typography } from "@mui/material";
+import { fetchApi } from "../../Api";
 import { Loading } from "../../components";
 import AccountCard from "./AccountCard";
+import { useUser } from "../../hooks";
 import type {  AccountType } from "../../types";
-import useUser from "../../hooks/useUser";
 
 export default function AccountPage() {
   const { accounts, loading } = useUser();
-
   const [accountTypes, setAccountTypes] = useState<AccountType[]>([]);
-  
-  accounts.sort((a, b) => a.AccountTypeName.localeCompare(b.AccountTypeName))
-
 
   useEffect(() => {
     fetchApi("/account/types")

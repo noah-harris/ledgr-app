@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { fetchApi } from "../Api";
 import type { AccountView, StatementView } from "../types";
 
-export default function useAccountDetails(idAccount: string) {
-  const [account, setAccount] = useState<AccountView | null>(null);
-  const [latestStatement, setLatestStatement] = useState<StatementView | null>(null);
+export default function useAccount(idAccount: string) {
+  const [account, setAccount] = useState<AccountView>();
+  const [latestStatement, setLatestStatement] = useState<StatementView>();
   const [statements, setStatements] = useState<StatementView[]>([]);
   const [loading, setLoading] = useState(true);
 

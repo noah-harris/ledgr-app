@@ -10,27 +10,28 @@ import {
   MenuSubmenuRoot,
   MenuSubmenuTrigger,
 } from "../..";
-import { useFileUpload } from "../../../hooks";
+import { useFileUpload, useFileShare } from "../../../hooks";
 
 import ExportIcon from "@mui/icons-material/Download";
 import UploadIcon from "@mui/icons-material/Upload";
 import ShareIcon from "@mui/icons-material/Share";
 import EmailIcon from "@mui/icons-material/Email";
 
-
-export default function DocumentMenubar({ onExport, onShare }: { onExport: () => void, onShare: () => void }) {
-  const { selectAndUploadFiles, uploading, backdrop } = useFileUpload("/file/upload/document");
+export default function FileMenuBar({ exportFiles }: { exportFiles: () => void }) {
+  const { selectAndUploadFiles, uploading, backdrop } = useFileUpload("/file/upload");
+  const { onShare } = useFileShare();
 
   return (
     <>
     <Menubar>
+
       <MenuRoot>
         <MenuTrigger>File</MenuTrigger>
         <MenuPortal>
           <MenuPositioner sideOffset={4} alignOffset={-2}>
             <MenuPopup>
               <MenuItem icon={<UploadIcon />} onClick={selectAndUploadFiles} disabled={uploading}>Upload</MenuItem>
-              <MenuItem icon={<ExportIcon />} onClick={onExport}>Export</MenuItem>
+              <MenuItem icon={<ExportIcon />} onClick={() => exportFiles()}>Export</MenuItem>
               <MenuSeparator />
               <MenuSubmenuRoot>
                 <MenuSubmenuTrigger icon={<ShareIcon />}>Share</MenuSubmenuTrigger>
@@ -46,7 +47,9 @@ export default function DocumentMenubar({ onExport, onShare }: { onExport: () =>
           </MenuPositioner>
         </MenuPortal>
       </MenuRoot>
+
     </Menubar>
+
     {backdrop}
     </>
   );

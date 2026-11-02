@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import type { GridColDef, GridRowId } from "@mui/x-data-grid";
+import { useEffect, useState } from "react"
+import { useFileExport, useFiles } from "../../hooks";
 import { formatFileSize } from "../../lib/format";
-import { getFiles } from "../../services/files";
-import { DataGrid, Loading } from "../../components";
+import { DataGrid, Loading, FileMenuBar } from "../../components";
+import { openFile } from "../../lib";
+import type { GridColDef, GridRowId } from "@mui/x-data-grid";
 import type { File } from "../../types";
-import { fetchApi } from "../../Api";
 
 const columns: GridColDef<File>[] = [
   { field: "idFile", headerName: "ID", flex: 1 },
@@ -20,38 +20,32 @@ const columns: GridColDef<File>[] = [
 ];
 
 export default function FilesPage() {
-  const [files, setFiles] = useState<File[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [_selectedIds, setSelectedIds] = useState<GridRowId[]>([]);
+  const [selectedRowIds, setSelectedRowIds] = useState<GridRowId[]>([]);
+  const [selectedFileIds, setSelectedFileIds] = useState<string[]>([]);
+  const { exportFiles } = useFileExport(selectedFileIds);
+  const { files, loading } = useFiles();
 
-  useEffect(() => { 
-    setLoading(true);
-    getFiles({ setFiles });
-    setLoading(false);
-  }, []);
-
+  useEffect(() => {
+    const selectedRows = files.filter(file => selectedRowIds.includes(file.idFile));
+    const ids = selectedRows.map(row => row.idFile.toString());
+    setSelectedFileIds(ids);
+  }, [selectedRowIds, files]);
 
   if (loading) return <Loading />;
 
   return (
     <>
-
+      <FileMenuBar exportFiles={exportFiles}/>
       <DataGrid
         rows={files}
         columns={columns}
         getRowId={(row) => row.idFile}
-        onSelect={async (params) => {
-          const tab = window.open("", "_blank");
-          const res = await fetchApi(`/file/download?idFile=${params.row.idFile}`);
-          if (!res.ok || !tab) { tab?.close(); return; }
-          tab.location.href = URL.createObjectURL(await res.blob());
-        }}
-        onSelectionChange={(ids) => setSelectedIds(ids)}
+        onSelect={(params) => {openFile(params.row.idFile)}}
+        onSelectionChange={(ids) => setSelectedRowIds(ids)}
         checkboxSelection
         hiddenColumns={["idFile"]}
         width="fit"
       />
-
     </>
   );
 }

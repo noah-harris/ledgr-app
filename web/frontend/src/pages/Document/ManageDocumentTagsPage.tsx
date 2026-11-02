@@ -1,20 +1,16 @@
 import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
-import useCreateDocumentTag from "../../hooks/useCreateDocumentTag";
 import AddIcon from '@mui/icons-material/Add';
-import type { GridColDef } from "@mui/x-data-grid/models";
-import { Typography } from "@mui/material";
-
-import DataGrid from "../../components/common/DataGrid";
-import type { DocumentTag } from "../../types";
+import { DataGrid } from "../../components";
+import { useCreateDocumentTag } from "../../hooks";
 import { fetchApi } from "../../Api";
-
+import type { DocumentTag } from "../../types";
+import type { GridColDef } from "@mui/x-data-grid/models";
 
 const columns: GridColDef<DocumentTag>[] = [
   { field: "idDocumentTag", headerName: "ID" },
   { field: "DocumentTagName", headerName: "Name", valueGetter: (_value: string, tag: DocumentTag) => tag.DocumentTagName }
 ];
-
 
 export default function ManageDocumentTagPage() {
   const [documentTags, setDocumentTags] = useState<DocumentTag[]>([]);
@@ -29,9 +25,6 @@ export default function ManageDocumentTagPage() {
     
   return (
     <>
-
-      <Typography variant="h4">Manage Document Tags</Typography>
-
       <Button 
         variant="contained" 
         color="primary"

@@ -5,7 +5,6 @@ import ParameterBox from "./ParameterBox";
 import type { Param } from "./ParameterBox";
 import type { Route } from "../../types/Route";
 
-
 export default function Dev() {
   const [route, setRoute] = useState<Route | null>(null);
   const [method, setMethod] = useState("");

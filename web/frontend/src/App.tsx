@@ -2,7 +2,7 @@ import { Routes, Route, Outlet, Navigate } from "react-router";
 import JunkFilePage from "./pages/File/JunkFilePage";
 import AccountPage from "./pages/Account/AccountPage";
 import { useAuth } from "./auth/AuthContext";
-import ManageDocumentTagPage from "./pages/Document/DocumentTagsManagePage";
+import ManageDocumentTagPage from "./pages/Document/ManageDocumentTagsPage";
 import Dev from "./pages/Dev/Dev";
 import Layout from "./Layout";
 import Login from "./pages/Login";

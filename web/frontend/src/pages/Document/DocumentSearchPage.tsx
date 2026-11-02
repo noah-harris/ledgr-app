@@ -1,21 +1,20 @@
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
-import { DataGrid, Modal, FileViewer, Loading, TagBreadcrumb } from "../../components";
+import { DataGrid, Loading, TagBreadcrumb } from "../../components";
 import { fetchApi } from "../../Api";
-import { formatDate } from "../../lib/format";
-
+import { formatDate, openFile } from "../../lib";
 import type { GridColDef } from "@mui/x-data-grid";
 import type { DocumentTag, DocumentView } from "../../types";
 
 const tagColumns: GridColDef<DocumentTag>[] = [
-  { field: "idDocumentTag", headerName: "ID", flex: 1, minWidth: 150 },
-  { field: "DocumentTagName", headerName: "Name", flex: 1, minWidth: 150 },
+  { field: "idDocumentTag", headerName: "ID" },
+  { field: "DocumentTagName", headerName: "Name" },
 ];
 
 const documentColumns: GridColDef<DocumentView>[] = [
-  { field: "idDocument", headerName: "ID", flex: 1, minWidth: 150 },
-  { field: "FileName", headerName: "Document", flex: 1, minWidth: 150, valueGetter: (_value: string, doc: DocumentView) => `${doc.FileName}.${doc.FileExtension}` },
-  { field: "Created", headerName: "Created", flex: 1, minWidth: 150, valueGetter: (_value: string, doc: DocumentView) => formatDate(doc.Created) },
+  { field: "idDocument", headerName: "ID" },
+  { field: "FileName", headerName: "Document", valueGetter: (_value: string, doc: DocumentView) => `${doc.FileName}.${doc.FileExtension}` },
+  { field: "Created", headerName: "Created", valueGetter: (_value: string, doc: DocumentView) => formatDate(doc.Created) },
 ];
 
 const getTagId = (row: DocumentTag) => row.idDocumentTag;
@@ -28,7 +27,6 @@ export default function DocumentsSearchPage() {
   const [allDocuments, setAllDocuments] = useState<DocumentView[]>([]);
   const [selectedTags, setSelectedTags] = useState<DocumentTag[]>([]);
   const [loading, setLoading] = useState(true);
-  const [file, setFile] = useState<DocumentView | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -73,16 +71,13 @@ export default function DocumentsSearchPage() {
           key="documents"
           rows={remainingDocuments}
           columns={documentColumns}
-          onSelect={params => setFile(params.row)}
+          onSelect={params => openFile(params.row.idDocument)}
           getRowId={getDocumentId}
           hiddenColumns={documentHiddenColumns}
           width="fit"
         />
       )}
 
-      <Modal open={file !== null} onClose={() => setFile(null)} title={file?.FileName ?? ""}>
-        {file && <FileViewer path={`${file.DownloadEndpoint}`} />}
-      </Modal>
     </Box>
   );
 }

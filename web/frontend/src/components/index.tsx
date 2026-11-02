@@ -22,6 +22,8 @@ import NavBar from "./layout/NavBar";
 
 import TagBreadcrumb from "./uncommon/TagBreadcrumb";
 import TagList from "./uncommon/TagList";
+import FileMenuBar from "./uncommon/menubar/FileMenuBar";
+import DocumentMenubar from "./uncommon/menubar/DocumentMenuBar";
 
 export { 
   FileViewer, 
@@ -44,6 +46,8 @@ export {
   MenuSubmenuRoot, 
   MenuSubmenuTrigger,
   TagList,
+  FileMenuBar,
+  DocumentMenubar,
 };
 
   
