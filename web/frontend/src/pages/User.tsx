@@ -1,7 +1,9 @@
+import { useUser } from "../hooks";
+
 export default function User() {
   return (
-    <div>
-      <h1>User Page</h1>
-    </div>
+    <>
+      <pre>{JSON.stringify(useUser(), null, 2)}</pre>
+    </>
   );
 }

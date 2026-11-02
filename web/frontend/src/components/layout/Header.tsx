@@ -15,30 +15,26 @@ export default function Header({ user }: { user: Users | null }) {
 
   return (
     <AppBar position="static">
+
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          {/* Make link to home */}
           <a href="/" style={{ textDecoration: "none", color: "inherit" }}>
             ledgr
           </a>
         </Typography>
 
-        {/* Profile */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-
           <Typography variant="body2" sx={{ gap: 2, display: "flex", alignItems: "center" }}>
             <ClockIcon style={{ verticalAlign: "middle", marginRight: 4, fontSize: "1rem" }} />
             {now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })} 
             <CalendarIcon style={{ verticalAlign: "middle", marginRight: 4, fontSize: "1rem" }} />
             {now.toDateString()}
           </Typography>
-
           <Typography variant="body1">{title(user?.FirstName)} {title(user?.LastName)}</Typography>
-
-          <Avatar alt={user?.Username}>{user?.Username[0].toUpperCase()}</Avatar>
-
+          <a href="/user" style={{ textDecoration: "none", color: "inherit" }}><Avatar alt={user?.Username}>{user?.Username[0].toUpperCase()}</Avatar></a>
         </Box>
       </Toolbar>
+
     </AppBar>
   );
 }
