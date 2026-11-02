@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
+import useCreateDocumentTag from "../../hooks/useCreateDocumentTag";
 import AddIcon from '@mui/icons-material/Add';
 import type { GridColDef } from "@mui/x-data-grid/models";
 import { Typography } from "@mui/material";
 
 import DataGrid from "../../components/common/DataGrid";
-import DocumentTagCreateModal from "./CreateDocumentTag";
 import type { DocumentTag } from "../../types";
 import { fetchApi } from "../../Api";
 
@@ -16,21 +16,9 @@ const columns: GridColDef<DocumentTag>[] = [
 ];
 
 
-function onSubmitNewModal(documentTag: DocumentTag) {
-  fetchApi("/document/tag", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(documentTag)
-  })
-    .then(response => response.json())
-    .catch(error => console.error(error));
-}
-
 export default function ManageDocumentTagPage() {
   const [documentTags, setDocumentTags] = useState<DocumentTag[]>([]);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const { modal: createDocumentTagModal, open: openCreateDocumentTagModal } = useCreateDocumentTag();
 
   useEffect(() => {
     fetchApi("/document/tags")
@@ -41,15 +29,18 @@ export default function ManageDocumentTagPage() {
     
   return (
     <>
+
       <Typography variant="h4">Manage Document Tags</Typography>
-        <Button 
-          variant="contained" 
-          color="primary"
-          onClick={() => setIsCreateModalOpen(true)}
-          sx={{ alignSelf: "center", minWidth: 0, p: 0.5 }}
-        >
-          <AddIcon />
-        </Button>
+
+      <Button 
+        variant="contained" 
+        color="primary"
+        onClick={() => openCreateDocumentTagModal()}
+        sx={{ alignSelf: "center", minWidth: 0, p: 0.5 }}
+      >
+        <AddIcon />
+      </Button>
+
       <DataGrid 
         getRowId={(row) => row.idDocumentTag}
         columns={columns}
@@ -57,12 +48,8 @@ export default function ManageDocumentTagPage() {
         hiddenColumns={["idDocumentTag"]}
         width="fit"
       />
-
-      <DocumentTagCreateModal 
-        open={isCreateModalOpen} 
-        onClose={() => setIsCreateModalOpen(false)}
-        onSubmit={onSubmitNewModal}
-      />
+      
+      {createDocumentTagModal}
     </>
   );
 }

@@ -9,8 +9,9 @@ import {
   MenuSeparator,
   MenuSubmenuRoot,
   MenuSubmenuTrigger,
-} from "../../components";
-import { useFileUpload } from "../../hooks/useFileUpload";
+} from "../..";
+import { useFileUpload } from "../../../hooks";
+
 import ExportIcon from "@mui/icons-material/Download";
 import UploadIcon from "@mui/icons-material/Upload";
 import ShareIcon from "@mui/icons-material/Share";

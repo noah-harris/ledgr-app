@@ -1,22 +1,35 @@
 import { TextField, Button } from "@mui/material";
+import { useState } from "react";
+import { fetchApi } from "../Api";
 import SaveIcon from '@mui/icons-material/Save';
 import { v4 as uuidv4 } from "uuid";
-import { Modal } from "../../components";
-import type { DocumentTag } from "../../types";
+import { Modal } from "../components";
+import type { DocumentTag } from "../types";
 
-export default function DocumentTagCreateModal(
-  { open, onClose, onSubmit }: { open: boolean; onClose: () => void; onSubmit: (documentTag: any) => void }
-) {
 
-  return (
+function onSubmitNewModal(documentTag: DocumentTag) {
+  fetchApi("/document/tag", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(documentTag)})
+    .then(response => response.json())
+    .catch(error => console.error(error));
+}
+
+export default function useCreateDocumentTag() {
+  const [visible, setVisible] = useState(false);
+
+  const open = () => setVisible(true);
+
+  const modal = (
     <Modal
-      title="ADD DOCUMENT TAG"
-      onClose={onClose}
-      open={open}
+      title="Create Document Tag"
+      onClose={() => setVisible(false)}
+      open={visible}
     >      
       <form style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
 
-        <TextField type="text" name="documentTagName" placeholder="Enter document tag name" />
+        <TextField type="text" name="documentTagName" placeholder="Enter new tag..." />
       
         <Button 
           type="submit" 
@@ -34,8 +47,8 @@ export default function DocumentTagCreateModal(
               Created: new Date().toISOString(),
               Updated: new Date().toISOString(),
             };
-            onSubmit(documentTag);
-            onClose();
+            onSubmitNewModal(documentTag);
+            setVisible(false);
           }}
         >
           <SaveIcon></SaveIcon>
@@ -43,5 +56,9 @@ export default function DocumentTagCreateModal(
       </form>
       
     </Modal>
-  );
+  )
+
+
+
+  return { modal, open };
 }

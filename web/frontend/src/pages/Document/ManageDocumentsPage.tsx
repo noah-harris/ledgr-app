@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { formatDate } from "../../lib/format";
 import { getDocuments } from "../../services/document";
 import { getDocumentTags } from "../../services/document_tag";
-import DocumentMenubar from "./Menubar";
+import DocumentMenubar from "../../components/uncommon/menubar/Menubar";
 import { onSubmitTagLink, onRemoveTagLink } from "../../services/document_tag";
 import { Loading, DataGrid, TagList } from "../../components";
 import { exportFiles } from "../../services/files";
