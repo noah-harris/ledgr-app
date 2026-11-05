@@ -3,12 +3,11 @@ import SortOrphanFilesToolPage from "./pages/File/SortOrpanFilesToolPage";
 import JunkFilePage from "./pages/File/JunkFilePage";
 import AccountPage from "./pages/Account/AccountPage";
 import { useAuth } from "./auth/AuthContext";
-import ManageDocumentTagPage from "./pages/Document/ManageDocumentTagsPage";
 import Dev from "./pages/Dev/Dev";
 import Layout from "./Layout";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
-import ManageDocumentsPage from "./pages/Document/ManageDocumentsPage";
+import DocumentsPage from "./pages/Document/DocumentsPage";
 import Settings from "./pages/Settings";
 import User from "./pages/User";
 import File from "./pages/File/File";
@@ -31,9 +30,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/accounts" element={<AccountPage />} />
           <Route path="/accounts/:idAccount" element={<AccountDetailPage />} />
-          <Route path="/documents/manage" element={<ManageDocumentsPage />} />
+          <Route path="/documents" element={<DocumentsPage />} />
           <Route path="/documents/search" element={<DocumentsSearchPage />} />
-          <Route path="/document/tags/manage" element={<ManageDocumentTagPage />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/user" element={<User />} />
           <Route path="/files" element={<File />} />

@@ -13,18 +13,17 @@ const links: NavLink[] = [
     label: "Transactions"
   },
   { 
-    to: "/documents/manage", 
+    to: "/documents", 
     label: "Documents",
     children: [
-      { to: "/documents/manage", label: "Manage" },
+      { to: "/documents", label: "All" },
       { to: "/documents/search", label: "Search" },
-      { to: "/document/tags/manage", label: "Tags" }
   ]},
   {
     to: "/files",
     label: "Files",
     children: [
-      { to: "/files", label: "All Files" },
+      { to: "/files", label: "All" },
       { to: "/file/junk", label: "Junk" },
       { to: "/file/sort-orphan", label: "Sort Orphans…" }
     ]

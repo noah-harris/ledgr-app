@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Box } from "@mui/material";
 import { FileViewer } from "../../components";
 import { useState, useEffect } from "react";
 import type { File } from "../../types";
@@ -7,17 +7,17 @@ import { fetchApi } from "../../Api";
 export default function SortOrphanFilesToolPage() {
   const [file, setFile] = useState<File>();
 
-    useEffect(() => {
-      async function fetchInitialOrphanFile() {
-        const file = await fetchApi("/file/orphan");
-        const fileData = await file.json();
-        if (!fileData || fileData.length === 0) {
-          return;
-        }
-        setFile(fileData[0]);
+  useEffect(() => {
+    async function fetchInitialOrphanFile() {
+      const file = await fetchApi("/file/orphan");
+      const fileData = await file.json();
+      if (!fileData || fileData.length === 0) {
+        return;
       }
-      fetchInitialOrphanFile();
-    }, []);
+      setFile(fileData[0]);
+    }
+    fetchInitialOrphanFile();
+  }, []);
 
   async function allowFile(entity: string) {
     if (!file) return;
@@ -32,17 +32,21 @@ export default function SortOrphanFilesToolPage() {
     }
     setFile(newFileData[0]);
   }
-    
+
+  if (!file || !file?.DownloadEndpoint) {
+    return <Box style={{display: "flex", justifyContent: "center", alignItems: "center", height: 300, fontSize: 48}}>All of the orphans are dead</Box>;
+  }
+  
   return (
     <>
-      <FileViewer path={file?.DownloadEndpoint || "/file/noimage"}/>
+      <FileViewer path={file?.DownloadEndpoint}/>
       <Button onClick={() => allowFile("statement")}>Statement</Button>
       <Button onClick={() => allowFile("document")}>Document</Button>
       <Button onClick={() => allowFile("account")}>Account</Button>
       <Button onClick={() => allowFile("invoice")}>Invoice</Button>
       <Button onClick={() => allowFile("receipt")}>Receipt</Button>
-      <Button onClick={() => {allowFile("transaction"); }}>Transaction</Button>
-      <Button onClick={() => fetchApi(`/file/junk/toggle?idFile=${file?.idFile}`, {method: "PUT"})}>Set Junk</Button>
+      <Button onClick={() => allowFile("transaction")}>Transaction</Button>
+      <Button onClick={() => fetchApi(`/file/junk?idFile=${file?.idFile}&isJunk=1`, {method: "PUT"})}>Set Junk</Button>
     </>
   );
 }

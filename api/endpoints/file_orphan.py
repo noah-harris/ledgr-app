@@ -1,7 +1,7 @@
 from ._imports import *
 
 @app.get("/file/orphan")
-@catch("Failed to get orphan files")
+@catch("Failed to get orphan files", response_model=List[FileView])
 def get_orphan_files(current_user:Users=Depends(get_current_user)):
 
     resp = exec(
@@ -12,7 +12,7 @@ def get_orphan_files(current_user:Users=Depends(get_current_user)):
                 AND [idUsers] = :idUsers
                 AND [isAllowedAny] = 0
                 AND [isJunk] = 0
-                AND f.[idFile] <> '00000000-0000-0000-0000-000000000000'
+            ORDER BY f.[CreatedAt] ASC, CASE WHEN f.[idFile] = '00000000-0000-0000-0000-000000000000' THEN 1 ELSE 0 END ASC
         """,
         database="ldr",
         parameters={
@@ -26,7 +26,7 @@ def get_orphan_files(current_user:Users=Depends(get_current_user)):
 
 
 @app.get("/file/orphan/statement")
-@catch("Failed to get orphan file statements")
+@catch("Failed to get orphan file statements", response_model=List[FileView])
 def get_orphan_file_statements(current_user:Users=Depends(get_current_user)):
 
     resp = exec(
@@ -35,7 +35,6 @@ def get_orphan_file_statements(current_user:Users=Depends(get_current_user)):
             FROM [usr].[v_File] AS f
             WHERE 1=1
                 AND [idUsers] = :idUsers
-                AND f.[idFile] <> '00000000-0000-0000-0000-000000000000'
                 AND [AllowStatementImage] = 1
                 AND [isJunk] = 0
                 AND NOT EXISTS (
@@ -45,6 +44,7 @@ def get_orphan_file_statements(current_user:Users=Depends(get_current_user)):
                         AND s.[idUsers] = f.[idUsers]
                         AND s.[idImage] = f.[idFile]
                     )
+            ORDER BY f.[CreatedAt] ASC, CASE WHEN f.[idFile] = '00000000-0000-0000-0000-000000000000' THEN 1 ELSE 0 END ASC
         """,
         database="ldr",
         parameters={
@@ -58,7 +58,7 @@ def get_orphan_file_statements(current_user:Users=Depends(get_current_user)):
 
 
 @app.get("/file/orphan/document")
-@catch("Failed to get orphan file documents")
+@catch("Failed to get orphan file documents", response_model=List[FileView])
 def get_orphan_file_documents(current_user:Users=Depends(get_current_user)):
 
     resp = exec(
@@ -69,7 +69,6 @@ def get_orphan_file_documents(current_user:Users=Depends(get_current_user)):
                 AND [idUsers] = :idUsers
                 AND [isJunk] = 0
                 AND [AllowDocument] = 1
-                AND f.[idFile] <> '00000000-0000-0000-0000-000000000000'
                 AND NOT EXISTS (
                     SELECT NULL
                     FROM [usr].[Document] AS d
@@ -77,6 +76,7 @@ def get_orphan_file_documents(current_user:Users=Depends(get_current_user)):
                         AND d.[idUsers] = f.[idUsers]
                         AND d.[idFile] = f.[idFile]
                     )
+            ORDER BY f.[CreatedAt] ASC, CASE WHEN f.[idFile] = '00000000-0000-0000-0000-000000000000' THEN 1 ELSE 0 END ASC
         """,
         database="ldr",
         parameters={
@@ -90,7 +90,7 @@ def get_orphan_file_documents(current_user:Users=Depends(get_current_user)):
 
 
 @app.get("/file/orphan/transaction/invoice")
-@catch("Failed to get orphan transaction invoice files")
+@catch("Failed to get orphan transaction invoice files", response_model=List[FileView])
 def get_orphan_transaction_invoice_files(current_user:Users=Depends(get_current_user)):
 
     resp = exec(
@@ -101,7 +101,6 @@ def get_orphan_transaction_invoice_files(current_user:Users=Depends(get_current_
                 AND [idUsers] = :idUsers
                 AND [AllowTransactionInvoiceImage] = 1 AND [AllowTransactionReceiptImage] = 0
                 AND [isJunk] = 0
-                AND f.[idFile] <> '00000000-0000-0000-0000-000000000000'
                 AND NOT EXISTS (
                     SELECT NULL
                     FROM [usr].[Transaction] AS t
@@ -109,6 +108,7 @@ def get_orphan_transaction_invoice_files(current_user:Users=Depends(get_current_
                         AND t.[idUsers] = f.[idUsers]
                         AND t.[idImageInvoice] = f.[idFile]
                     )
+            ORDER BY f.[CreatedAt] ASC, CASE WHEN f.[idFile] = '00000000-0000-0000-0000-000000000000' THEN 1 ELSE 0 END ASC
         """,
         database="ldr",
         parameters={
@@ -122,7 +122,7 @@ def get_orphan_transaction_invoice_files(current_user:Users=Depends(get_current_
 
 
 @app.get("/file/orphan/transaction/receipt")
-@catch("Failed to get orphan transaction receipt files")
+@catch("Failed to get orphan transaction receipt files", response_model=List[FileView])
 def get_orphan_transaction_receipt_files(current_user:Users=Depends(get_current_user)):
 
     resp = exec(
@@ -133,7 +133,6 @@ def get_orphan_transaction_receipt_files(current_user:Users=Depends(get_current_
                 AND [idUsers] = :idUsers
                 AND [AllowTransactionInvoiceImage] = 0 AND [AllowTransactionReceiptImage] = 1
                 AND [isJunk] = 0
-                AND f.[idFile] <> '00000000-0000-0000-0000-000000000000'
                 AND NOT EXISTS (
                     SELECT NULL
                     FROM [usr].[Transaction] AS t
@@ -141,6 +140,7 @@ def get_orphan_transaction_receipt_files(current_user:Users=Depends(get_current_
                         AND t.[idUsers] = f.[idUsers]
                         AND t.[idImageReceipt] = f.[idFile]
                     )
+            ORDER BY f.[CreatedAt] ASC, CASE WHEN f.[idFile] = '00000000-0000-0000-0000-000000000000' THEN 1 ELSE 0 END ASC
         """,
         database="ldr",
         parameters={
@@ -154,7 +154,7 @@ def get_orphan_transaction_receipt_files(current_user:Users=Depends(get_current_
 
 
 @app.get("/file/orphan/transaction")
-@catch("Failed to get orphan transaction files")
+@catch("Failed to get orphan transaction files", response_model=List[FileView])
 def get_orphan_transaction_invoice_files(current_user:Users=Depends(get_current_user)):
 
     resp = exec(
@@ -165,7 +165,6 @@ def get_orphan_transaction_invoice_files(current_user:Users=Depends(get_current_
                 AND [idUsers] = :idUsers
                 AND [AllowTransactionInvoiceImage] = 1 AND [AllowTransactionReceiptImage] = 1
                 AND [isJunk] = 0
-                AND f.[idFile] <> '00000000-0000-0000-0000-000000000000'
                 AND (1=2
                     OR NOT EXISTS (
                         SELECT NULL
@@ -184,6 +183,7 @@ def get_orphan_transaction_invoice_files(current_user:Users=Depends(get_current_
                             AND NOT (t.[idImageReceipt] = f.[idFile] AND t.[idImageInvoice] = f.[idFile])
                     )
             )
+            ORDER BY f.[CreatedAt] ASC, CASE WHEN f.[idFile] = '00000000-0000-0000-0000-000000000000' THEN 1 ELSE 0 END ASC
         """,
         database="ldr",
         parameters={

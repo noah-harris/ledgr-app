@@ -1,15 +1,9 @@
+import { Box } from "@mui/material";
+
 export default function Home() {
   return (
-    <div 
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: 300,
-      }}
-    >
-      <p>Welcome Back</p>
-
-    </div>
+    <Box style={{display: "flex", justifyContent: "center", alignItems: "center", height: 300, fontSize: 48}}>
+      Welcome Back
+    </Box>
   );
 }
