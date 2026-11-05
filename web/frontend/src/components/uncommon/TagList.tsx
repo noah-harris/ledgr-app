@@ -22,7 +22,7 @@ export default function TagList({document}: {document: DocumentView}) {
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 6, height: "100%", overflow: "hidden" }}>
       {
-        document.Tags
+        [...document.Tags]
         .sort((a, b) => a.DocumentTagName.localeCompare(b.DocumentTagName))
         .map((tag) => (
           <Chip 

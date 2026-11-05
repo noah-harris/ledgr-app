@@ -40,3 +40,13 @@ export async function fetchApi(
 
   return res;
 }
+
+/**
+ * fetchApi() for JSON GETs: throws on a non-ok response, so an error body is
+ * never treated as data, and returns the parsed body.
+ */
+export async function fetchJson<T>(...args: Parameters<typeof fetchApi>): Promise<T> {
+  const res = await fetchApi(...args);
+  if (!res.ok) throw new Error(`${args[0]} failed: ${res.status}`);
+  return res.json();
+}

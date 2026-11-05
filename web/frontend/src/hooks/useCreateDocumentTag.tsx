@@ -1,14 +1,16 @@
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { TextField, Button } from "@mui/material";
 import SaveIcon from '@mui/icons-material/Save';
 import { v4 as uuidv4 } from "uuid";
 import { fetchApi } from "../Api";
 import { Modal } from "../components";
+import { queryKeys } from "../lib";
 import type { DocumentTag } from "../types";
 
 
 function onSubmitNewModal(documentTag: DocumentTag) {
-  fetchApi("/document/tag", {
+  return fetchApi("/document/tag", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify(documentTag)})
@@ -17,6 +19,7 @@ function onSubmitNewModal(documentTag: DocumentTag) {
 }
 
 export default function useCreateDocumentTag() {
+  const queryClient = useQueryClient();
   const [visible, setVisible] = useState(false);
 
   const open = () => setVisible(true);
@@ -47,7 +50,8 @@ export default function useCreateDocumentTag() {
               Created: new Date().toISOString(),
               Updated: new Date().toISOString(),
             };
-            onSubmitNewModal(documentTag);
+            onSubmitNewModal(documentTag)
+              .then(() => queryClient.invalidateQueries({ queryKey: queryKeys.documentTags }));
             setVisible(false);
           }}
         >

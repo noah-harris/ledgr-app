@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
  
+import { useQueryClient } from "@tanstack/react-query";
 import { API_HOST } from "../config/config";
 import type { Users } from "../types";
  
@@ -14,6 +15,7 @@ type AuthContextType = {
 export const AuthContext = createContext<AuthContextType | null>(null);
  
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient();
   const [token, setToken] = useState<string | null>(() => localStorage.getItem("token"));
   // Stored with the token it was fetched for, so a user from an old token is
   // never shown and `loading` can be derived instead of set inside the effect.
@@ -23,7 +25,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem("token");
     setToken(null);
     setSession(null);
-  }, []);
+    queryClient.clear(); // Cached data belongs to the user who just left.
+  }, [queryClient]);
  
   const login = useCallback(async (username: string, password: string) => {
     const res = await fetch(`${API_HOST}/user/login`, {
@@ -39,7 +42,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { access_token } = await res.json();
     localStorage.setItem("token", access_token);
     setToken(access_token);
-  }, []);
+    queryClient.clear(); // /user/login is reachable while signed in, without a logout.
+  }, [queryClient]);
  
   // Load the user once per token. Aborted if the token changes mid-request
   // (or on StrictMode's double mount) so a stale response can't win.

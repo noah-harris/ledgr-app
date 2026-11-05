@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Backdrop, Box, CircularProgress } from "@mui/material";
 import { fetchApi } from "../Api";
+import { queryKeys } from "../lib";
 import type { FileStatus } from "../types";
 
 export default function useFileUpload(endpoint: string) {
+  const queryClient = useQueryClient();
   const [uploading, setUploading] = useState(false);
   const [fileStatus, setFileStatus] = useState<{ filename: string; status: string }[]>([]);
 
@@ -31,7 +34,11 @@ export default function useFileUpload(endpoint: string) {
       setUploading(true);
       uploadFiles(Array.from(input.files), endpoint)
         .then(setFileStatus)
-        .finally(() => setUploading(false));
+        .finally(() => {
+          setUploading(false);
+          queryClient.invalidateQueries({ queryKey: queryKeys.files });
+          queryClient.invalidateQueries({ queryKey: queryKeys.documents });
+        });
     };
     input.click();
   }
