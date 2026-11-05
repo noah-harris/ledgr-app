@@ -10,6 +10,7 @@ ENV/
 env.bak/
 venv.bak/
 generated/*
+*/Thumbs.db
 
 
 # Logs
@@ -36,3 +37,4 @@ web/frontend/*.ntvs*
 web/frontend/*.njsproj
 web/frontend/*.sln
 web/frontend/*.sw?
+

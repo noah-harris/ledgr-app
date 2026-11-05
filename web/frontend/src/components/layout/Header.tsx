@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { AppBar, Toolbar, Typography, Avatar, Box } from "@mui/material";
-import type { Users } from "../../types";
 import { title } from "../../lib/format";
 import ClockIcon from "@mui/icons-material/AccessTime";
 import CalendarIcon from "@mui/icons-material/CalendarToday";
+import type { Users } from "../../types";
 
 export default function Header({ user }: { user: Users | null }) {
   const [now, setNow] = useState(new Date());
@@ -30,8 +30,12 @@ export default function Header({ user }: { user: Users | null }) {
             <CalendarIcon style={{ verticalAlign: "middle", marginRight: 4, fontSize: "1rem" }} />
             {now.toDateString()}
           </Typography>
-          <Typography variant="body1">{title(user?.FirstName)} {title(user?.LastName)}</Typography>
-          <a href="/user" style={{ textDecoration: "none", color: "inherit" }}><Avatar alt={user?.Username}>{user?.Username[0].toUpperCase()}</Avatar></a>
+          {user && (
+            <>
+              <Typography variant="body1">{title(user.FirstName)} {title(user.LastName)}</Typography>
+              <a href="/user" style={{ textDecoration: "none", color: "inherit" }}><Avatar alt={user.Username[0].toUpperCase()}>{user.Username[0].toUpperCase()}</Avatar></a>
+            </>
+          )}
         </Box>
       </Toolbar>
 
