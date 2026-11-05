@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchApi, fetchJson } from "../Api";
 import { queryKeys } from "../lib";
-import type { AccountView, StatementView } from "../types";
+import type { AccountView, StatementSummaryView, StatementView } from "../types";
 
-const NO_STATEMENTS: StatementView[] = [];
+const NO_STATEMENTS: StatementSummaryView[] = [];
 
 // An account with no statements yet gets an error response here. That is an
 // expected state rather than a failure, so it is not thrown or retried.
@@ -23,7 +23,7 @@ export default function useAccount(idAccount: string) {
   });
   const statementsQuery = useQuery({
     queryKey: queryKeys.statements(idAccount),
-    queryFn: () => fetchJson<StatementView[]>(`/statements?idAccount=${idAccount}`),
+    queryFn: () => fetchJson<StatementSummaryView[]>(`/statements?idAccount=${idAccount}`),
   });
 
   return {

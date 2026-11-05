@@ -30,11 +30,11 @@ SELECT
     s.[StartBalance],
     s.[EndBalance],
     s.[BalanceChange],
-    ss.[AmountWithdrawn],
-    ss.[AmountDeposited],
-    ss.[TotalWithdrawals],
-    ss.[TotalDeposits],
-    ss.[TotalTransactions],
+    CAST(ss.[AmountWithdrawn] AS DECIMAL(18, 2)) AS [AmountWithdrawn],
+    CAST(ss.[AmountDeposited] AS DECIMAL(18, 2)) AS [AmountDeposited],
+    CAST(ss.[TotalWithdrawals] AS INT) AS [TotalWithdrawals],
+    CAST(ss.[TotalDeposits] AS INT) AS [TotalDeposits],
+    CAST(ss.[TotalTransactions] AS INT) AS [TotalTransactions],
     s.[Created],
     s.[Updated]
 FROM [usr].[v_Statement] AS s

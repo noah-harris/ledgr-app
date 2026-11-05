@@ -1,0 +1,31 @@
+export interface TransactionView {
+  idUsers: string;
+  idAccount: string;
+  idStatement: string;
+  idTransaction: string;
+  idTransactionGroup: string | null;
+  idTransactionParent: string | null;
+  idTransactionType: string;
+  idPayee: string;
+  idImageInvoice: string | null;
+  idImageReceipt: string | null;
+  TransactionTypeName: string | null;
+  Scope: string;
+  Cashflow: string;
+  requireTransactionItems: boolean;
+  Sign: number | null;
+  TransactionDate: string;
+  PostDate: string;
+  InvoiceDate: string | null;
+  DueDate: string | null;
+  StartDate: string | null;
+  EndDate: string | null;
+  Amount: number;
+  StatementText: string | null;
+  isValidated: boolean | null;
+  isTransactionSplitChild: boolean | null;
+  hasInvoiceImage: boolean | null;
+  hasReceiptImage: boolean | null;
+  Created: string;
+  Updated: string;
+}

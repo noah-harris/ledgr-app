@@ -8,10 +8,10 @@ SELECT
     s.[StatementDate],
     s.[StartDate],
     s.[EndDate],
-    DATEDIFF(DAY, s.[StartDate], s.[EndDate]) AS [PeriodLength],
+    CAST(DATEDIFF(DAY, s.[StartDate], s.[EndDate]) AS INT) AS [PeriodLength],
     s.[StartBalance],
     s.[EndBalance],
-    (s.[EndBalance] - s.[StartBalance]) AS [BalanceChange],
+    CAST(s.[EndBalance] - s.[StartBalance] AS DECIMAL(18, 2)) AS [BalanceChange],
     s.[Created],
     s.[Updated]
 FROM [usr].[Statement] AS s

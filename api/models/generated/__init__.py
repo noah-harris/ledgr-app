@@ -28,6 +28,7 @@ from .Payee import *
 from .PayeeTag import *
 from .PayeeView import *
 from .Statement import *
+from .StatementSummaryView import *
 from .StatementView import *
 from .Transaction import *
 from .TransactionGroup import *
@@ -37,6 +38,7 @@ from .TransactionItemTag import *
 from .TransactionItemType import *
 from .TransactionTag import *
 from .TransactionType import *
+from .TransactionView import *
 from .Unit import *
 from .UnitType import *
 from .Users import *

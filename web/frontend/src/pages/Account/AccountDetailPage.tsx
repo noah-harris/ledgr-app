@@ -1,8 +1,9 @@
 import { useParams } from "react-router";
-import { Box, Link, Typography } from "@mui/material";
+import { Box, Link, Stack, Typography } from "@mui/material";
 import { Loading } from "../../components";
 import { formatDate, title } from "../../lib";
 import NotFound from "../NotFound";
+import StatementCard from "./StatementCard";
 import { useAccount } from "../../hooks";
 
 export default function AccountDetailPage() {
@@ -34,14 +35,13 @@ export default function AccountDetailPage() {
 
     </Box>
 
-    <Box>
-      {statements.map(statement => (
-        <Box key={statement.idStatement} sx={{ marginBottom: "10px" }}>
-          Balance: {statement.EndBalance} <br />
-          <Typography style={{ fontSize: "10px", fontStyle: "italic", verticalAlign:"top" }}>As of {formatDate(statement.EndDate, false)} </Typography>
-        </Box>
-      ))}
-
+    <Box sx={{ marginTop: "20px" }}>
+      <Typography variant="h5">Statements</Typography>
+      <Stack spacing={1}>
+        {statements.map(statement => (
+          <StatementCard key={statement.idStatement} statement={statement} symbol={account.Symbol} />
+        ))}
+      </Stack>
     </Box>
   </>
   );

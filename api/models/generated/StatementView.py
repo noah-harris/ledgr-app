@@ -14,7 +14,9 @@ class StatementView(BaseModel):
     StatementDate: date
     StartDate: datetime
     EndDate: datetime
+    PeriodLength: Optional[int] = None
     StartBalance: Decimal
     EndBalance: Decimal
+    BalanceChange: Optional[Decimal] = None
     Created: datetime
     Updated: datetime

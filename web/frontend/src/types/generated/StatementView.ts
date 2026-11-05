@@ -6,8 +6,10 @@ export interface StatementView {
   StatementDate: string;
   StartDate: string;
   EndDate: string;
+  PeriodLength: number | null;
   StartBalance: number;
   EndBalance: number;
+  BalanceChange: number | null;
   Created: string;
   Updated: string;
 }
