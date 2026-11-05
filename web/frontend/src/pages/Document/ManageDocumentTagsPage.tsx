@@ -1,9 +1,7 @@
-import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import { DataGrid } from "../../components";
-import { useCreateDocumentTag } from "../../hooks";
-import { fetchApi } from "../../Api";
+import { useCreateDocumentTag, useDocument } from "../../hooks";
 import type { DocumentTag } from "../../types";
 import type { GridColDef } from "@mui/x-data-grid/models";
 
@@ -13,16 +11,9 @@ const columns: GridColDef<DocumentTag>[] = [
 ];
 
 export default function ManageDocumentTagPage() {
-  const [documentTags, setDocumentTags] = useState<DocumentTag[]>([]);
+  const { documentTags } = useDocument();
   const { modal: createDocumentTagModal, open: openCreateDocumentTagModal } = useCreateDocumentTag();
 
-  useEffect(() => {
-    fetchApi("/document/tags")
-      .then(response => response.json())
-      .then(data => setDocumentTags(data))
-      .catch(error => console.error(error));
-  }, []);
-    
   return (
     <>
       <Button 

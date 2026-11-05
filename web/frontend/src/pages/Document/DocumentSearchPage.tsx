@@ -71,7 +71,7 @@ export default function DocumentsSearchPage() {
           key="documents"
           rows={remainingDocuments}
           columns={documentColumns}
-          onSelect={params => openFile(params.row.idDocument)}
+          onSelect={params => openFile(params.row.idFile)}
           getRowId={getDocumentId}
           hiddenColumns={documentHiddenColumns}
           width="fit"

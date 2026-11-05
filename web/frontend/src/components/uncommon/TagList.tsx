@@ -1,39 +1,45 @@
-import { useState } from "react";
+import { useState  } from "react";
 import { Autocomplete, Chip, IconButton, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import type { DocumentTagLinkView, DocumentTag } from "../../types";
+import { useDocument } from "../../hooks"
+import type {  DocumentTag, DocumentView } from "../../types";
 
-export default function TagList({ tags, allTags, onAddTag, onRemoveTag, refresh }: { 
-  tags: DocumentTagLinkView[]; 
-  allTags: DocumentTag[]; 
-  onAddTag: (tag: string) => Promise<void>; 
-  onRemoveTag: (tag: DocumentTagLinkView) => Promise<void>; 
-  refresh: () => void;
-}) {
+export default function TagList({document}: {document: DocumentView}) {
   const [adding, setAdding] = useState(false);
-  const tagNames = tags.map(tag => tag.DocumentTagName).sort();
+  const { documentTags, linkDocumentTag, unlinkDocumentTag } = useDocument();
+  
+
+  async function onChangeTag(selectedTagName: string|null) {
+    setAdding(false);
+    if (!selectedTagName) return;
+    const tag:DocumentTag|undefined = documentTags.find(tag => tag.DocumentTagName === selectedTagName);
+    if (!tag) return;
+    await linkDocumentTag(document.idDocument, tag.idDocumentTag);
+    setAdding(false);
+  }
+
 
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 6, height: "100%", overflow: "hidden" }}>
       {
-        tags
+        document.Tags
         .sort((a, b) => a.DocumentTagName.localeCompare(b.DocumentTagName))
         .map((tag) => (
-          <Chip label={tag.DocumentTagName} onDelete={() => { onRemoveTag(tag); refresh(); }} size="small" />
-        ))
+          <Chip 
+            label={tag.DocumentTagName} 
+            onDelete={() => { unlinkDocumentTag(document.idDocument, tag.idDocumentTag); }} 
+            size="small" 
+          />
+          )
+        )
       }
 
       {adding ? (
         <Autocomplete
           freeSolo
           size="small"
-          options={allTags.map(t => t.DocumentTagName).filter((t) => !tagNames.includes(t))}
-          onChange={async (_, value) => {
-            const tag: DocumentTag | undefined = allTags.find(t => t.DocumentTagName === value);
-            if (tag && !tagNames.includes(tag.DocumentTagName)) await onAddTag(tag.DocumentTagName);
-            setAdding(false);
-            refresh();
-          }}
+          options={ documentTags.map(t => t.DocumentTagName).filter((t) => !document.Tags.map(tag => tag.DocumentTagName).sort().includes(t)) }
+          onChange={(_, selectedTagName) => { onChangeTag(selectedTagName); }}
           onBlur={() => setAdding(false)}
           onKeyDown={(e) => {
             e.stopPropagation();
@@ -51,9 +57,9 @@ export default function TagList({ tags, allTags, onAddTag, onRemoveTag, refresh 
             },
             "& .MuiInputBase-input": { p: "0 !important", height: "100%" },
           }}
-          renderInput={(params) => (
-            <TextField {...params} autoFocus placeholder="Add tag" />
-          )}
+
+          renderInput={(params) => (<TextField {...params} autoFocus placeholder="Add tag" />)}
+
         />
       ) : (
         <IconButton
