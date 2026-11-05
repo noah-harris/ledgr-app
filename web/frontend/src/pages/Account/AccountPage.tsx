@@ -3,11 +3,11 @@ import { Stack, Box, Typography } from "@mui/material";
 import { fetchApi } from "../../Api";
 import { Loading } from "../../components";
 import AccountCard from "./AccountCard";
-import { useUser } from "../../hooks";
+import { useAccounts } from "../../hooks";
 import type {  AccountType } from "../../types";
 
 export default function AccountPage() {
-  const { accounts, loading } = useUser();
+  const { accounts, loading } = useAccounts();
   const [accountTypes, setAccountTypes] = useState<AccountType[]>([]);
 
   useEffect(() => {

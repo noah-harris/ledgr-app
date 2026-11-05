@@ -1,34 +1,10 @@
-import { useState, useEffect } from "react";
-import { fetchApi } from "../Api";
-import type { AccountView, Users } from "../types";
+import { useAuth } from "../auth";
 
+/**
+ * The signed-in user. Reads from AuthProvider, so it never fetches on its own
+ * and every caller shares the same object.
+ */
 export default function useUser() {
-  const [user, setUser] = useState<Users | null>(null);
-  const [accounts, setAccounts] = useState<AccountView[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    async function load() {
-      setLoading(true);
-      
-      const user = await fetchApi("/user").then((r) => r.json()) as Users;
-      const accounts = await fetchApi("/accounts").then((r) => r.json()) as AccountView[];
-
-      accounts.sort((a, b) => a.AccountTypeName.localeCompare(b.AccountTypeName))
-
-      if (cancelled) return;
-
-      setUser(user);
-      setAccounts(accounts);
-
-      setLoading(false);
-    }
-
-    load();
-    return () => { cancelled = true; };
-  }, []);
-
-  return { user, accounts, loading };
+  const { user, loading } = useAuth();
+  return { user, loading };
 }

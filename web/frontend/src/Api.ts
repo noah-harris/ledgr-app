@@ -5,7 +5,8 @@ import { API_HOST } from "./config/config";
  *  - Prefixes path with API_HOST
  *  - Adds optional query params (undefined/null values are skipped)
  *  - Attaches the stored token as a Bearer header
- *  - On 401: clears the token, redirects to /login, and throws
+ *  - On 401: dispatches UNAUTHORIZED_EVENT (AuthProvider signs out and the
+ *    router redirects to /user/login), then throws
  *
  * Returns the raw Response. The caller checks res.ok and parses the body.
  *
@@ -14,6 +15,8 @@ import { API_HOST } from "./config/config";
  *   await fetchApi("/transactions", { method: "POST", body: JSON.stringify(row),
  *                                     headers: { "Content-Type": "application/json" } });
  */
+export const UNAUTHORIZED_EVENT = "ledgr:unauthorized";
+
 export async function fetchApi(
   path: string,
   init: RequestInit = {},
@@ -33,8 +36,7 @@ export async function fetchApi(
   const res = await fetch(url, { ...init, headers });
 
   if (res.status === 401) {
-    localStorage.removeItem("token");
-    window.location.href = "/user/login";
+    window.dispatchEvent(new Event(UNAUTHORIZED_EVENT));
     throw new Error("Unauthorized");
   }
 
