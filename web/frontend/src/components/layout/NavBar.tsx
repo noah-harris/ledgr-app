@@ -25,7 +25,8 @@ const links: NavLink[] = [
     label: "Files",
     children: [
       { to: "/files", label: "All Files" },
-      { to: "/file/junk", label: "Junk" }
+      { to: "/file/junk", label: "Junk" },
+      { to: "/file/sort-orphan", label: "Sort Orphans…" }
     ]
   },
   { 

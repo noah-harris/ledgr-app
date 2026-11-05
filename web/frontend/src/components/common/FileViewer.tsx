@@ -2,8 +2,9 @@
 import { useEffect, useState } from "react";
 import { fetchApi } from "../../Api";
 
-export default function FileViewer({ path }: { path: string }) {
+export default function FileViewer({ path }: { path: string}) {
   const [src, setSrc] = useState<string | null>(null);
+
 
   useEffect(() => {
     let cancelled = false;
