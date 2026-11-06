@@ -17,6 +17,7 @@ class TransactionView(BaseModel):
     idPayee: UUID
     idImageInvoice: Optional[UUID] = None
     idImageReceipt: Optional[UUID] = None
+    PayeeName: Optional[str] = None
     TransactionTypeName: Optional[str] = None
     Scope: str
     Cashflow: str

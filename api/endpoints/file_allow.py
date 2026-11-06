@@ -30,6 +30,19 @@ def file_allow(entity:str, idFile:UUID, current_user:Users=Depends(get_current_u
                     "idDocument": uuid4(), 
                     "idFile": idFile}
             )
+            exec(
+                statement="""
+                    INSERT INTO [usr].[DocumentTagLink] ([idUsers], [idDocument], [idDocumentTag])
+                    VALUES 
+                        (:idUsers, :idDocument, '33E4843F-2221-40D2-B56C-52EC459584CC'),
+                        (:idUsers, :idDocument, 'A77AAA58-58E6-457D-ABBD-2EF97050AA97'),
+                """,
+                database="ldr",
+                parameters={
+                    "idUsers": current_user.idUsers, 
+                    "idDocument": uuid4()
+                }
+            )
             
         case "document":
             exec(**get_args("[AllowDocument] = 1"))

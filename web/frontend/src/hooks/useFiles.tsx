@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchJson } from "../Api";
-import { queryKeys } from "../lib";
+import { queryKeys } from "../query";
 import type { File } from "../types";
 
 // Stable reference: pages list these results in effect dependencies.

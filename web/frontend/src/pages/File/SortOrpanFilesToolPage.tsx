@@ -1,11 +1,11 @@
-import { Button, Box } from "@mui/material";
-import { FileViewer } from "../../components";
-import { useState, useEffect } from "react";
-import type { File } from "../../types";
+import { Button } from "@mui/material";
+import { useEffect } from "react";
 import { fetchApi } from "../../Api";
+import { useFileViewer } from "../../hooks";
 
 export default function SortOrphanFilesToolPage() {
-  const [file, setFile] = useState<File>();
+  const { file, setFile, viewer } = useFileViewer();
+
 
   useEffect(() => {
     async function fetchInitialOrphanFile() {
@@ -32,14 +32,10 @@ export default function SortOrphanFilesToolPage() {
     }
     setFile(newFileData[0]);
   }
-
-  if (!file || !file?.DownloadEndpoint) {
-    return <Box style={{display: "flex", justifyContent: "center", alignItems: "center", height: 300, fontSize: 48}}>All of the orphans are dead</Box>;
-  }
   
   return (
     <>
-      <FileViewer path={file?.DownloadEndpoint}/>
+      {viewer}
       <Button onClick={() => allowFile("statement")}>Statement</Button>
       <Button onClick={() => allowFile("document")}>Document</Button>
       <Button onClick={() => allowFile("account")}>Account</Button>

@@ -10,7 +10,7 @@ export default function ManageDocumentsPage() {
   const [selectedRowIds, setSelectedRowIds] = useState<GridRowId[]>([]);
   const [selectedFileIds, setSelectedFileIds] = useState<string[]>([]);
   const { exportFiles } = useFileExport(selectedFileIds);
-  const { documents, loading, getDocument } = useDocument();
+  const { documents, loading } = useDocument();
 
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export default function ManageDocumentsPage() {
     { field: "idDocument", headerName: "ID", },
     { field: "FileName", headerName: "Document",  valueGetter: (_value: string, doc: DocumentView) => `${doc.FileName}.${doc.FileExtension}` },
     { field: "FileExtension", headerName: "Extension"},
-    { field: "Tags", headerName: "Tags", renderCell: (params) => (<TagList document={getDocument(params.row.idDocument)} />) },
+    { field: "Tags", headerName: "Tags", renderCell: (params) => (<TagList idDocument={params.row.idDocument} />) },
     { field: "Created", headerName: "Created", valueGetter: (_value: string, doc: DocumentView) => formatDate(doc.Created) },
   ];
 

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Backdrop, Box, CircularProgress } from "@mui/material";
 import { fetchApi } from "../Api";
-import { queryKeys } from "../lib";
+import { queryKeys } from "../query";
 import type { FileStatus } from "../types";
 
 export default function useFileUpload(endpoint: string) {

@@ -1,9 +1,8 @@
-import {  useState } from "react";
-
+import { useState } from "react";
+import { Box } from "@mui/material";
 import { FileViewer } from "../components";
-import Box from "@mui/material/Box";
-import type { File } from "../types";
 import { fetchApi } from "../Api";
+import type { File } from "../types";
 
 export default function useFileViewer() {
   const [file, setFile] = useState<File | undefined>();
@@ -18,7 +17,6 @@ export default function useFileViewer() {
       .then((file => setFile(file)));
     }
   } 
-  console.log(file)
 
   const viewer = (
     file ? file?.DownloadEndpoint && <FileViewer path={file?.DownloadEndpoint} /> : <Box>File not found</Box>

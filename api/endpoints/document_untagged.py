@@ -24,7 +24,4 @@ def get_untagged_documents(current_user:Users=Depends(get_current_user)) -> List
         }
     )
 
-    if len(result) != 1:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, f"No untagged documents found")
-    else:
-        return [DocumentView(**doc) for doc in result]
+    return [DocumentView(**doc) for doc in result]

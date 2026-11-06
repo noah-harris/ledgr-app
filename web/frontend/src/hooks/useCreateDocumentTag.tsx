@@ -5,7 +5,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import { v4 as uuidv4 } from "uuid";
 import { fetchApi } from "../Api";
 import { Modal } from "../components";
-import { queryKeys } from "../lib";
+import { queryKeys } from "../query";
 import type { DocumentTag } from "../types";
 
 

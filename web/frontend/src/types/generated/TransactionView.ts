@@ -9,6 +9,7 @@ export interface TransactionView {
   idPayee: string;
   idImageInvoice: string | null;
   idImageReceipt: string | null;
+  PayeeName: string | null;
   TransactionTypeName: string | null;
   Scope: string;
   Cashflow: string;

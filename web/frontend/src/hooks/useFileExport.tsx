@@ -1,6 +1,5 @@
 import { fetchApi } from "../Api";
 
-
 export default function useFileExport(fileIds: string[]) {
 
   async function exportFiles() {

@@ -11,6 +11,7 @@ SELECT
     t.[idPayee],
     t.[idImageInvoice],
     t.[idImageReceipt],
+    p.[PayeeName],
     tt.[TransactionTypeName],
     tt.[Scope],
     tt.[Cashflow],
@@ -32,6 +33,6 @@ SELECT
     t.[Updated]
 FROM [usr].[Transaction] AS t
 JOIN [enum].[TransactionType] AS tt ON t.[idTransactionType] = tt.[idTransactionType]
-JOIN [usr].[Payee] AS p ON t.[idUsers] = p.[idUsers] AND t.[idPayee] = p.[idPayee]
+JOIN [usr].[v_Payee] AS p ON t.[idUsers] = p.[idUsers] AND t.[idPayee] = p.[idPayee]
 LEFT JOIN [usr].[File] AS fi ON t.[idUsers] = fi.[idUsers] AND t.[idImageInvoice] = fi.[idFile]
 LEFT JOIN [usr].[File] AS fr ON t.[idUsers] = fr.[idUsers] AND t.[idImageReceipt] = fr.[idFile]
