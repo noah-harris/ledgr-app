@@ -6,6 +6,6 @@ RETURNS TABLE AS RETURN (
         SUM([isEntered]) AS [TotalDaysEntered],
         COUNT(*) - SUM([isEntered]) AS [TotalDaysNotEntered],
         COUNT(*) AS [TotalAccountDays]
-    FROM [usr].[fn_ByDay_Statement_Coverage](@idUsers)
+    FROM [usr].[tvf_ByDay_Statement_Coverage](@idUsers)
     GROUP BY [idUsers], [idAccount]
 )
