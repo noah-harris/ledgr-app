@@ -1,7 +1,7 @@
 from ._imports import *
+from .file_allow import file_allow
 
-
-async def upload_file(file:UploadFile, user:Users, file_allowance:FileAllowance) -> bool:
+async def upload_file(file:UploadFile, user:Users) -> UUID:
     """
     Upload a file for the given user, ensuring no duplicates exist in the database or on disk.
     The file metadata is inserted into the database after successful disk write.
@@ -30,7 +30,7 @@ async def upload_file(file:UploadFile, user:Users, file_allowance:FileAllowance)
 
     # Check for duplicates in the database and on disk before writing the file
     if _file_exists_database(file) or _image_exists_disk():
-        raise HTTPException(status.HTTP_409_CONFLICT, f"Conflict Error: An image named '{file.filename}' already exists.")
+        raise HTTPException(status.HTTP_409_CONFLICT, f"Conflict Error: A file named '{file.filename}' already exists.")
 
     # Write the file to disk
     data = await file.read()
@@ -42,27 +42,25 @@ async def upload_file(file:UploadFile, user:Users, file_allowance:FileAllowance)
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Disk Error: Failed to write file to disk {file.filename}")
 
     # Insert the file metadata into the database
+
+    file_id = uuid4()
     try:
         exec(
             statement="""
-                INSERT INTO [usr].[File] ([idUsers], [idFile], [FileName], [FileExtension], [FileSizeBytes], [AllowStatementImage], [AllowAccountImage], [AllowTransactionInvoiceImage], [AllowTransactionReceiptImage], [AllowDocument])
-                VALUES (:idUsers, :idFile, :FileName, :FileExtension, :FileSizeBytes, :AllowStatementImage, :AllowAccountImage, :AllowTransactionInvoiceImage, :AllowTransactionReceiptImage, :AllowDocument)
+                INSERT INTO [usr].[File] ([idUsers], [idFile], [FileName], [FileExtension], [FileSizeBytes])
+                VALUES (:idUsers, :idFile, :FileName, :FileExtension, :FileSizeBytes)
             """,
             database="ldr",
             parameters={
                 "idUsers": user.idUsers,
-                "idFile": uuid4(),
+                "idFile": file_id,
                 "FileName": Path(file.filename).stem,
                 "FileExtension": Path(file.filename).suffix.lstrip("."),
                 "FileSizeBytes": len(data),
-
-                "AllowStatementImage": file_allowance.AllowStatementImage,
-                "AllowAccountImage": file_allowance.AllowAccountImage,
-                "AllowTransactionInvoiceImage": file_allowance.AllowTransactionInvoiceImage,
-                "AllowTransactionReceiptImage": file_allowance.AllowTransactionReceiptImage,
-                "AllowDocument": file_allowance.AllowDocument
             }
         )
+
+        
     except Exception as e:
         file_destination.unlink(missing_ok=True)
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Database Error: Failed to upload file {file.filename}")
@@ -72,29 +70,11 @@ async def upload_file(file:UploadFile, user:Users, file_allowance:FileAllowance)
         file_destination.unlink(missing_ok=True)
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, f"Database Error: Failed to upload file {file.filename}")
 
-    return {"message": f"Success: File uploaded successfully"}
+    return file_id
 
 
 @app.post("/file/upload")
 @catch("Failed to get file upload")
 async def upload_file_endpoint(file:UploadFile, current_user:Users=Depends(get_current_user), filetype:str=""):
-
-    match filetype:
-
-        case "statement":
-            file_allowance=FileAllowance(AllowStatementImage=True, AllowDocument=True)
-        case "document":
-            file_allowance=FileAllowance(AllowDocument=True)
-        case "account":
-            file_allowance=FileAllowance(AllowAccountImage=True)
-        case "transaction":
-            file_allowance=FileAllowance(AllowTransactionInvoiceImage=True, AllowTransactionReceiptImage=True)
-        case "transaction/invoice":
-            file_allowance=FileAllowance(AllowTransactionInvoiceImage=True)
-        case "transaction/receipt":
-            file_allowance=FileAllowance(AllowTransactionReceiptImage=True)
-        case _:
-            file_allowance=FileAllowance()
-
-
-    return await upload_file(file, current_user, file_allowance)
+    idFile = await upload_file(file, current_user)
+    file_allow(entity=filetype, idFile=idFile)

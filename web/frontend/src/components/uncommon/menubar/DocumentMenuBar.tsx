@@ -18,7 +18,7 @@ import ShareIcon from "@mui/icons-material/Share";
 import EmailIcon from "@mui/icons-material/Email";
 
 export default function DocumentMenubar({ exportFiles }: { exportFiles: () => void }) {
-  const { selectAndUploadFiles, uploading, backdrop } = useFileUpload("/file/upload/document");
+  const { selectAndUploadFiles, uploading, backdrop } = useFileUpload("/file/upload?filetype=document");
   const { onShare } = useFileShare();
   const { modal, open } = useCreateDocumentTag();
 
