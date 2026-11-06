@@ -19,11 +19,17 @@ export default function useDocument() {
     queryFn: () => fetchJson<DocumentTag[]>("/document/tags"),
   });
 
+  const usedDocumentTagsQuery = useQuery({
+    queryKey: queryKeys.usedDocumentTags,
+    queryFn: () => fetchJson<DocumentTag[]>("/document/tags/used"),
+  });
+
   const NO_DOCUMENTS: DocumentView[] = [];
   const NO_DOCUMENT_TAGS: DocumentTag[] = [];
   
   const documents = documentsQuery.data ?? NO_DOCUMENTS;
   const documentTags = documentTagsQuery.data ?? NO_DOCUMENT_TAGS;
+  const usedDocumentTags = usedDocumentTagsQuery.data ?? NO_DOCUMENT_TAGS
   const loading = documentsQuery.isPending || documentTagsQuery.isPending;
 
   function getDocument(idDocument: string) {
@@ -44,5 +50,5 @@ export default function useDocument() {
     await queryClient.invalidateQueries({ queryKey: queryKeys.documents });
   }
 
-  return { documents, documentTags, loading, getDocument, linkDocumentTag, unlinkDocumentTag };
+  return { documents, documentTags, usedDocumentTags, loading, getDocument, linkDocumentTag, unlinkDocumentTag };
 }

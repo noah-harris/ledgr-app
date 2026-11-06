@@ -24,6 +24,7 @@ import TagBreadcrumb from "./uncommon/TagBreadcrumb";
 import TagList from "./uncommon/TagList";
 import FileMenuBar from "./uncommon/menubar/FileMenuBar";
 import DocumentMenubar from "./uncommon/menubar/DocumentMenuBar";
+import TagCardArray from "./uncommon/TagCardArray";
 
 export { 
   FileViewer, 
@@ -33,6 +34,7 @@ export {
   DataGrid, 
   Footer, 
   Header, 
+  TagCardArray,
   NavBar, 
   TagBreadcrumb, 
   Menubar, 

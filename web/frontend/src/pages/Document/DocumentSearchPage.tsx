@@ -1,83 +1,65 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Box } from "@mui/material";
-import { DataGrid, Loading, TagBreadcrumb } from "../../components";
-import { fetchApi } from "../../Api";
-import { formatDate, openFile } from "../../lib";
-import type { GridColDef } from "@mui/x-data-grid";
+import { Loading, TagBreadcrumb, TagCardArray } from "../../components";
+import { useDocument } from "../../hooks";
 import type { DocumentTag, DocumentView } from "../../types";
+import DocumentCardArray from "../../components/uncommon/DocumentCardArray";
 
-const tagColumns: GridColDef<DocumentTag>[] = [
-  { field: "idDocumentTag", headerName: "ID" },
-  { field: "DocumentTagName", headerName: "Name" },
-];
+function documentListHasHomogenousTagSet(documents: DocumentView[]): boolean {
+  if (documents.length === 0) return false;
+  const firstDocTags = new Set((documents[0].Tags ?? []).map(t => t.idDocumentTag));
+  return documents.every(doc => {
+    const docTags = new Set((doc.Tags ?? []).map(t => t.idDocumentTag));
+    if (docTags.size !== firstDocTags.size) return false;
+    for (const tagId of docTags) {
+      if (!firstDocTags.has(tagId)) return false;
+    }
+    return true;
+  });
+}
 
-const documentColumns: GridColDef<DocumentView>[] = [
-  { field: "idDocument", headerName: "ID" },
-  { field: "FileName", headerName: "Document", valueGetter: (_value: string, doc: DocumentView) => `${doc.FileName}.${doc.FileExtension}` },
-  { field: "Created", headerName: "Created", valueGetter: (_value: string, doc: DocumentView) => formatDate(doc.Created) },
-];
+function getDocumentListTags(documents: DocumentView[]): DocumentTag[] {
+  const tagMap = new Map<string, DocumentTag>();
+  for (const doc of documents) {
+    for (const tag of doc.Tags ?? []) {
+      tagMap.set(tag.idDocumentTag, tag);
+    }
+  }
+  return Array.from(tagMap.values());
+}
 
-const getTagId = (row: DocumentTag) => row.idDocumentTag;
-const getDocumentId = (row: DocumentView) => row.idDocument;
-const tagHiddenColumns = ["idDocumentTag"];
-const documentHiddenColumns = ["idDocument"];
 
 export default function DocumentsSearchPage() {
-  const [allTags, setAllTags] = useState<DocumentTag[]>([]);
-  const [allDocuments, setAllDocuments] = useState<DocumentView[]>([]);
+  const { usedDocumentTags, documents, loading } = useDocument()
   const [selectedTags, setSelectedTags] = useState<DocumentTag[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    Promise.all([
-      fetchApi("/document/tags/used").then(r => r.json()),
-      fetchApi("/documents").then(r => r.json()),
-    ])
-      .then(([tags, docs]) => {
-        setAllTags(tags);
-        setAllDocuments(docs);
-      })
-      .finally(() => setLoading(false));
-  }, []);
 
   // Documents that have every selected tag
-  const selectedIds = new Set(selectedTags.map(t => t.idDocumentTag));
-  const remainingDocuments = allDocuments.filter(doc =>
-    selectedTags.every(tag => (doc.Tags ?? []).some(t => t.idDocumentTag === tag.idDocumentTag))
-  );
+  const potentialDocuments = documents.filter(doc => selectedTags.every(tag => (doc.Tags ?? []).some(t => t.idDocumentTag === tag.idDocumentTag)));
 
-  // Unselected tags that still appear on at least one remaining document
-  const tagIdsInDocs = new Set(remainingDocuments.flatMap(doc => (doc.Tags ?? []).map(t => t.idDocumentTag)));
-  const remainingTags = allTags.filter(tag => !selectedIds.has(tag.idDocumentTag) && tagIdsInDocs.has(tag.idDocumentTag));
+  // If every remaining document has the same tags, treat all of them as selected (derived, not stored)
+  const userSelectedIds = new Set(selectedTags.map(t => t.idDocumentTag));
+  const effectiveSelectedTags = documentListHasHomogenousTagSet(potentialDocuments)
+    ? [...selectedTags, ...getDocumentListTags(potentialDocuments).filter(t => !userSelectedIds.has(t.idDocumentTag))]
+    : selectedTags;
 
-  if (loading) return <Loading />;
+  const tagsInPotentialDocuments = new Set(potentialDocuments.flatMap(doc => (doc.Tags ?? []).map(t => t.idDocumentTag)));
+  const selectedTagIds = new Set(effectiveSelectedTags.map(t => t.idDocumentTag));
+  const potentialTags = usedDocumentTags.filter(tag => !selectedTagIds.has(tag.idDocumentTag) && tagsInPotentialDocuments.has(tag.idDocumentTag));
 
-  return (
-    <Box>
-      <TagBreadcrumb selectedTags={selectedTags} setSelectedTags={setSelectedTags} />
+  return loading ? <Loading /> : (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+      <TagBreadcrumb selectedTags={effectiveSelectedTags} setSelectedTags={setSelectedTags} />
 
-      {remainingTags.length > 1 ? (
-        <DataGrid
-          key="tags"
-          rows={remainingTags}
-          columns={tagColumns}
-          onSelect={params => setSelectedTags(prev => [...prev, params.row])}
-          getRowId={getTagId}
-          hiddenColumns={tagHiddenColumns}
-          width="fit"
-        />
+      {/* No tags selected: only show tags */}
+      {effectiveSelectedTags.length === 0 ? (
+        <TagCardArray tags={potentialTags} setSelectedTags={setSelectedTags} />
       ) : (
-        <DataGrid
-          key="documents"
-          rows={remainingDocuments}
-          columns={documentColumns}
-          onSelect={params => openFile(params.row.idFile)}
-          getRowId={getDocumentId}
-          hiddenColumns={documentHiddenColumns}
-          width="fit"
-        />
+        <>
+          {/* Tags selected: show remaining tags (if any) and matching documents */}
+          {potentialTags.length > 0 && <TagCardArray tags={potentialTags} setSelectedTags={setSelectedTags} />}
+          <DocumentCardArray documents={potentialDocuments} />
+        </>
       )}
-
     </Box>
   );
 }
