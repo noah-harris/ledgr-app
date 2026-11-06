@@ -19,3 +19,4 @@ iso18245
 tkcalendar
 pillow
 onepassword-sdk
+pdfplumber

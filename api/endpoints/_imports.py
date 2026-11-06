@@ -4,7 +4,7 @@ from error import catch
 from pathlib import Path
 from passlib.context import CryptContext
 from fastapi import HTTPException, status, UploadFile, Depends
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.routing import APIRoute
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from uuid import uuid4
@@ -20,8 +20,10 @@ import shutil
 from sqlalchemy.exc import IntegrityError
 from jose.exceptions import ExpiredSignatureError
 from jose import jwt, JWTError
-
+from io import BytesIO
+import pdfplumber
 from config import API_SECRET_KEY
+
 
 ALGORITHM = "HS256"
 TOKEN_EXPIRE_MINUTES = 120

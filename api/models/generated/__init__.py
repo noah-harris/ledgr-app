@@ -28,7 +28,11 @@ from .Payee import *
 from .PayeeTag import *
 from .PayeeView import *
 from .Statement import *
+from .StatementGapView import *
+from .StatementLayout import *
+from .StatementLayoutTransform import *
 from .StatementSummaryView import *
+from .StatementTransform import *
 from .StatementView import *
 from .Transaction import *
 from .TransactionGroup import *

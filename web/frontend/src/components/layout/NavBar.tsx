@@ -7,10 +7,16 @@ const links: NavLink[] = [
   { 
     to: "/accounts", 
     label: "Accounts", 
+    children: [
+      { to: "/statement/loader", label: "Statement Loader…" }
+    ]
   },
   {
     to: "/transactions",
-    label: "Transactions"
+    label: "Transactions",
+    children: [
+      { to: "/statement/loader", label: "Statement Loader…" }
+    ]
   },
   { 
     to: "/documents", 
@@ -26,7 +32,7 @@ const links: NavLink[] = [
     children: [
       { to: "/files", label: "All" },
       { to: "/file/junk", label: "Junk" },
-      { to: "/file/sort-orphan", label: "Sort Orphans…" }
+      { to: "/file/sort-orphan", label: "Sort Orphans…" },
     ]
   },
   { 

@@ -10,4 +10,6 @@ export const queryKeys = {
   documents: ["documents"],
   documentTags: ["documentTags"],
   files: ["files"],
+  statementUnenteredFiles: ["statement", "unentered", "files"],
+  statementGaps: (idAccount: string) => ["accounts", idAccount, "statementGaps"],
 } as const;

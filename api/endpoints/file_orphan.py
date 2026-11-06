@@ -19,8 +19,4 @@ def get_orphan_files(current_user:Users=Depends(get_current_user)):
             "idUsers": current_user.idUsers
         }
     )
-    
-    if len(result) != 1:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Client Error: 404 Not Found")
-    else:
-        return [FileView(**file) for file in result]
+    return [FileView(**file) for file in result]

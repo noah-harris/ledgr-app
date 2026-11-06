@@ -1,6 +1,7 @@
 import { Routes, Route, Outlet, Navigate } from "react-router";
 import SortOrphanFilesToolPage from "./pages/File/SortOrpanFilesToolPage";
 import JunkFilePage from "./pages/File/JunkFilePage";
+import StatementLoaderPage from "./pages/Statement/StatementLoaderPage";
 import AccountPage from "./pages/Account/AccountPage";
 import { useAuth } from "./auth/AuthContext";
 import Dev from "./pages/Dev/Dev";
@@ -39,6 +40,7 @@ export default function App() {
           <Route path="/files" element={<File />} />
           <Route path="/file/sort-orphan" element={<SortOrphanFilesToolPage />} />
           <Route path="/file/junk" element={<JunkFilePage />} />
+          <Route path="/statement/loader" element={<StatementLoaderPage />} />
           <Route path="/dev" element={<Dev />} />
           <Route path="*" element={<NotFound />} />
         </Route>

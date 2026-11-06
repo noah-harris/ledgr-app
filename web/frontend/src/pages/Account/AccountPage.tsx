@@ -15,10 +15,8 @@ export default function AccountPage() {
     .then((r) => r.json())
     .then(setAccountTypes);
   }, []);
-
-  if (loading) return <Loading />;
   
-  return (
+  return loading ? <Loading /> : (
     <>
     {accountTypes.map((accountType) => (
       <Box key={accountType.idAccountType}>
