@@ -6,7 +6,7 @@ import './index.css'
 import App from "./App.tsx";
 import { AuthProvider } from "./auth/AuthContext.tsx";
 import { createTheme, ThemeProvider, CssBaseline } from "@mui/material";
-import { queryClient } from "./lib";
+import { queryClient } from "./query";
 
 const theme = createTheme({
   typography: {

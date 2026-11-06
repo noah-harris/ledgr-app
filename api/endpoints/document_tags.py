@@ -3,7 +3,7 @@ from ._imports import *
 @app.get("/document/tags", status_code=200, response_model=list[DocumentTag])
 @catch("Failed to get document tags")
 def get_document_tags(current_user:Users=Depends(get_current_user)):
-    return exec(
+    result = exec(
         statement="""
             SELECT *
             FROM [usr].[DocumentTag] 
@@ -16,3 +16,4 @@ def get_document_tags(current_user:Users=Depends(get_current_user)):
             "idUsers": current_user.idUsers
         }
     )
+    return [DocumentTag(**row) for row in result]

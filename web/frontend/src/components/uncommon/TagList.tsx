@@ -1,12 +1,20 @@
-import { useState  } from "react";
+import { useState, useEffect } from "react";
 import { Autocomplete, Chip, IconButton, TextField } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useDocument } from "../../hooks"
-import type {  DocumentTag, DocumentView } from "../../types";
+import type {  DocumentTag } from "../../types";
 
-export default function TagList({document}: {document: DocumentView}) {
+export default function TagList({idDocument}: {idDocument: string}) {
   const [adding, setAdding] = useState(false);
-  const { documentTags, linkDocumentTag, unlinkDocumentTag } = useDocument();
+  const { documentTags, linkDocumentTag, unlinkDocumentTag, getDocument } = useDocument();
+
+  const [document, setDocument] = useState(getDocument(idDocument));
+
+  useEffect(() => {  
+    if (!document) {
+      setDocument(getDocument(idDocument));
+    }
+  }, [idDocument, document]); 
   
 
   async function onChangeTag(selectedTagName: string|null) {
@@ -15,6 +23,7 @@ export default function TagList({document}: {document: DocumentView}) {
     const tag:DocumentTag|undefined = documentTags.find(tag => tag.DocumentTagName === selectedTagName);
     if (!tag) return;
     await linkDocumentTag(document.idDocument, tag.idDocumentTag);
+    setDocument(getDocument(idDocument));
     setAdding(false);
   }
 
@@ -27,7 +36,7 @@ export default function TagList({document}: {document: DocumentView}) {
         .map((tag) => (
           <Chip 
             label={tag.DocumentTagName} 
-            onDelete={() => { unlinkDocumentTag(document.idDocument, tag.idDocumentTag); }} 
+            onDelete={() => { unlinkDocumentTag(document.idDocument, tag.idDocumentTag); setDocument(getDocument(idDocument)); }} 
             size="small" 
           />
           )

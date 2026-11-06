@@ -67,7 +67,7 @@ def dispose_engines() -> None:
     return None
 
 
-def exec(statement:str, database:str='ldr', parameters:dict|None=None, execution_options:dict|None=None) -> list[dict] | None:
+def exec(statement:str, database:str='ldr', parameters:dict|None=None, execution_options:dict|None=None) -> list[dict]:
     """
     Execute a SQL statement against the specified database.
 
@@ -95,4 +95,4 @@ def exec(statement:str, database:str='ldr', parameters:dict|None=None, execution
             raise RuntimeError(f"Error executing statement: {e}") from e
         else:
             rows = result.returns_rows
-            return [dict(r) for r in result.mappings().all()] if rows else None
+            return [dict(r) for r in result.mappings().all()] if rows else []

@@ -3,7 +3,7 @@ from ._imports import *
 @app.get("/statements", status_code=200, response_model=list[StatementSummaryView])
 @catch("Failed to get statements")
 def get_statements(idAccount:UUID, current_user:Users=Depends(get_current_user)):
-    res = exec(
+    result = exec(
         statement="""
             SELECT *
             FROM [usr].[v_StatementSummary]
@@ -15,5 +15,4 @@ def get_statements(idAccount:UUID, current_user:Users=Depends(get_current_user))
         database="ldr",
         parameters={"idUsers": current_user.idUsers, "idAccount": idAccount}
     )
-    statements = [StatementSummaryView(**row) for row in res]
-    return statements
+    return [StatementSummaryView(**row) for row in result]

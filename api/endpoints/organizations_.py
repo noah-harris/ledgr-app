@@ -3,7 +3,7 @@ from ._imports import *
 @app.get("/organizations", status_code=200, response_model=list[OrganizationView])
 @catch("Failed to get organizations")
 def get_organizations(current_user:Users=Depends(get_current_user)):
-    res = exec(
+    result = exec(
         statement="""
             SELECT *
             FROM [usr].[v_Organization]
@@ -12,5 +12,4 @@ def get_organizations(current_user:Users=Depends(get_current_user)):
         database="ldr",
         parameters={"idUsers": current_user.idUsers}
     )
-    organizations = [OrganizationView(**row) for row in res]
-    return organizations
+    return [OrganizationView(**row) for row in result]

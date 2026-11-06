@@ -18,6 +18,7 @@ const links: NavLink[] = [
     children: [
       { to: "/documents", label: "All" },
       { to: "/documents/search", label: "Search" },
+      { to: "/documents/untagged", label: "Untagged" },
   ]},
   {
     to: "/files",

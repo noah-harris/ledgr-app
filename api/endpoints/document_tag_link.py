@@ -1,8 +1,10 @@
 from ._imports import *
 
+from .document_ import get_documents as get_document
+
 @app.put("/document/tag/link", status_code=204)
 @catch("Failed to add tag to document")
-def add_tag_to_document(documentTagLink: DocumentTagLink, current_user:Users=Depends(get_current_user)):
+def add_tag_to_document(idDocument:UUID, idDocumentTag:UUID, current_user:Users=Depends(get_current_user)):
 
     exec(
         statement="""
@@ -12,15 +14,15 @@ def add_tag_to_document(documentTagLink: DocumentTagLink, current_user:Users=Dep
         database="ldr",
         parameters={
             "idUsers": current_user.idUsers,
-            "idDocument": documentTagLink.idDocument,
-            "idDocumentTag": documentTagLink.idDocumentTag,
+            "idDocument": idDocument,
+            "idDocumentTag": idDocumentTag,
         }
     )
 
 
 @app.delete("/document/tag/link", status_code=204)
 @catch("Failed to remove tag from document")
-def remove_tag_from_document(documentTagLink: DocumentTagLink, current_user:Users=Depends(get_current_user)):
+def remove_tag_from_document(idDocument:UUID, idDocumentTag:UUID, current_user:Users=Depends(get_current_user)):
 
     exec(
         statement="""
@@ -33,11 +35,7 @@ def remove_tag_from_document(documentTagLink: DocumentTagLink, current_user:User
         database="ldr",
         parameters={
             "idUsers": current_user.idUsers,
-            "idDocument": documentTagLink.idDocument,
-            "idDocumentTag": documentTagLink.idDocumentTag,
+            "idDocument": idDocument,
+            "idDocumentTag": idDocumentTag,
         }
     )
-    
-    # TODO: Verify that the tag was actually removed from the document
-
-

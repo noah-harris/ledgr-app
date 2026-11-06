@@ -3,7 +3,7 @@ from ._imports import *
 @app.get("/account", status_code=200, response_model=AccountView)
 @catch("Failed to get account")
 def get_account(idAccount:UUID, current_user:Users=Depends(get_current_user)):
-    res = exec(
+    result = exec(
         statement="""
             SELECT *
             FROM [usr].[v_Account]
@@ -17,7 +17,8 @@ def get_account(idAccount:UUID, current_user:Users=Depends(get_current_user)):
             "idAccount": idAccount
         }
     )
-    if not res or len(res) == 0:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Client Error: 404 Not Found")
-    account = AccountView(**res[0])
-    return account
+    
+    if len(result) != 1:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, f"Account not found")
+    else:
+        return AccountView(**result[0])

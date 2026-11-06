@@ -3,12 +3,11 @@ from ._imports import *
 @app.get("/currencies", status_code=200, response_model=list[Currency])
 @catch("Failed to get currencies")
 def get_currencies(current_user:Users=Depends(get_current_user)):
-    res = exec(
+    result = exec(
         statement="""
             SELECT *
             FROM [usr].[Currency]
         """,
         database="ldr"
     )
-    currencies = [Currency(**row) for row in res]
-    return currencies
+    return [Currency(**row) for row in result]

@@ -6,6 +6,7 @@ import useFileExport from "./useFileExport";
 import useFileShare from "./useFileShare";
 import useFiles from "./useFiles";
 import useDocument from "./useDocument";
+import useFileViewer from "./useFileViewer";
 
 export {
   useCreateDocumentTag,
@@ -15,5 +16,6 @@ export {
   useDocument,
   useFileExport,
   useFileShare,
-  useUser
+  useUser,
+  useFileViewer
 }

@@ -14,6 +14,7 @@ import File from "./pages/File/File";
 import NotFound from "./pages/NotFound";
 import DocumentsSearchPage from "./pages/Document/DocumentSearchPage";
 import AccountDetailPage from "./pages/Account/AccountDetailPage";
+import TagUntaggedDocumentsToolPage from "./pages/Document/TagUntaggedDocumentsToolPage";
 
 function RequireAuth() {
   const { token } = useAuth();
@@ -32,6 +33,7 @@ export default function App() {
           <Route path="/accounts/:idAccount" element={<AccountDetailPage />} />
           <Route path="/documents" element={<DocumentsPage />} />
           <Route path="/documents/search" element={<DocumentsSearchPage />} />
+          <Route path="/documents/untagged" element={<TagUntaggedDocumentsToolPage />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/user" element={<User />} />
           <Route path="/files" element={<File />} />

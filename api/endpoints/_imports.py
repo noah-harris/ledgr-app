@@ -40,16 +40,22 @@ def get_current_user(token:str=Depends(oauth2_scheme)) -> Users:
     if id_users is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials", headers={"WWW-Authenticate": "Bearer"})
 
-    res = exec(
-        statement="SELECT * FROM [dbo].[Users] WHERE [idUsers] = :idUsers",
+    result = exec(
+        statement="""
+            SELECT * 
+            FROM [dbo].[Users] 
+            WHERE [idUsers] = :idUsers
+        """,
         database="ldr",
-        parameters={"idUsers": id_users},
+        parameters={
+            "idUsers": id_users
+        },
     )
     
-    if len(res) != 1:
+    if len(result) != 1:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials", headers={"WWW-Authenticate": "Bearer"})
     else:
-        return Users(**res[0])
+        return Users(**result[0])
 
 
 

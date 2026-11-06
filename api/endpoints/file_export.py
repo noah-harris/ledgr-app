@@ -1,9 +1,11 @@
+import re
+
 from ._imports import *
 
 @app.post("/file/export")
 @catch("Error exporting files")
 def export_files(idFiles: list[UUID], current_user: Users = Depends(get_current_user)):
-    res = exec(
+    result = exec(
         statement="""
             SELECT *
             FROM [usr].[v_File]
@@ -12,14 +14,15 @@ def export_files(idFiles: list[UUID], current_user: Users = Depends(get_current_
         """,
         database="ldr",
         parameters={
-            "idFiles": json.dumps(idFiles, default=str),
             "idUsers": current_user.idUsers,
+            "idFiles": json.dumps(idFiles, default=str)
         },
     )
-    if not res:
+
+    if len(result) == 0:
         raise HTTPException(status.HTTP_404_NOT_FOUND, "No files found")
 
-    files: list[FileView] = [FileView(**file) for file in res]
+    files: list[FileView] = [FileView(**file) for file in result]
 
     temp_path = Path(mkdtemp())
     zip_path = temp_path / f"ledgr-export-{len(files)}-files-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.zip"
